@@ -1,0 +1,108 @@
+CC=g++
+
+CPPFLAGS=\
+-Ilibs \
+-I/Library/Frameworks/SDL2.framework/Headers \
+-I/Library/Frameworks/SDL2_image.framework/Headers \
+-I/Library/Frameworks/SDL2_net.framework/Headers
+# -I/Library/Frameworks/SDL2_mixer.framework/Headers \
+
+# Library
+LIBS=\
+-framework SDL2 \
+-framework SDL2_image \
+-framework SDL2_net \
+-framework OpenGL \
+-lBox2D
+# -framework SDL2_mixer \
+# -framework Box2D
+
+# Source goes here
+SOURCEDIR=src
+# Engine
+CUSTOM_SOURCES=\
+ParticlePlay/BitmapFont.cpp \
+ParticlePlay/Color.cpp \
+ParticlePlay/Game.cpp \
+ParticlePlay/Input.cpp \
+ParticlePlay/Physics.cpp \
+ParticlePlay/TestBed.cpp \
+ParticlePlay/Scene.cpp \
+ParticlePlay/GUI/Control.cpp \
+ParticlePlay/GUI/GUI.cpp \
+ParticlePlay/GUI/Label.cpp
+
+# Game
+SOURCES=\
+TestGame.cpp \
+TestScene.cpp \
+TestTestBed.cpp
+
+# Demo/Full version flags
+DEMO_FLAGS=-DDEMO
+FULL_FLAGS=-DFULL
+
+# Info
+OBJDIR=objs
+OBJDIR_CUSTOM=$(OBJDIR)/custom
+OBJDIR_DEMO=$(OBJDIR)/demo
+OBJDIR_FULL=$(OBJDIR)/full
+
+CUSTOM_OBJS=$(CUSTOM_SOURCES:%.cpp=$(OBJDIR_CUSTOM)/%.o)
+ALL_OBJS=$(SOURCES:%.cpp=%.o)
+DEMO_OBJS=$(ALL_OBJS:%.o=$(OBJDIR_DEMO)/%.o)
+FULL_OBJS=$(ALL_OBJS:%.o=$(OBJDIR_FULL)/%.o)
+
+RESDIR=res
+OUTDIR=bin
+FULLEXE=TestGame
+DEMOEXE=TestGameDemo
+
+all: preclean full-link demo-link resources
+demo: preclean demo-link resources
+full: preclean full-link resources
+
+$(OBJDIR_CUSTOM)/%.o: $(SOURCEDIR)/%.cpp
+	@echo "[Custom] Compiling $<"
+	@mkdir -p $(dir $@)
+	@$(CC) $(CPPFLAGS) $(DEMO_FLAGS) $(FULL_FLAGS) -c $< -o $@
+
+$(OBJDIR_DEMO)/%.o: $(SOURCEDIR)/%.cpp
+	@echo "[Demo] Compiling $<"
+	@mkdir -p $(dir $@)
+	@$(CC) $(CPPFLAGS) $(DEMO_FLAGS) -c $< -o $@
+
+$(OBJDIR_FULL)/%.o: $(SOURCEDIR)/%.cpp
+	@echo "[Full] Compiling $<"
+	@mkdir -p $(dir $@)
+	@$(CC) $(CPPFLAGS) $(FULL_FLAGS) -c $< -o $@
+
+demo-link: $(CUSTOM_OBJS) $(DEMO_OBJS)
+	@echo "[Demo] Linking..."
+	@mkdir -p $(OUTDIR)
+	@$(CC) -o $(OUTDIR)/$(DEMOEXE) $+ $(LIBS)
+
+full-link: $(CUSTOM_OBJS) $(FULL_OBJS)
+	@echo "[Full] Linking..."
+	@mkdir -p $(OUTDIR)
+	@$(CC) -o $(OUTDIR)/$(FULLEXE) $+ $(LIBS)
+
+run-demo:
+	@echo "[Demo] Running..."
+	@$(OUTDIR)/$(DEMOEXE)
+
+run-full:
+	@echo "[Full] Running..."
+	@$(OUTDIR)/$(FULLEXE)
+
+resources:
+	@echo "Copying resources..."
+	@cp $(RESDIR)/* $(OUTDIR)/
+
+preclean:
+	@echo "Pre Cleaning..."
+	@rm -rf $(OUTDIR)/$(FULLEXE) $(OUTDIR)/$(DEMOEXE)
+
+clean:
+	@echo "Cleaning..."
+	@rm -rf $(OBJDIR) $(OUTDIR)
