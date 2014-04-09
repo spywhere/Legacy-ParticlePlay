@@ -40,7 +40,7 @@ ParticlePlay/Game.cpp\
 ParticlePlay/Input.cpp\
 ParticlePlay/Physics.cpp\
 ParticlePlay/TestBed.cpp\
-ParticlePlay/Scene.cpp\
+ParticlePlay/State.cpp\
 
 # Game
 SOURCES=\

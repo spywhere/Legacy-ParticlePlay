@@ -1,19 +1,19 @@
-#ifndef SCENE_HEADER
-#define SCENE_HEADER
+#ifndef STATE_HEADER
+#define STATE_HEADER
 
 #include "Includes.h"
 #include "Input.h"
 #include "Game.h"
 
 class ppGame;
-class ppScene{
+class ppState{
 private:
 	ppGame* game;
 	const char* name;
 protected:
 	bool needInit;
 public:
-	ppScene();
+	ppState();
 	bool IsNeedInit();
 	void SetNeedInit(bool needInit);
 	const char* GetName();
@@ -26,7 +26,7 @@ public:
 	virtual void OnRestart();
 	virtual void OnRestore();
 	virtual bool OnEvent(SDL_Event* event);
-	virtual ~ppScene();
+	virtual ~ppState();
 };
 
 #endif

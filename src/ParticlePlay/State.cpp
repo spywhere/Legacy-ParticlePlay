@@ -1,52 +1,52 @@
-#include "Scene.h"
+#include "State.h"
 
-ppScene::ppScene(){
+ppState::ppState(){
 	this->game = NULL;
 	this->name = "";
 	this->needInit = false;
 }
 
-bool ppScene::IsNeedInit(){
+bool ppState::IsNeedInit(){
 	return this->needInit;
 }
 
-void ppScene::SetNeedInit(bool needInit){
+void ppState::SetNeedInit(bool needInit){
 	this->needInit = needInit;
 }
 
-const char* ppScene::GetName(){
+const char* ppState::GetName(){
 	return this->name;
 }
 
-void ppScene::SetName(const char* name){
+void ppState::SetName(const char* name){
 	this->name = name;
 }
 
-ppGame* ppScene::GetGame(){
+ppGame* ppState::GetGame(){
 	return this->game;
 }
 
-void ppScene::SetGame(ppGame* game){
+void ppState::SetGame(ppGame* game){
 	this->game = game;
 }
 
-void ppScene::OnRestart(){
+void ppState::OnRestart(){
 	// Pure virtual
 	// Will run when game require to restart
 }
 
-void ppScene::OnRestore(){
+void ppState::OnRestore(){
 	// Pure virtual
 	// Will run after game has been restarted
 }
 
-bool ppScene::OnEvent(SDL_Event* event){
+bool ppState::OnEvent(SDL_Event* event){
 	// Pure virtual
 	// Will run on important event only
 	return false;
 }
 
-ppScene::~ppScene(){
+ppState::~ppState(){
 	// Pure virtual
 	// Will run on destroy only
 }

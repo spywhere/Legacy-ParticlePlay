@@ -2,14 +2,14 @@
 #define TESTBED_HEADER
 
 #include "Includes.h"
-#include "Scene.h"
+#include "State.h"
 #include "BitmapFont.h"
 #include "Input.h"
 #include "Physics.h"
 #include "GUI/GUI.h"
 #include <vector>
 
-class ppTestBed : public ppScene{
+class ppTestBed : public ppState{
 private:
 	ppPhysics* physics;
 	ppBitmapFont* font;

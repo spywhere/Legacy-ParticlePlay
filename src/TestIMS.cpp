@@ -557,7 +557,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		if(input->IsKeyDown(SDL_SCANCODE_R)){
 			ims->Stop();
 			ims->ClearSound();
-			this->GetGame()->EnterScene(this);
+			this->GetGame()->EnterState(this);
 		}
 		if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
 			if(sound->IsPause()){

@@ -50,7 +50,7 @@ void TestScene::OnUpdate(ppInput* input, int delta){
 		this->posy += 5;
 	}
 	if(input->IsKeyDown(SDLK_RETURN)){
-		this->GetGame()->EnterScene(this);
+		this->GetGame()->EnterState(this);
 	}
 	this->gui->Update(input);
 }

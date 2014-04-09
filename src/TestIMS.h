@@ -6,11 +6,11 @@
 #include "ParticlePlay/IMS/IMS.h"
 #include "ParticlePlay/IMS/Filters.h"
 #include "ParticlePlay/IMS/Sound.h"
-#include "ParticlePlay/Scene.h"
+#include "ParticlePlay/State.h"
 #include "ParticlePlay/Input.h"
 
 
-class TestIMS : public ppScene{
+class TestIMS : public ppState{
 private:
 	ppGUI* gui;
 	ppLowPassFilter* lpf;

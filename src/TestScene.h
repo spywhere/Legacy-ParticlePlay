@@ -3,11 +3,11 @@
 
 #include "ParticlePlay/Includes.h"
 #include "ParticlePlay/GUI/GUI.h"
-#include "ParticlePlay/Scene.h"
+#include "ParticlePlay/State.h"
 #include "ParticlePlay/BitmapFont.h"
 #include "ParticlePlay/Input.h"
 
-class TestScene : public ppScene{
+class TestScene : public ppState{
 private:
 	ppBitmapFont* font;
 	ppGUI* gui;

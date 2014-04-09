@@ -15,9 +15,9 @@ int main(int argc, char* argv[]) {
     theApp->SetTitle("ParticlePlay Game Test [Demo]");
     #endif
     std::cout << "Build: " << __DATE__ << " " << __TIME__ << std::endl;
-    theApp->AddScene("main", new TestScene());
-    theApp->AddScene("ims", new TestIMS());
-    theApp->AddScene("testbed", new TestTestbed());
-    theApp->EnterScene("ims");
+    theApp->AddState("main", new TestScene());
+    theApp->AddState("ims", new TestIMS());
+    theApp->AddState("testbed", new TestTestbed());
+    theApp->EnterState("ims");
     return theApp->StartGame();
 }

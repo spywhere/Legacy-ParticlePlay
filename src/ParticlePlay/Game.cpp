@@ -9,7 +9,7 @@ ppGame::ppGame(){
 	this->gameInput = new ppInput();
 	this->ims = new ppIMS();
 	this->title = "My Game";
-	this->currentScene = NULL;
+	this->currentState = NULL;
 	this->width = 640;
 	this->height = 480;
 	this->targetFPS = 60;
@@ -73,7 +73,7 @@ void ppGame::SetFullscreen(bool fullscreen){
 void ppGame::OnEvent(SDL_Event* event) {
 	switch(event->type){
 		case SDL_QUIT:
-		if(!this->currentScene || !this->currentScene->OnEvent(event)){
+		if(!this->currentState || !this->currentState->OnEvent(event)){
 			this->running = false;
 		}
 		break;
@@ -102,7 +102,7 @@ void ppGame::OnEvent(SDL_Event* event) {
 		case SDL_DOLLARGESTURE:
 		case SDL_DOLLARRECORD:
 		case SDL_MULTIGESTURE:
-		if(!this->currentScene || !this->currentScene->OnEvent(event)){
+		if(!this->currentState || !this->currentState->OnEvent(event)){
 			this->gameInput->OnEvent(event);
 		}
 		break;
@@ -110,7 +110,7 @@ void ppGame::OnEvent(SDL_Event* event) {
 		#ifdef PPDEBUG
 			std::cout << "Getting force close..." << std::endl;
 		#endif
-		if(!this->currentScene || !this->currentScene->OnEvent(event)){
+		if(!this->currentState || !this->currentState->OnEvent(event)){
 			this->running = false;
 		}
 		break;
@@ -118,21 +118,21 @@ void ppGame::OnEvent(SDL_Event* event) {
 		#ifdef PPDEBUG
 			std::cout << "Low memory..." << std::endl;
 		#endif
-		if(this->currentScene){
-			this->currentScene->OnEvent(event);
+		if(this->currentState){
+			this->currentState->OnEvent(event);
 		}
 		break;
 		case SDL_WINDOWEVENT:
 		if(event->window.event == SDL_WINDOWEVENT_RESIZED){
 			this->SetSize(event->window.data1, event->window.data2);
 		}
-		if(this->currentScene){
-			this->currentScene->OnEvent(event);
+		if(this->currentState){
+			this->currentState->OnEvent(event);
 		}
 		break;
 		default:
-		if(this->currentScene){
-			this->currentScene->OnEvent(event);
+		if(this->currentState){
+			this->currentState->OnEvent(event);
 		}
 		break;
 	}
@@ -223,9 +223,9 @@ int ppGame::StartGame(){
 		}
 
 		#ifdef PPDEBUG
-			if(!this->currentScene) {
-				std::cout << "No scene found..." << std::endl;
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!", "Scene not found.", 0);
+			if(!this->currentState) {
+				std::cout << "No state found..." << std::endl;
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!", "State not found.", 0);
 			}
 			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 			speedTimer = SDL_GetTicks();
@@ -249,8 +249,8 @@ int ppGame::StartGame(){
 		#endif
 		if(this->restarting){
 			this->restarting = false;
-			if(this->currentScene && this->currentScene->GetGame()){
-				this->currentScene->OnRestore();
+			if(this->currentState && this->currentState->GetGame()){
+				this->currentState->OnRestore();
 			}
 		}
 		while(this->running) {
@@ -267,8 +267,8 @@ int ppGame::StartGame(){
 				speedTimer = SDL_GetTicks();
 				updateDelta -= msPerUpdate;
 				updates++;
-				if(this->currentScene && this->currentScene->GetGame()){
-					this->currentScene->OnUpdate(this->gameInput, updateDelta);
+				if(this->currentState && this->currentState->GetGame()){
+					this->currentState->OnUpdate(this->gameInput, updateDelta);
 				}
 				this->ims->Update();
 				this->gameInput->OnUpdate();
@@ -287,8 +287,8 @@ int ppGame::StartGame(){
 
 				// SDL_SetRenderDrawColor(this->renderer, this->backgroundColor->GetR(), this->backgroundColor->GetG(), this->backgroundColor->GetB(), this->backgroundColor->GetA());
 				// SDL_RenderClear(this->renderer);
-				if(this->currentScene && this->currentScene->GetGame()){
-					this->currentScene->OnRender(this->renderer, renderDelta);
+				if(this->currentState && this->currentState->GetGame()){
+					this->currentState->OnRender(this->renderer, renderDelta);
 				}
 
 				if(this->showFPS){
@@ -376,8 +376,8 @@ void ppGame::RestartGame(){
 	if(!this->running){
 		return;
 	}
-	if(this->currentScene && this->currentScene->GetGame()){
-		this->currentScene->OnRestart();
+	if(this->currentState && this->currentState->GetGame()){
+		this->currentState->OnRestart();
 	}
 	this->running = false;
 	this->restarting = true;
@@ -403,76 +403,76 @@ ppIMS* ppGame::GetInteractiveMusicSystem(){
 
 // }
 
-void ppGame::AddScene(const char* name, ppScene* scene){
+void ppGame::AddState(const char* name, ppState* state){
 	#ifdef PPDEBUG
-		std::cout << "Add a new scene \"" << name << "\"..." << std::endl;
+		std::cout << "Add a new state \"" << name << "\"..." << std::endl;
 	#endif
-	scene->SetName(name);
-	this->scenes.insert(std::pair<const char*, ppScene*>(name, scene));
+	state->SetName(name);
+	this->states.insert(std::pair<const char*, ppState*>(name, state));
 }
 
-void ppGame::EnterScene(ppScene* scene){
-	if(!scene->GetGame()){
-		scene->SetGame(this);
-		scene->OnInit();
-	}else if(scene->IsNeedInit()){
-		scene->OnInit();
+void ppGame::EnterState(ppState* state){
+	if(!state->GetGame()){
+		state->SetGame(this);
+		state->OnInit();
+	}else if(state->IsNeedInit()){
+		state->OnInit();
 	}
 	#ifdef PPDEBUG
-		std::cout << "Enter a scene \"" << scene->GetName() << "\"..." << std::endl;
+		std::cout << "Enter a state \"" << state->GetName() << "\"..." << std::endl;
 	#endif
-	this->currentScene = scene;
+	this->currentState = state;
 }
 
-void ppGame::EnterScene(const char* name){
-	ppScene* scene = this->GetScene(name);
-	if(scene){
-		if(!scene->GetGame()){
-			scene->SetGame(this);
-			scene->OnInit();
-		}else if(scene->IsNeedInit()){
-			scene->OnInit();
+void ppGame::EnterState(const char* name){
+	ppState* state = this->GetState(name);
+	if(state){
+		if(!state->GetGame()){
+			state->SetGame(this);
+			state->OnInit();
+		}else if(state->IsNeedInit()){
+			state->OnInit();
 		}
 		#ifdef PPDEBUG
-			std::cout << "Enter a scene \"" << scene->GetName() << "\"..." << std::endl;
+			std::cout << "Enter a state \"" << state->GetName() << "\"..." << std::endl;
 		#endif
-		this->currentScene = scene;
+		this->currentState = state;
 	}
 }
 
-void ppGame::EnterScene(const char* name, ppScene* scene){
-	this->AddScene(name, scene);
-	this->EnterScene(scene);
+void ppGame::EnterState(const char* name, ppState* state){
+	this->AddState(name, state);
+	this->EnterState(state);
 }
 
-ppScene* ppGame::GetScene(const char* name){
-	if(this->scenes.empty()){
+ppState* ppGame::GetState(const char* name){
+	if(this->states.empty()){
 		return NULL;
 	}
-	std::map<const char*, ppScene*>::iterator it;
-	it = this->scenes.find(name);
-	if(it != this->scenes.end()){
+	std::map<const char*, ppState*>::iterator it;
+	it = this->states.find(name);
+	if(it != this->states.end()){
 		return it->second;
 	}
 	return NULL;
 }
 
-bool ppGame::HasScene(const char* name){
+bool ppGame::HasState(const char* name){
 	return false;
 }
 
-const char* ppGame::GetCurrentSceneName(){
-	return this->currentScene->GetName();
+const char* ppGame::GetCurrentStateName(){
+	return this->currentState->GetName();
 }
 
-void ppGame::RemoveScene(const char* name){
-	if(this->scenes.empty()){
+void ppGame::RemoveState(const char* name){
+	if(this->states.empty()){
 		return;
 	}
-	std::map<const char*, ppScene*>::iterator it;
-	it = this->scenes.find(name);
-	if(it != this->scenes.end()){
-		this->scenes.erase(it);
+	std::map<const char*, ppState*>::iterator it;
+	it = this->states.find(name);
+	if(it != this->states.end()){
+		this->states.erase(it);
 	}
 }
 

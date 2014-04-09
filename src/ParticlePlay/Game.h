@@ -5,12 +5,12 @@
 #include "Includes.h"
 #include "IMS/IMS.h"
 #include "Color.h"
-#include "Scene.h"
+#include "State.h"
 
-class ppScene;
+class ppState;
 class ppGame{
 private:
-	std::map<const char*, ppScene*> scenes;
+	std::map<const char*, ppState*> states;
 	SDL_Window* mainWindow;
 	SDL_Renderer* renderer;
 	SDL_GLContext glContext;
@@ -18,7 +18,7 @@ private:
 	ppInput* gameInput;
 	ppIMS* ims;
 	const char* title;
-	ppScene* currentScene;
+	ppState* currentState;
 	int width, height;
 	int targetFPS;
 	int targetUPS;
@@ -51,14 +51,14 @@ public:
 	ppIMS* GetInteractiveMusicSystem();
 	// GameIO* GetGameIO();
 	// SoundPlayer* GetSoundPlayer();
-	void AddScene(const char* name, ppScene* scene);
-	void EnterScene(ppScene* scene);
-	void EnterScene(const char* name);
-	void EnterScene(const char* name, ppScene* scene);
-	ppScene* GetScene(const char* name);
-	bool HasScene(const char* name);
-	const char* GetCurrentSceneName();
-	void RemoveScene(const char* name);
+	void AddState(const char* name, ppState* state);
+	void EnterState(ppState* state);
+	void EnterState(const char* name);
+	void EnterState(const char* name, ppState* state);
+	ppState* GetState(const char* name);
+	bool HasState(const char* name);
+	const char* GetCurrentStateName();
+	void RemoveState(const char* name);
 	ppColor* GetBackgroundColor();
 	void SetBackgroundColor(ppColor* color);
 	int GetFPS();
