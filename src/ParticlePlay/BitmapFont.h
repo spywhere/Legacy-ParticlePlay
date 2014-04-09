@@ -5,6 +5,7 @@
 
 class ppBitmapFont{
 	private:
+		SDL_Renderer* renderer;
 		SDL_Surface* bitmap;
 		SDL_Texture* texture;
 		SDL_Rect chars[256];
@@ -13,7 +14,7 @@ class ppBitmapFont{
 		int space;
 		int line;
 		Uint32 GetPixel(int x, int y, SDL_Surface* surface);
-		void RenderSurface(int x, int y, SDL_Texture* texture, SDL_Renderer* renderer, SDL_Rect* offset);
+		void RenderSurface(int x, int y, SDL_Texture* texture, SDL_Rect* offset);
 	public:
 		ppBitmapFont(SDL_Surface* surface);
 		void SetSpacing(int spacing);

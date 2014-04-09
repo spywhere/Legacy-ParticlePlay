@@ -30,6 +30,16 @@ void ppScene::SetGame(ppGame* game){
 	this->game = game;
 }
 
+void ppScene::OnRestart(){
+	// Pure virtual
+	// Will run when game require to restart
+}
+
+void ppScene::OnRestore(){
+	// Pure virtual
+	// Will run after game has been restarted
+}
+
 bool ppScene::OnEvent(SDL_Event* event){
 	// Pure virtual
 	// Will run on important event only

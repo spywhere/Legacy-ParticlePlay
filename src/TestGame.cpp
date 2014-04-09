@@ -7,8 +7,8 @@
 
 int main(int argc, char* argv[]) {
     TestGame* theApp = new TestGame();
-    theApp->SetDebug(true);
-    // theApp->setShowFPS(true);
+    // theApp->SetShowFPS(true);
+    theApp->SetResizable(true);
     #ifdef FULL
     theApp->SetTitle("ParticlePlay Game Test");
     #else

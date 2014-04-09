@@ -23,6 +23,8 @@ public:
 	virtual void OnInit()=0;
 	virtual void OnRender(SDL_Renderer* renderer, int delta)=0;
 	virtual void OnUpdate(ppInput* input, int delta)=0;
+	virtual void OnRestart();
+	virtual void OnRestore();
 	virtual bool OnEvent(SDL_Event* event);
 	virtual ~ppScene();
 };

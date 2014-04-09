@@ -8,7 +8,6 @@ ppGame::ppGame(){
 	this->backgroundColor = new ppColor();
 	this->gameInput = new ppInput();
 	this->ims = new ppIMS();
-	this->debug = false;
 	this->title = "My Game";
 	this->currentScene = NULL;
 	this->width = 640;
@@ -26,14 +25,6 @@ ppGame::ppGame(){
 	this->ups = 0;
 	this->art = 0;
 	this->aut = 0;
-}
-
-bool ppGame::IsDebug(){
-	return this->debug;
-}
-
-void ppGame::SetDebug(bool debug){
-	this->debug = debug;
 }
 
 const char* ppGame::GetTitle(){
@@ -116,17 +107,17 @@ void ppGame::OnEvent(SDL_Event* event) {
 		}
 		break;
 		case SDL_APP_TERMINATING:
-		if(this->debug){
+		#ifdef PPDEBUG
 			std::cout << "Getting force close..." << std::endl;
-		}
+		#endif
 		if(!this->currentScene || !this->currentScene->OnEvent(event)){
 			this->running = false;
 		}
 		break;
 		case SDL_APP_LOWMEMORY:
-		if(this->debug){
+		#ifdef PPDEBUG
 			std::cout << "Low memory..." << std::endl;
-		}
+		#endif
 		if(this->currentScene){
 			this->currentScene->OnEvent(event);
 		}
@@ -148,31 +139,30 @@ void ppGame::OnEvent(SDL_Event* event) {
 }
 
 int ppGame::StartGame(){
-	if(this->IsDebug()){
+	#ifdef PPDEBUG
 		std::cout << "Initializing SDL..." << std::endl;
-	}
+	#endif
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return 1;
 	}
-	if(this->IsDebug()){
+	#ifdef PPDEBUG
 		std::cout << "Initializing SDL_image..." << std::endl;
-	}
+	#endif
 	int img_flags = IMG_INIT_JPG|IMG_INIT_PNG|IMG_INIT_TIF;
 	if((IMG_Init(img_flags) & img_flags) != img_flags) {
 		return 1;
 	}
-	if(this->IsDebug()){
+	#ifdef PPDEBUG
 		std::cout << "Initializing SDL_net..." << std::endl;
-	}
+	#endif
 	if(SDLNet_Init() < 0) {
 		return 1;
 	}
 	do{
 		Uint32 speedTimer = SDL_GetTicks();
-		this->restarting = false;
-		if(this->IsDebug()){
+		#ifdef PPDEBUG
 			std::cout << "Creating window... ";
-		}
+		#endif
 		Uint32 flags = 0;
 		if(this->resizable){
 			flags |= SDL_WINDOW_RESIZABLE;
@@ -184,22 +174,22 @@ int ppGame::StartGame(){
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize window.", 0);
 			return 1;
 		}
-		if(this->IsDebug()){
+		#ifdef PPDEBUG
 			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 			speedTimer = SDL_GetTicks();
 			std::cout << "Creating renderer... ";
-		}
+		#endif
 		if(!(this->renderer = SDL_CreateRenderer(this->mainWindow, -1, 0))) {
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize renderer.", 0);
 			return 1;
 		}
 
 		if(this->renderer){
-			if(this->IsDebug()){
+			#ifdef PPDEBUG
 				std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 				speedTimer = SDL_GetTicks();
 				std::cout << "Initializing OpenGL...";
-			}
+			#endif
 			this->glContext = SDL_GL_CreateContext(this->mainWindow);
 
 			glViewport(0, 0, this->width, this->height);
@@ -220,27 +210,27 @@ int ppGame::StartGame(){
 			}
 		}
 
-		if(this->IsDebug()){
-			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
-			speedTimer = SDL_GetTicks();
-			std::cout << "Initializing OpenAL...";
-		}
-		if(this->ims->Init()){
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenAL.", 0);
-			return 1;
+		if(!this->restarting){
+			#ifdef PPDEBUG
+				std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
+				speedTimer = SDL_GetTicks();
+				std::cout << "Initializing OpenAL...";
+			#endif
+			if(this->ims->Init()){
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenAL.", 0);
+				return 1;
+			}
 		}
 
-		if(this->debug && !this->currentScene) {
-			if(this->IsDebug()){
+		#ifdef PPDEBUG
+			if(!this->currentScene) {
 				std::cout << "No scene found..." << std::endl;
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!", "Scene not found.", 0);
 			}
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!", "Scene not found.", 0);
-		}
-		if(this->IsDebug()){
 			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 			speedTimer = SDL_GetTicks();
 			std::cout << "Preparing... ";
-		}
+		#endif
 		this->running = true;
 		SDL_Event* event = new SDL_Event();
 
@@ -252,10 +242,16 @@ int ppGame::StartGame(){
 		int frames = 0, updates = 0;
 		Uint32 msPerRender = 1000.0f / this->targetFPS;
 		Uint32 msPerUpdate = 1000.0f / this->targetUPS;
-		if(this->IsDebug()){
+		#ifdef PPDEBUG
 			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 			speedTimer = SDL_GetTicks();
 			std::cout << "Running... " << std::endl;
+		#endif
+		if(this->restarting){
+			this->restarting = false;
+			if(this->currentScene && this->currentScene->GetGame()){
+				this->currentScene->OnRestore();
+			}
 		}
 		while(this->running) {
 			timeNow = SDL_GetTicks();
@@ -274,6 +270,7 @@ int ppGame::StartGame(){
 				if(this->currentScene && this->currentScene->GetGame()){
 					this->currentScene->OnUpdate(this->gameInput, updateDelta);
 				}
+				this->ims->Update();
 				this->gameInput->OnUpdate();
 				avgUpdateTime += SDL_GetTicks()-speedTimer;
 			}
@@ -342,38 +339,46 @@ int ppGame::StartGame(){
 				updates = 0;
 				lastTimer = SDL_GetTicks();
 				if(this->showFPS){
-					std::cout << "FPS: " << fps << " [" << art <<"ms]   UPS: " << ups << " [" << aut <<"ms]" << std::endl;
+					std::cout << "FPS: " << fps << " [" << art <<"ms]   UPS: " << ups << " [" << aut << "ms]" << std::endl;
 				}
 				avgRenderTime = 0;
 				avgUpdateTime = 0;
 			}
 		}
-		speedTimer = SDL_GetTicks();
-		if(this->IsDebug()){
+		#ifdef PPDEBUG
+			speedTimer = SDL_GetTicks();
 			std::cout << "Destroying... ";
+		#endif
+		if(!this->restarting){
+			this->ims->Quit();
 		}
 		SDL_GL_DeleteContext(this->glContext);
 		SDL_DestroyRenderer(this->renderer);
 		SDL_DestroyWindow(this->mainWindow);
-		if(this->IsDebug()){
+		#ifdef PPDEBUG
 			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 			speedTimer = SDL_GetTicks();
 			if(this->restarting){
 				std::cout << "Restarting..." << std::endl;
 			}
-		}
+		#endif
 	} while(this->restarting);
-	this->ims->Quit();
 	IMG_Quit();
 	SDLNet_Quit();
 	SDL_Quit();
-	if(this->IsDebug()){
+	#ifdef PPDEBUG
 		std::cout << "Quitting..." << std::endl;
-	}
+	#endif
 	return 0;
 }
 
 void ppGame::RestartGame(){
+	if(!this->running){
+		return;
+	}
+	if(this->currentScene && this->currentScene->GetGame()){
+		this->currentScene->OnRestart();
+	}
 	this->running = false;
 	this->restarting = true;
 }
@@ -399,9 +404,9 @@ ppIMS* ppGame::GetInteractiveMusicSystem(){
 // }
 
 void ppGame::AddScene(const char* name, ppScene* scene){
-	if(this->IsDebug()){
+	#ifdef PPDEBUG
 		std::cout << "Add a new scene \"" << name << "\"..." << std::endl;
-	}
+	#endif
 	scene->SetName(name);
 	this->scenes.insert(std::pair<const char*, ppScene*>(name, scene));
 }
@@ -413,9 +418,9 @@ void ppGame::EnterScene(ppScene* scene){
 	}else if(scene->IsNeedInit()){
 		scene->OnInit();
 	}
-	if(this->IsDebug()){
+	#ifdef PPDEBUG
 		std::cout << "Enter a scene \"" << scene->GetName() << "\"..." << std::endl;
-	}
+	#endif
 	this->currentScene = scene;
 }
 
@@ -428,9 +433,9 @@ void ppGame::EnterScene(const char* name){
 		}else if(scene->IsNeedInit()){
 			scene->OnInit();
 		}
-		if(this->IsDebug()){
+		#ifdef PPDEBUG
 			std::cout << "Enter a scene \"" << scene->GetName() << "\"..." << std::endl;
-		}
+		#endif
 		this->currentScene = scene;
 	}
 }

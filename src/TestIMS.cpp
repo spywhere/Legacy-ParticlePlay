@@ -479,7 +479,6 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			this->totalTime = sound->GetTimeLength();
 			this->cooldown=10;
 		}
-		ims->Update();
 
 		int soundmax = 4;
 		if(this->test==3){
@@ -495,6 +494,28 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_DOWN, 10)){
 			if(++this->posy>soundmax){
 				this->posy = 0;
+			}
+		}
+		if(input->IsKeyDown(SDL_SCANCODE_SPACE, 10)){
+			if(this->posy==0){
+				if(this->lpf->GetGainHF()<0.5f){
+					this->lpf->SetGainHF(1);
+				}else{
+					this->lpf->SetGainHF(0);
+				}
+			}else if(mixSound){
+				if(mixSound->GetVolumn()>=0.5f){
+					mixSound->SetVolumn(0);
+				}else{
+					mixSound->SetVolumn(1);
+				}
+				if(this->test==3){
+					if(this->posy==1){
+						ims->GetSound("BeWild")->SetVolumn(1.0f-mixSound->GetVolumn());
+					}else{
+						ims->GetSound("BeCool")->SetVolumn(1.0f-mixSound->GetVolumn());
+					}
+				}
 			}
 		}
 		if(input->IsKeyDown(SDL_SCANCODE_LEFT, 1)){

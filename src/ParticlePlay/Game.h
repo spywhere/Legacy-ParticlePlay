@@ -17,7 +17,6 @@ private:
 	ppColor* backgroundColor;
 	ppInput* gameInput;
 	ppIMS* ims;
-	bool debug;
 	const char* title;
 	ppScene* currentScene;
 	int width, height;
@@ -37,8 +36,6 @@ private:
 	void RestartGame();
 public:
 	ppGame();
-	bool IsDebug();
-	void SetDebug(bool debug);
 	const char* GetTitle();
 	void SetTitle(const char* title);
 	int GetWidth();

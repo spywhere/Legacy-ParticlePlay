@@ -1,6 +1,7 @@
 CC=g++
 
 CPPFLAGS=\
+-DPPDEBUG\
 -DAL_ALEXT_PROTOTYPES\
 -I/Library/Frameworks/SDL2.framework/Headers\
 -I/Library/Frameworks/SDL2_image.framework/Headers\
@@ -49,8 +50,11 @@ TestIMS.cpp\
 TestTestBed.cpp
 
 # Demo/Full version flags
-DEMO_FLAGS=-DDEMO
-FULL_FLAGS=-DFULL
+DEMO_FLAGS=\
+-DDEMO
+
+FULL_FLAGS=\
+-DFULL
 
 # Info
 OBJDIR=objs
