@@ -13,6 +13,7 @@ private:
 	std::map<const char*, ppScene*> scenes;
 	SDL_Window* mainWindow;
 	SDL_Renderer* renderer;
+	SDL_GLContext glContext;
 	ppColor* backgroundColor;
 	ppInput* gameInput;
 	ppIMS* ims;

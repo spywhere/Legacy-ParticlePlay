@@ -15,11 +15,14 @@ private:
 	ppGUI* gui;
 	ppLowPassFilter* lpf;
 	bool soundInit;
+	bool isPause;
 	int posx, posy;
 	int test;
 	int cooldown;
 	float currentTime;
 	float totalTime;
+	void DrawRect(int x, int y, int w, int h);
+	void DrawFillRect(int x, int y, int w, int h);
 public:
 	void OnInit();
 	void OnRender(SDL_Renderer* renderer, int delta);

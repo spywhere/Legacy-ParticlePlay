@@ -21,7 +21,13 @@ int ppIMS::Init(){
 	return 0;
 }
 
+int ppIMS::Reinit(){
+	this->Quit();
+	return this->Init();
+}
+
 void ppIMS::Quit(){
+	this->ClearSound();
 	alcDestroyContext(this->context);
 	alcCloseDevice(this->device);
 }
@@ -65,6 +71,14 @@ void ppIMS::RemoveSound(const char *refname){
 	this->sounds.erase(std::string(refname));
 }
 
+void ppIMS::ClearSound(){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+		delete it->second;
+	}
+	this->sounds.clear();
+	this->preload = false;
+}
+
 /////////////////////////
 // Sound-based Methods //
 /////////////////////////
@@ -101,6 +115,7 @@ void ppIMS::Stop(){
 	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->Stop();
 	}
+	this->preload = false;
 }
 
 void ppIMS::SeekPosition(int targetPosition){

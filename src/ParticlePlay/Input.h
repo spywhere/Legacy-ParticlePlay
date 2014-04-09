@@ -17,6 +17,7 @@ public:
 	bool IsKeyDown(SDL_Keycode key);
 	bool IsKeyDown(SDL_Scancode key);
 	bool IsKeyDown(SDL_Scancode key, int cooldown);
+	bool IsCoolDown(int cooldown);
 	void OnEvent(SDL_Event* event);
 	void OnUpdate();
 	int GetKeyCooldown();

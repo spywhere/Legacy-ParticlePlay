@@ -8,8 +8,9 @@
 
 class ppGUI;
 class ppControl{
-private:
+protected:
 	int x, y;
+	bool visible;
 	ppControl* parent;
 	ppGUI* gui;
 public:
@@ -23,6 +24,8 @@ public:
 	int GetY();
 	void SetX(int x);
 	void SetY(int y);
+	bool IsVisible();
+	void SetVisible(bool visible);
 	virtual void Render(SDL_Renderer* renderer);
 	virtual void Update(ppInput* input);
 	virtual ppGUIType GetType()=0;

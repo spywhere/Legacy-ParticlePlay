@@ -4,6 +4,7 @@ ppControl::ppControl(){
 	this->parent = NULL;
 	this->x = 0;
 	this->y = 0;
+	this->visible = true;
 	this->gui = NULL;
 	// Self-reference
 	// ppControl::Control(0, 0);
@@ -50,9 +51,20 @@ void ppControl::SetY(int y){
 	this->y = y;
 }
 
+bool ppControl::IsVisible(){
+	return this->visible;
+}
+
+void ppControl::SetVisible(bool visible){
+	this->visible = visible;
+}
+
 void ppControl::Render(SDL_Renderer* renderer){
 	if(this->parent){
 		this->parent->Render(renderer);
+	}
+	if(!this->visible){
+		return;
 	}
 }
 

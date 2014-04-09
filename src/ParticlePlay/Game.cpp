@@ -196,16 +196,24 @@ int ppGame::StartGame(){
 
 		if(this->renderer){
 			if(this->IsDebug()){
-				std::cout << "Initializing OpenGL..." << std::endl;
+				std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
+				speedTimer = SDL_GetTicks();
+				std::cout << "Initializing OpenGL...";
 			}
-			glClearColor(0, 0, 0, 0);
+			this->glContext = SDL_GL_CreateContext(this->mainWindow);
+
 			glViewport(0, 0, this->width, this->height);
+
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			glOrtho(0, this->width, this->height, 0, 1, -1);
+
 			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+
 			glEnable(GL_TEXTURE_2D);
 			glLoadIdentity();
+
 			if(glGetError() != GL_NO_ERROR){
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenGL.", 0);
 				return 1;
@@ -213,7 +221,9 @@ int ppGame::StartGame(){
 		}
 
 		if(this->IsDebug()){
-			std::cout << "Initializing OpenAL..." << std::endl;
+			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
+			speedTimer = SDL_GetTicks();
+			std::cout << "Initializing OpenAL...";
 		}
 		if(this->ims->Init()){
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenAL.", 0);
@@ -276,8 +286,10 @@ int ppGame::StartGame(){
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				glLoadIdentity();
 
-				SDL_SetRenderDrawColor(this->renderer, this->backgroundColor->GetR(), this->backgroundColor->GetG(), this->backgroundColor->GetB(), this->backgroundColor->GetA());
-				SDL_RenderClear(this->renderer);
+				glClearColor(this->backgroundColor->GetRf(), this->backgroundColor->GetGf(), this->backgroundColor->GetBf(), this->backgroundColor->GetAf());
+
+				// SDL_SetRenderDrawColor(this->renderer, this->backgroundColor->GetR(), this->backgroundColor->GetG(), this->backgroundColor->GetB(), this->backgroundColor->GetA());
+				// SDL_RenderClear(this->renderer);
 				if(this->currentScene && this->currentScene->GetGame()){
 					this->currentScene->OnRender(this->renderer, renderDelta);
 				}
@@ -312,7 +324,8 @@ int ppGame::StartGame(){
 						SDL_RenderFillRect(this->renderer, rect);
 					}
 				}
-				SDL_RenderPresent(this->renderer);
+				SDL_GL_SwapWindow(this->mainWindow);
+				// SDL_RenderPresent(this->renderer);
 				avgRenderTime += SDL_GetTicks()-speedTimer;
 			}
 
@@ -339,6 +352,7 @@ int ppGame::StartGame(){
 		if(this->IsDebug()){
 			std::cout << "Destroying... ";
 		}
+		SDL_GL_DeleteContext(this->glContext);
 		SDL_DestroyRenderer(this->renderer);
 		SDL_DestroyWindow(this->mainWindow);
 		if(this->IsDebug()){

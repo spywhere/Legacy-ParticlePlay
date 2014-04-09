@@ -64,6 +64,14 @@ bool ppInput::IsKeyDown(SDL_Scancode key, int cooldown){
 	return this->keyState[key];
 }
 
+bool ppInput::IsCoolDown(int cooldown){
+	if(this->keyCooldown > 0){
+		return false;
+	}
+	this->keyCooldown = cooldown;
+	return true;
+}
+
 void ppInput::OnEvent(SDL_Event* event){
 	if(event->type == SDL_KEYUP){
 		this->keyDown = false;

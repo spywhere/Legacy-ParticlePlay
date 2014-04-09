@@ -17,12 +17,14 @@ private:
 public:
 	ppIMS();
 	int Init();
+	int Reinit();
 	void Quit();
 	ppSound* NewSound(const char *refname, const char *filename);
 	ppSound* NewSound(const char *refname, const char *filename, int track);
 	ppSound* NewSound(const char *refname, const char *filename, int track, bool stereo);
 	ppSound* GetSound(const char *refname);
 	void RemoveSound(const char *refname);
+	void ClearSound();
 	//Sound-related actions
 	void Preload();
 	void ApplyFilter(ppFilter* filter);
