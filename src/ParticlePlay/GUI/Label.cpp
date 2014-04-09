@@ -19,6 +19,7 @@ void ppLabel::SetText(const char *text){
 }
 
 void ppLabel::Render(SDL_Renderer* renderer){
+	ppControl::Render(renderer);
 	this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text, renderer);
 }
 

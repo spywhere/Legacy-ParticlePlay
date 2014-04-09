@@ -51,7 +51,9 @@ void ppControl::SetY(int y){
 }
 
 void ppControl::Render(SDL_Renderer* renderer){
-
+	if(this->parent){
+		this->parent->Render(renderer);
+	}
 }
 
 void ppControl::Update(ppInput* input){
