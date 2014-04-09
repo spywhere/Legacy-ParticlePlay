@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "TestScene.h"
+#include "TestIMS.h"
 #include "TestTestbed.h"
 
 int main(int argc, char* argv[]) {
@@ -14,8 +15,9 @@ int main(int argc, char* argv[]) {
     theApp->SetTitle("ParticlePlay Game Test [Demo]");
     #endif
     std::cout << "Build: " << __DATE__ << " " << __TIME__ << std::endl;
-    theApp->AddScene("testbed", new TestTestbed());
     theApp->AddScene("main", new TestScene());
-    theApp->EnterScene("testbed");
+    theApp->AddScene("ims", new TestIMS());
+    theApp->AddScene("testbed", new TestTestbed());
+    theApp->EnterScene("ims");
     return theApp->StartGame();
 }

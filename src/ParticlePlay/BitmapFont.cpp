@@ -5,6 +5,7 @@
 ppBitmapFont::ppBitmapFont(SDL_Surface* surface){
 	this->bitmap = surface;
 	this->spacing = 1;
+	this->linespacing = 3;
 	this->texture = NULL;
 	if(!this->bitmap){
 		std::cout << "BitmapFont Error: " << IMG_GetError() << std::endl;
@@ -80,8 +81,8 @@ ppBitmapFont::ppBitmapFont(SDL_Surface* surface){
 		}
 	}
 
-	this->space = cellW / 2;
-    this->line = baseA - top + spacing;
+	this->space = cellW / 3;
+    this->line = baseA - top;
 
     for(int t=0;t<256;t++){
         chars[t].y += top;
@@ -91,6 +92,10 @@ ppBitmapFont::ppBitmapFont(SDL_Surface* surface){
 
 void ppBitmapFont::SetSpacing(int spacing){
 	this->spacing = spacing;
+}
+
+void ppBitmapFont::SetLineSpacing(int spacing){
+	this->linespacing = spacing;
 }
 
 Uint32 ppBitmapFont::GetPixel(int x, int y, SDL_Surface* surface){
@@ -120,7 +125,7 @@ void ppBitmapFont::Render(int x, int y, const char* text, SDL_Renderer *renderer
             if(text[show]==' '){
                 X+=this->space;
             }else if(text[show]=='\n'){
-                Y+=this->line;
+                Y+=this->line+this->linespacing;
                 X=x;
             }else{
                 int ascii = (unsigned char)text[show];

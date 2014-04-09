@@ -1,41 +1,51 @@
 CC=g++
 
 CPPFLAGS=\
--Ilibs \
--I/Library/Frameworks/SDL2.framework/Headers \
--I/Library/Frameworks/SDL2_image.framework/Headers \
+-DAL_ALEXT_PROTOTYPES\
+-I/Library/Frameworks/SDL2.framework/Headers\
+-I/Library/Frameworks/SDL2_image.framework/Headers\
 -I/Library/Frameworks/SDL2_net.framework/Headers
-# -I/Library/Frameworks/SDL2_mixer.framework/Headers \
+# -I/Library/Frameworks/SDL2_mixer.framework/Headers\
 
 # Library
 LIBS=\
--framework SDL2 \
--framework SDL2_image \
--framework SDL2_net \
--framework OpenGL \
+-framework SDL2\
+-framework SDL2_image\
+-framework SDL2_net\
+-lOpenAL\
+-framework OpenGL\
 -lBox2D
-# -framework SDL2_mixer \
+# -framework SDL2_mixer\
 # -framework Box2D
+# -openal32
 
 # Source goes here
 SOURCEDIR=src
 # Engine
 CUSTOM_SOURCES=\
-ParticlePlay/BitmapFont.cpp \
-ParticlePlay/Color.cpp \
-ParticlePlay/Game.cpp \
-ParticlePlay/Input.cpp \
-ParticlePlay/Physics.cpp \
-ParticlePlay/TestBed.cpp \
-ParticlePlay/Scene.cpp \
-ParticlePlay/GUI/Control.cpp \
-ParticlePlay/GUI/GUI.cpp \
-ParticlePlay/GUI/Label.cpp
+ParticlePlay/GUI/Control.cpp\
+ParticlePlay/GUI/GUI.cpp\
+ParticlePlay/GUI/Label.cpp\
+ParticlePlay/IMS/filters/BandPassFilter.cpp\
+ParticlePlay/IMS/filters/HighPassFilter.cpp\
+ParticlePlay/IMS/filters/LowPassFilter.cpp\
+ParticlePlay/IMS/Filter.cpp\
+ParticlePlay/IMS/IMS.cpp\
+ParticlePlay/IMS/Sound.cpp\
+ParticlePlay/IMS/Utils.cpp\
+ParticlePlay/BitmapFont.cpp\
+ParticlePlay/Color.cpp\
+ParticlePlay/Game.cpp\
+ParticlePlay/Input.cpp\
+ParticlePlay/Physics.cpp\
+ParticlePlay/TestBed.cpp\
+ParticlePlay/Scene.cpp\
 
 # Game
 SOURCES=\
-TestGame.cpp \
-TestScene.cpp \
+TestGame.cpp\
+TestScene.cpp\
+TestIMS.cpp\
 TestTestBed.cpp
 
 # Demo/Full version flags
@@ -58,9 +68,9 @@ OUTDIR=bin
 FULLEXE=TestGame
 DEMOEXE=TestGameDemo
 
-all: preclean full-link demo-link resources
-demo: preclean demo-link resources
-full: preclean full-link resources
+all: preclean full-link demo-link
+demo: preclean demo-link
+full: preclean full-link
 
 $(OBJDIR_CUSTOM)/%.o: $(SOURCEDIR)/%.cpp
 	@echo "[Custom] Compiling $<"
@@ -97,7 +107,7 @@ run-full:
 
 resources:
 	@echo "Copying resources..."
-	@cp $(RESDIR)/* $(OUTDIR)/
+	@cp -R $(RESDIR)/* $(OUTDIR)/
 
 preclean:
 	@echo "Pre Cleaning..."
