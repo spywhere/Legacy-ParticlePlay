@@ -7,6 +7,7 @@ ppGame::ppGame(){
 	this->renderer = NULL;
 	this->backgroundColor = new ppColor();
 	this->gameInput = new ppInput();
+	this->ims = new ppIMS();
 	this->debug = false;
 	this->title = "My Game";
 	this->currentScene = NULL;
@@ -194,6 +195,9 @@ int ppGame::StartGame(){
 		}
 
 		if(this->renderer){
+			if(this->IsDebug()){
+				std::cout << "Initializing OpenGL..." << std::endl;
+			}
 			glClearColor(0, 0, 0, 0);
 			glViewport(0, 0, this->width, this->height);
 			glMatrixMode(GL_PROJECTION);
@@ -206,6 +210,14 @@ int ppGame::StartGame(){
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenGL.", 0);
 				return 1;
 			}
+		}
+
+		if(this->IsDebug()){
+			std::cout << "Initializing OpenAL..." << std::endl;
+		}
+		if(this->ims->Init()){
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenAL.", 0);
+			return 1;
 		}
 
 		if(this->debug && !this->currentScene) {
@@ -337,6 +349,7 @@ int ppGame::StartGame(){
 			}
 		}
 	} while(this->restarting);
+	this->ims->Quit();
 	IMG_Quit();
 	SDLNet_Quit();
 	SDL_Quit();
@@ -357,6 +370,10 @@ void ppGame::QuitGame(){
 
 ppInput* ppGame::GetGameInput(){
 	return this->gameInput;
+}
+
+ppIMS* ppGame::GetInteractiveMusicSystem(){
+	return this->ims;
 }
 
 // GameIO* ppGame::getGameIO(){

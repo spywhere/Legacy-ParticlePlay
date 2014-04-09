@@ -1,15 +1,14 @@
 #ifndef SOUND_HEADER
 #define SOUND_HEADER
 
-#include <fstream>
 #include <string>
-#include "Includes.h"
+#include "../Includes.h"
 #include "IMS.h"
 #include "Filter.h"
 #include "Utils.h"
 
-class IMS;
-class Sound {
+class ppIMS;
+class ppSound {
 private:
 	bool justLoop;
 	bool preload;
@@ -20,12 +19,12 @@ private:
 	int totalTrack;
 	int track;
 	ALuint sourceID;
-	Filter* filter;
+	ppFilter* filter;
 	ALuint bufferSet[2];
 	int bufferProcessed;
 	std::string filename;
-	int dataReadPosition;
-	int dataStartPosition;
+	Sint64 dataReadPosition;
+	Sint64 dataStartPosition;
 	int dataPositionOffset;
 
 	std::string errorMsg;
@@ -38,20 +37,20 @@ private:
 	int byteRate;
 	int bitPerSample;
 	int dataSize;
-	std::ifstream filePointer;
+	SDL_RWops* filePointer;
 	float ByteToSecond(int byte);
 	int SecondToByte(float sec);
-	void ReadData(std::ifstream &filePointer, char *dataBuffer, int bufferSize, ALuint &bufferID);
-	void GetWaveChunkInfo(std::ifstream &filePointer, char *chunkName, int &chunkSize);
+	void ReadData(SDL_RWops *filePointer, char *dataBuffer, int bufferSize, ALuint &bufferID);
+	void GetWaveChunkInfo(SDL_RWops *filePointer, char *chunkName, int &chunkSize);
 	int GetTotalBuffer(int dataSize, bool countCurrent);
 public:
-	Sound(IMS* ims);
-	~Sound();
+	ppSound(ppIMS* ims);
+	~ppSound();
 	int LoadWaveFile(const char *filename, bool stereo);
 	void Preload();
 	void Preload(int track);
 	void Preload(int track, bool skip);
-	void ApplyFilter(Filter* filter);
+	void ApplyFilter(ppFilter* filter);
 	void Play();
 	void Play(int track);
 	void Pause();

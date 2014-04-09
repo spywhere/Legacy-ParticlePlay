@@ -13,8 +13,7 @@
 class TestIMS : public ppScene{
 private:
 	ppGUI* gui;
-	IMS* ims;
-	LowPassFilter* lpf;
+	ppLowPassFilter* lpf;
 	bool soundInit;
 	int posx, posy;
 	int test;

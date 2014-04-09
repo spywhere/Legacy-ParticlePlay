@@ -7,9 +7,14 @@
 #include "ParticlePlay/IMS/IMS.h"
 #include "ParticlePlay/IMS/Sound.h"
 
+#define TEST1 "cHiPiE"
+#define TEST2 "Sky Above"
+#define TEST3 "Falk Demo Reel"
+#define TEST4 "Music Gameplay"
+#define TEST5 "Plants vs. Zombies Track 1"
+
 void TestIMS::OnInit(){
 	this->gui = new ppGUI();
-	this->ims = new IMS();
 	this->lpf = NULL;
 	this->cooldown = 0;
 	this->test = 0;
@@ -23,27 +28,35 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 	std::stringstream ss;
 	ss << "FPS: " << this->GetGame()->GetFPS() << " [" << this->GetGame()->GetAvgRenderTime() << "ms]\n";
 	ss << "UPS: " << this->GetGame()->GetUPS() << " [" << this->GetGame()->GetAvgUpdateTime() << "ms]\n";
-	if(this->test<1){
+
+	if(this->test<1||!this->soundInit){
 		ss << "\nSelect Test:\n";
-		ss << " 1) cHiPiE\n";
-		ss << " 2) Sky Above\n";
-		ss << " 3) Falk Demo Reel\n";
-		ss << " 4) Music Gameplay\n";
-		ss << " 5) PvZ Track 1\n";
+		ss << " 1) " << TEST1 << "\n";
+		ss << " 2) " << TEST2 << "\n";
+		ss << " 3) " << TEST3 << "\n";
+		ss << " 4) " << TEST4 << "\n";
+		ss << " 5) " << TEST5 << "\n";
 	}else{
 		if(this->test==1){
-			ss << "\ncHiPiE";
+			ss << "\n" << TEST1;
 		}else if(this->test==2){
-			ss << "\nSky Above";
+			ss << "\n" << TEST2;
 		}else if(this->test==3){
-			ss << "\nFalk Demo Reel";
+			ss << "\n" << TEST3;
 		}else if(this->test==4){
-			ss << "\nMusic Gameplay";
+			ss << "\n" << TEST4;
 		}else if(this->test==5){
-			ss << "\nPvZ Track 1";
+			ss << "\n" << TEST5;
 		}
 		ss << "\n\nPress 'R' to restart a test\n";
 		ss << "\nPlaying " << this->currentTime << "/" << this->totalTime << "\n";
+
+		if(this->test==4){
+			ss << "\n" << ((this->GetGame()->GetInteractiveMusicSystem()->GetSound("Base")->GetVolumn()>0)?">":"") << " Base\n";
+			ss << ((this->GetGame()->GetInteractiveMusicSystem()->GetSound("Critical")->GetVolumn()>0)?">":"") << " Critical\n";
+			ss << ((this->GetGame()->GetInteractiveMusicSystem()->GetSound("Battle")->GetVolumn()>0)?">":"") << " Battle\n";
+			ss << ((this->GetGame()->GetInteractiveMusicSystem()->GetSound("All")->GetVolumn()>0)?">":"") << " All\n";
+		}
 	}
 	if(this->gui->GetDefaultFont()){
 		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
@@ -52,15 +65,16 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 }
 
 void TestIMS::OnUpdate(ppInput* input, int delta){
+	ppIMS* ims = this->GetGame()->GetInteractiveMusicSystem();
 	if(this->test<1&&!this->soundInit){
 		if(input->IsKeyDown(SDL_SCANCODE_1)){
 			this->test = 1;
 
-			Sound* sound = ims->NewSound("Bass", "res/cHiPiE/cHiPiE_bass.wav", 0);
-			Sound* sound2 = ims->NewSound("Drum_Bass", "res/cHiPiE/cHiPiE_drum_base.wav", 0);
-			Sound* sound3 = ims->NewSound("Drum_Snare", "res/cHiPiE/cHiPiE_drum_snare.wav", 0);
-			Sound* sound4 = ims->NewSound("Melody", "res/cHiPiE/cHiPiE_melody.wav", 0);
-			this->lpf = new LowPassFilter();
+			ppSound* sound = ims->NewSound("Bass", "res/cHiPiE/cHiPiE_bass.wav", 0);
+			ppSound* sound2 = ims->NewSound("Drum_Bass", "res/cHiPiE/cHiPiE_drum_base.wav", 0);
+			ppSound* sound3 = ims->NewSound("Drum_Snare", "res/cHiPiE/cHiPiE_drum_snare.wav", 0);
+			ppSound* sound4 = ims->NewSound("Melody", "res/cHiPiE/cHiPiE_melody.wav", 0);
+			this->lpf = new ppLowPassFilter();
 			ims->ApplyFilter(this->lpf);
 			if(sound&&sound2&&sound3&&sound4){
 				ims->GetSound("Drum_Bass")->SetVolumn(0);
@@ -74,11 +88,11 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_2)){
 			this->test = 2;
 
-			Sound* sound = ims->NewSound("Drum", "res/skyabove/skyabove_drum.wav", 0);
-			Sound* sound2 = ims->NewSound("Base", "res/skyabove/skyabove_base.wav", 0);
-			Sound* sound3 = ims->NewSound("Melody", "res/skyabove/skyabove_melody.wav", 0);
-			Sound* sound4 = ims->NewSound("Melody2", "res/skyabove/skyabove_melody2.wav", 0);
-			this->lpf = new LowPassFilter();
+			ppSound* sound = ims->NewSound("Drum", "res/skyabove/skyabove_drum.wav", 0);
+			ppSound* sound2 = ims->NewSound("Base", "res/skyabove/skyabove_base.wav", 0);
+			ppSound* sound3 = ims->NewSound("Melody", "res/skyabove/skyabove_melody.wav", 0);
+			ppSound* sound4 = ims->NewSound("Melody2", "res/skyabove/skyabove_melody2.wav", 0);
+			this->lpf = new ppLowPassFilter();
 			ims->ApplyFilter(this->lpf);
 			if(sound&&sound2&&sound3&&sound4){
 				ims->SetLoop(true);
@@ -93,9 +107,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_3)){
 			this->test = 3;
 
-			Sound* bewild = ims->NewSound("BeWild", "res/FalkDemo.wav", 0);
-			Sound* becool = ims->NewSound("BeCool", "res/FalkDemo.wav", 1);
-			this->lpf = new LowPassFilter();
+			ppSound* bewild = ims->NewSound("BeWild", "res/FalkDemo.wav", 0);
+			ppSound* becool = ims->NewSound("BeCool", "res/FalkDemo.wav", 1);
+			this->lpf = new ppLowPassFilter();
 			ims->ApplyFilter(this->lpf);
 			if(bewild&&becool){
 				ims->GetSound("BeCool")->SetVolumn(0);
@@ -106,10 +120,10 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_4)){
 			this->test = 4;
 
-			Sound* base = ims->NewSound("Base", "res/Music_Gameplay.wav", 0);
-			Sound* critical = ims->NewSound("Critical", "res/Music_Gameplay.wav", 1);
-			Sound* battle = ims->NewSound("Battle", "res/Music_Gameplay.wav", 2);
-			Sound* all = ims->NewSound("All", "res/Music_Gameplay.wav", 3);
+			ppSound* base = ims->NewSound("Base", "res/Music_Gameplay.wav", 0);
+			ppSound* critical = ims->NewSound("Critical", "res/Music_Gameplay.wav", 1);
+			ppSound* battle = ims->NewSound("Battle", "res/Music_Gameplay.wav", 2);
+			ppSound* all = ims->NewSound("All", "res/Music_Gameplay.wav", 3);
 			if(base&&critical&&battle&&all){
 				ims->SetLoop(true);
 				ims->GetSound("Critical")->SetVolumn(0);
@@ -122,9 +136,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_5)){
 			this->test = 5;
 
-			Sound* base = ims->NewSound("Base", "res/PvZ/PvZ_T1_Base.wav", 0);
-			Sound* drum = ims->NewSound("Drum", "res/PvZ/PvZ_T1_Drum.wav", 0);
-			Sound* tamborine = ims->NewSound("Tamborine", "res/PvZ/PvZ_T1_Tamborine.wav", 0);
+			ppSound* base = ims->NewSound("Base", "res/PvZ/PvZ_T1_Base.wav", 0);
+			ppSound* drum = ims->NewSound("Drum", "res/PvZ/PvZ_T1_Drum.wav", 0);
+			ppSound* tamborine = ims->NewSound("Tamborine", "res/PvZ/PvZ_T1_Tamborine.wav", 0);
 			if(base&&drum&&tamborine){
 				ims->GetSound("Drum")->SetVolumn(0);
 				ims->GetSound("Tamborine")->SetVolumn(0);
@@ -135,7 +149,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}
 	}
 	if(this->test>0&&this->soundInit){
-		Sound* sound = NULL;
+		ppSound* sound = NULL;
 		if(this->test==1){
 			sound = ims->GetSound("Bass");
 
@@ -275,7 +289,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}
 		ims->Update();
 		if(input->IsKeyDown(SDL_SCANCODE_R)){
-			this->ims->Stop();
+			ims->Stop();
 			this->GetGame()->EnterScene(this);
 		}
 	}

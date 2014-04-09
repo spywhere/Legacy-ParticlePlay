@@ -1,12 +1,12 @@
 #include "LowPassFilter.h"
 
-LowPassFilter::LowPassFilter(){
+ppLowPassFilter::ppLowPassFilter(){
 	this->supported = false;
 	this->gain = 1.0f;
 	this->gainhf = 1.0f;
 }
 
-void LowPassFilter::InitFilter(){
+void ppLowPassFilter::InitFilter(){
 	if(this->supported||alGetEnumValue("AL_FILTER_LOWPASS") == 0){
 		return;
 	}
@@ -15,18 +15,18 @@ void LowPassFilter::InitFilter(){
 	alFilteri(this->filterID, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 }
 
-void LowPassFilter::SetGain(float val){
+void ppLowPassFilter::SetGain(float val){
 	this->InitFilter();
 	this->gain = val;
 	alFilterf(this->filterID, AL_LOWPASS_GAIN, this->gain);
 }
 
-void LowPassFilter::SetGainHF(float val){
+void ppLowPassFilter::SetGainHF(float val){
 	this->InitFilter();
 	this->gainhf = val;
 	alFilterf(this->filterID, AL_LOWPASS_GAINHF, this->gainhf);
 }
 
-float LowPassFilter::GetGainHF(){
+float ppLowPassFilter::GetGainHF(){
 	return this->gainhf;
 }

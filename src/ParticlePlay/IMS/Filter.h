@@ -1,9 +1,9 @@
 #ifndef FILTER_HEADER
 #define FILTER_HEADER
 
-#include "Includes.h"
+#include "../Includes.h"
 
-class Filter {
+class ppFilter {
 protected:
 	bool supported;
 	ALuint filterID;

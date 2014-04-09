@@ -2,40 +2,44 @@
 
 #include <string>
 
-IMS::IMS(){
+ppIMS::ppIMS(){
 	this->preload = false;
+}
+
+int ppIMS::Init(){
 	this->device = alcOpenDevice(NULL);
-	if(!device){
+	if(!this->device){
 		// std::cout << "Cannot open sound card" << std::endl;
-		return;
+		return 1;
 	}
 	this->context = alcCreateContext(this->device, NULL);
 	if(!this->context){
 		// std::cout << "Cannot create context" << std::endl;
-		return;
+		return 1;
 	}
 	alcMakeContextCurrent(this->context);
+	return 0;
 }
 
-IMS::~IMS(){
+void ppIMS::Quit(){
 	alcDestroyContext(this->context);
 	alcCloseDevice(this->device);
 }
 
-Sound* IMS::NewSound(const char *refname, const char *filename){
+ppSound* ppIMS::NewSound(const char *refname, const char *filename){
 	return this->NewSound(refname, filename, -1);
 }
 
-Sound* IMS::NewSound(const char *refname, const char *filename, int track){
+ppSound* ppIMS::NewSound(const char *refname, const char *filename, int track){
 	return this->NewSound(refname, filename, track, true);
 }
 
-Sound* IMS::NewSound(const char *refname, const char *filename, int track, bool stereo){
-	Sound* sound = this->GetSound(refname);
+ppSound* ppIMS::NewSound(const char *refname, const char *filename, int track, bool stereo){
+	ppSound* sound = this->GetSound(refname);
 	if (sound){
 		return sound;
 	}
-	sound = new Sound(this);
+	sound = new ppSound(this);
 	if(sound->LoadWaveFile(filename, stereo)==0){
 		if(track>=0){
 			sound->Preload(track, true);
@@ -46,15 +50,15 @@ Sound* IMS::NewSound(const char *refname, const char *filename, int track, bool 
 	return NULL;
 }
 
-Sound* IMS::GetSound(const char *refname){
-	std::map<std::string, Sound*>::iterator it = this->sounds.find(refname);
+ppSound* ppIMS::GetSound(const char *refname){
+	std::map<std::string, ppSound*>::iterator it = this->sounds.find(refname);
 	if (it != this->sounds.end()){
 		return it->second;
 	}
 	return NULL;
 }
 
-void IMS::RemoveSound(const char *refname){
+void ppIMS::RemoveSound(const char *refname){
 	if (!this->GetSound(refname)){
 		return;
 	}
@@ -65,46 +69,46 @@ void IMS::RemoveSound(const char *refname){
 // Sound-based Methods //
 /////////////////////////
 
-void IMS::Preload(){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::Preload(){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->Preload();
 	}
 	this->preload = true;
 }
 
-void IMS::ApplyFilter(Filter* filter){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::ApplyFilter(ppFilter* filter){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->ApplyFilter(filter);
 	}
 }
 
-void IMS::Play(){
+void ppIMS::Play(){
 	if(!this->preload){
 		this->Preload();
 	}
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->Play();
 	}
 }
 
-void IMS::Pause(){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::Pause(){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->Pause();
 	}
 }
 
-void IMS::Stop(){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::Stop(){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->Stop();
 	}
 }
 
-void IMS::SeekPosition(int targetPosition){
+void ppIMS::SeekPosition(int targetPosition){
 	// bool isplaying = this->IsPlaying();
 	// if(isplaying){
 	// 	this->Stop();
 	// }
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->SeekPosition(targetPosition);
 	}
 	this->preload = true;
@@ -113,12 +117,12 @@ void IMS::SeekPosition(int targetPosition){
 	// }
 }
 
-void IMS::SeekTime(float targetTime){
+void ppIMS::SeekTime(float targetTime){
 	// bool isplaying = this->IsPlaying();
 	// if(isplaying){
 	// 	this->Stop();
 	// }
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->SeekTime(targetTime);
 	}
 	this->preload = true;
@@ -127,26 +131,26 @@ void IMS::SeekTime(float targetTime){
 	// }
 }
 
-void IMS::SetSpeed(float speed){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::SetSpeed(float speed){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->SetSpeed(speed);
 	}
 }
 
-void IMS::SetVolumn(float vol){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::SetVolumn(float vol){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->SetVolumn(vol);
 	}
 }
 
-void IMS::SetLoop(bool loop){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::SetLoop(bool loop){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->SetLoop(loop);
 	}
 }
 
-void IMS::Update(){
-	for (std::map<std::string, Sound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
+void ppIMS::Update(){
+	for (std::map<std::string, ppSound*>::iterator it = this->sounds.begin(); it != this->sounds.end(); ++it){
 		it->second->Update();
 	}
 }

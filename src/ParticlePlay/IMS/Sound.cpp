@@ -1,6 +1,6 @@
 #include "Sound.h"
 
-Sound::Sound(IMS* ims){
+ppSound::ppSound(ppIMS* ims){
 	this->justLoop = false;
 	this->preload = false;
 	this->loop = false;
@@ -12,27 +12,27 @@ Sound::Sound(IMS* ims){
 	this->filter = NULL;
 }
 
-Sound::~Sound(){
+ppSound::~ppSound(){
     alDeleteBuffers(2, this->bufferSet);
 	alDeleteSources(1, &this->sourceID);
 }
 
-void Sound::GetWaveChunkInfo(std::ifstream &filePointer, char *chunkName, int &chunkSize){
+void ppSound::GetWaveChunkInfo(SDL_RWops *filePointer, char *chunkName, int &chunkSize){
 	char buffer[4];
-	filePointer.read(chunkName, 4);
-	filePointer.read(buffer, 4);
+	SDL_RWread(filePointer, chunkName, 4, 1);
+	SDL_RWread(filePointer, buffer, 4, 1);
 	chunkSize=ConvertToInt(buffer, 4);
 }
 
-void Sound::Preload(){
+void ppSound::Preload(){
 	this->Preload(this->track, false);
 }
 
-void Sound::Preload(int track){
+void ppSound::Preload(int track){
 	this->Preload(track, false);
 }
 
-void Sound::Preload(int track, bool skip){
+void ppSound::Preload(int track, bool skip){
 	this->track = track;
 	if(skip){
 		return;
@@ -43,71 +43,72 @@ void Sound::Preload(int track, bool skip){
 		alSourceUnqueueBuffers(this->sourceID, 2, this->bufferSet);
 		this->preload = true;
 		char *dataBuffer = new char[this->bufferSize];
-		this->filePointer.open(this->filename.c_str(), std::ios::binary);
-		this->filePointer.seekg(this->dataReadPosition);
+		this->filePointer = SDL_RWFromFile(this->filename.c_str(), "rb");
+
+		SDL_RWseek(this->filePointer, this->dataReadPosition, RW_SEEK_SET);
 
 		this->ReadData(this->filePointer, dataBuffer, this->bufferSize, this->bufferSet[0]);
-		this->dataReadPosition=this->filePointer.tellg();
+		this->dataReadPosition=SDL_RWtell(this->filePointer);
 		if(this->dataReadPosition<0||this->dataReadPosition-this->dataStartPosition>this->dataSize){
 			//Reopen on eof
 			this->dataReadPosition = this->dataStartPosition;
-			this->filePointer.close();
-			this->filePointer.open(this->filename.c_str(), std::ios::binary);
+			SDL_RWclose(this->filePointer);
+			this->filePointer = SDL_RWFromFile(this->filename.c_str(), "rb");
 		}
-		this->filePointer.seekg(this->dataReadPosition);
+		SDL_RWseek(this->filePointer, this->dataReadPosition, RW_SEEK_SET);
 
 		this->ReadData(this->filePointer, dataBuffer, this->bufferSize, this->bufferSet[1]);
 
-		this->dataReadPosition=this->filePointer.tellg();
-		this->filePointer.close();
+		this->dataReadPosition=SDL_RWtell(this->filePointer);
+		SDL_RWclose(this->filePointer);
 		delete[] dataBuffer;
 		alSourceQueueBuffers(this->sourceID, 2, this->bufferSet);
 	}
 }
 
-int Sound::LoadWaveFile(const char *filename, bool stereo){
+int ppSound::LoadWaveFile(const char *filename, bool stereo){
 	this->filename = std::string(filename);
-	this->filePointer.open(this->filename.c_str(), std::ios::binary);
+	this->filePointer = SDL_RWFromFile(this->filename.c_str(), "rb");
 	if(!this->filePointer){
 		return 1;
 	}
 	int valid = 0;
 	char buffer[4];
 	int chunkSize=0;
-	while(!this->filePointer.eof()&&valid<3){
+	while(!SDL_RWread(filePointer, buffer, 0, 1)&&valid<3){
 		this->GetWaveChunkInfo(this->filePointer, buffer, chunkSize);
 		// std::cout << "Reading... " << buffer << std::endl;
 		if(strncmp(buffer, "RIFF", 4)==0){
 			//chunkSize = Total chunk in this wave file
 			chunkSize=0;
-			this->filePointer.read(buffer, 4);
+			SDL_RWread(filePointer, buffer, 4, 1);
 			if(strncmp(buffer, "WAVE", 4)==0){
 				valid++;
 			}else{
 				break;
 			}
 		}else if(strncmp(buffer, "fmt ", 4)==0){
-			this->filePointer.read(buffer, 2); //1 = PCM, other = compression
+			SDL_RWread(filePointer, buffer, 2, 1); //1 = PCM, other = compression
 			this->audioFormat=ConvertToInt(buffer, 2);
 			chunkSize-=2;
-			this->filePointer.read(buffer, 2);
+			SDL_RWread(filePointer, buffer, 2, 1);
 			this->channels=ConvertToInt(buffer, 2);
 			chunkSize-=2;
-			this->filePointer.read(buffer, 4);
+			SDL_RWread(filePointer, buffer, 4, 1);
 			this->sampleRate=ConvertToInt(buffer, 4);
 			chunkSize-=4;
-			this->filePointer.read(buffer, 4);
+			SDL_RWread(filePointer, buffer, 4, 1);
 			this->byteRate=ConvertToInt(buffer, 4);
 			chunkSize-=4;
-			this->filePointer.read(buffer, 2); //BlockAlign
+			SDL_RWread(filePointer, buffer, 2, 1); //BlockAlign
 			chunkSize-=2;
-			this->filePointer.read(buffer, 2);
+			SDL_RWread(filePointer, buffer, 2, 1);
 			this->bitPerSample=ConvertToInt(buffer, 2);
 			chunkSize-=2;
 			valid++;
 		}else if(strncmp(buffer, "data", 4)==0){
 			this->dataSize=chunkSize;
-			this->dataReadPosition = this->filePointer.tellg();;
+			this->dataReadPosition = SDL_RWtell(this->filePointer);;
 			this->dataStartPosition = this->dataReadPosition;
 			this->dataPositionOffset = 0;
 			chunkSize = 0;
@@ -116,10 +117,10 @@ int Sound::LoadWaveFile(const char *filename, bool stereo){
 		if(chunkSize>0){
 			// std::cout << "Skip " << buffer << " [" << chunkSize << "b]" << std::endl;
 			//Skip any unread data
-			this->filePointer.seekg(chunkSize, std::ios_base::cur);
+			SDL_RWseek(this->filePointer, chunkSize, RW_SEEK_CUR);
 		}
 	}
-	this->filePointer.close();
+	SDL_RWclose(this->filePointer);
 	if(valid<3){
 		// std::cout << "Invalid Wave file" << std::endl;
 		return 2;
@@ -151,19 +152,18 @@ int Sound::LoadWaveFile(const char *filename, bool stereo){
 	return 0;
 }
 
-void Sound::ApplyFilter(Filter* filter){
+void ppSound::ApplyFilter(ppFilter* filter){
 	this->filter = filter;
 }
 
-void Sound::ReadData(std::ifstream &filePointer, char *dataBuffer, int bufferSize, ALuint &bufferID){
+void ppSound::ReadData(SDL_RWops *filePointer, char *dataBuffer, int bufferSize, ALuint &bufferID){
 	int x=0;
 	for(x=0;x<bufferSize;){
-		if(filePointer.eof()){
-			break;
-		}
 		int bytePerSample = this->bitPerSample/8;
 		char *buf = new char[this->channels * 2];
-		filePointer.read(buf, this->channels * 2);
+		if(!SDL_RWread(filePointer, buf, this->channels * 2, 1)){
+			break;
+		}
 		for(int c=0;c<this->targetChannels;c++){
 			for(int byte=0;byte<this->bitPerSample/8;byte++){
 				dataBuffer[x++]=buf[this->track*(this->targetChannels*2)+(c*this->targetChannels+byte)];
@@ -174,11 +174,11 @@ void Sound::ReadData(std::ifstream &filePointer, char *dataBuffer, int bufferSiz
 	alBufferData(bufferID, this->format, dataBuffer, x, this->sampleRate);
 }
 
-void Sound::Play(){
+void ppSound::Play(){
 	this->Play(this->track);
 }
 
-void Sound::Play(int track){
+void ppSound::Play(int track){
 	ALint sourceState;
 	alGetSourcei(this->sourceID, AL_SOURCE_STATE, &sourceState);
 	if(sourceState==AL_PLAYING){
@@ -193,7 +193,7 @@ void Sound::Play(int track){
 	alSourcePlay(this->sourceID);
 }
 
-int Sound::GetTotalBuffer(int dataSize, bool countCurrent){
+int ppSound::GetTotalBuffer(int dataSize, bool countCurrent){
 	int totalBuffer = dataSize/(this->bufferSize*this->totalTrack);
 	if(countCurrent&&dataSize%(this->bufferSize*this->totalTrack)>0){
 		totalBuffer++;
@@ -201,27 +201,27 @@ int Sound::GetTotalBuffer(int dataSize, bool countCurrent){
 	return totalBuffer;
 }
 
-void Sound::Update(){
+void ppSound::Update(){
 	this->justLoop = false;
 	//Stream more data when buffer finished
 	ALint processedBuffer;
 	alGetSourcei(this->sourceID, AL_BUFFERS_PROCESSED, &processedBuffer);
 
 	char *buffer = new char[this->bufferSize];
-	this->filePointer.open(this->filename.c_str(), std::ios::binary);
+	this->filePointer = SDL_RWFromFile(this->filename.c_str(), "rb");
 
-	this->filePointer.seekg(this->dataReadPosition);
+	SDL_RWseek(this->filePointer, this->dataReadPosition, RW_SEEK_SET);
 
-	while(processedBuffer--&&!this->filePointer.eof()){
+	while(processedBuffer--&&!SDL_RWread(filePointer, buffer, 0, 1)){
 		this->bufferProcessed++;
 		ALuint bufferID;
 		alSourceUnqueueBuffers(this->sourceID, 1, &bufferID);
 		this->ReadData(this->filePointer, buffer, this->bufferSize, bufferID);
-		this->dataReadPosition=this->filePointer.tellg();
+		this->dataReadPosition=SDL_RWtell(this->filePointer);
 		alSourceQueueBuffers(this->sourceID, 1, &bufferID);
 	}
 	delete[] buffer;
-	this->filePointer.close();
+	SDL_RWclose(this->filePointer);
 	if(this->filter&&this->filter->IsSupported()){
 		alSourcei(this->sourceID, AL_DIRECT_FILTER, filter->GetFilterID());
 	}else{
@@ -245,21 +245,21 @@ void Sound::Update(){
 	}
 }
 
-float Sound::ByteToSecond(int byte){
+float ppSound::ByteToSecond(int byte){
 	float sampleLength = byte * 8 / (this->channels * this->bitPerSample);
 	return sampleLength / this->sampleRate;
 }
 
-int Sound::SecondToByte(float sec){
+int ppSound::SecondToByte(float sec){
 	float sampleLength = sec * this->sampleRate;
 	return sampleLength * this->channels * this->bitPerSample / 8;
 }
 
-void Sound::Pause(){
+void ppSound::Pause(){
 	alSourcePause(this->sourceID);
 }
 
-void Sound::Stop(){
+void ppSound::Stop(){
 	if(this->IsStop()){
 		return;
 	}
@@ -270,15 +270,15 @@ void Sound::Stop(){
 	this->bufferProcessed = 0;
 }
 
-void Sound::SeekPosition(int targetPosition){
+void ppSound::SeekPosition(int targetPosition){
 	this->SeekPosition(targetPosition, this->track);
 }
 
-void Sound::SeekTime(float targetTime){
+void ppSound::SeekTime(float targetTime){
 	this->SeekTime(targetTime, this->track);
 }
 
-void Sound::SeekPosition(int targetPosition, int track){
+void ppSound::SeekPosition(int targetPosition, int track){
 	bool isplaying = !this->IsStop();
 	if(isplaying){
 		this->Stop();
@@ -294,106 +294,106 @@ void Sound::SeekPosition(int targetPosition, int track){
 	}
 }
 
-void Sound::SeekTime(float targetTime, int track){
+void ppSound::SeekTime(float targetTime, int track){
 	this->SeekPosition(this->SecondToByte(targetTime), track);
 }
 
-void Sound::SetSpeed(float speed){
+void ppSound::SetSpeed(float speed){
 	this->speed = speed;
 	alSourcef(this->sourceID, AL_PITCH, this->speed);
 }
 
-void Sound::SetVolumn(float vol){
+void ppSound::SetVolumn(float vol){
 	this->volumn = vol;
 	alSourcef(this->sourceID, AL_GAIN, this->volumn);
 }
 
-void Sound::SetLoop(bool loop){
+void ppSound::SetLoop(bool loop){
 	this->loop = loop;
 }
 
-bool Sound::IsPause(){
+bool ppSound::IsPause(){
 	ALint sourceState;
 	alGetSourcei(this->sourceID, AL_SOURCE_STATE, &sourceState);
 	return sourceState==AL_PAUSED;
 }
 
-bool Sound::IsStop(){
+bool ppSound::IsStop(){
 	ALint sourceState;
 	alGetSourcei(this->sourceID, AL_SOURCE_STATE, &sourceState);
 	return sourceState==AL_STOPPED||sourceState==AL_INITIAL;
 }
 
-bool Sound::IsPlaying(){
+bool ppSound::IsPlaying(){
 	return this->GetCurrentPosition()<this->GetPositionLength();
 }
 
-bool Sound::IsLoop(){
+bool ppSound::IsLoop(){
 	return this->loop;
 }
 
-bool Sound::IsJustLoop(){
+bool ppSound::IsJustLoop(){
 	return this->justLoop;
 }
 
-float Sound::GetCurrentTime(){
+float ppSound::GetCurrentTime(){
 	return this->ByteToSecond(this->GetCurrentPosition());
 }
 
-float Sound::GetTimeLength(){
+float ppSound::GetTimeLength(){
 	return this->ByteToSecond(this->GetPositionLength());
 }
 
-int Sound::GetCurrentPosition(){
+int ppSound::GetCurrentPosition(){
 	int pos;
 	alGetSourcei(this->sourceID, AL_BYTE_OFFSET, &pos);
 	return (((this->bufferProcessed*this->bufferSize))+pos)*this->totalTrack+this->dataPositionOffset;
 }
 
-int Sound::GetPositionLength(){
+int ppSound::GetPositionLength(){
 	return this->dataSize;
 }
 
-int Sound::GetAudioFormat(){
+int ppSound::GetAudioFormat(){
 	return this->audioFormat;
 }
 
-int Sound::GetChannels(){
+int ppSound::GetChannels(){
 	return this->channels;
 }
 
-int Sound::GetTargetChannels(){
+int ppSound::GetTargetChannels(){
 	return this->targetChannels;
 }
 
-int Sound::GetSampleRate(){
+int ppSound::GetSampleRate(){
 	return this->sampleRate;
 }
 
-int Sound::GetByteRate(){
+int ppSound::GetByteRate(){
 	return this->byteRate;
 }
 
-int Sound::GetBitPerSample(){
+int ppSound::GetBitPerSample(){
 	return this->bitPerSample;
 }
 
-int Sound::GetCurrentTrack(){
+int ppSound::GetCurrentTrack(){
 	return this->track;
 }
 
-int Sound::GetTotalTrack(){
+int ppSound::GetTotalTrack(){
 	return this->totalTrack;
 }
 
-float Sound::GetSpeed(){
+float ppSound::GetSpeed(){
 	return this->speed;
 }
 
-float Sound::GetVolumn(){
+float ppSound::GetVolumn(){
 	return this->volumn;
 }
 
-std::string Sound::GetFileName(){
+std::string ppSound::GetFileName(){
 	return this->filename;
 }

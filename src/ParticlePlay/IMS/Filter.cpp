@@ -1,10 +1,10 @@
 #include "Filter.h"
 
-ALuint Filter::GetFilterID(){
+ALuint ppFilter::GetFilterID(){
 	return this->filterID;
 }
 
-bool Filter::IsSupported(){
+bool ppFilter::IsSupported(){
 	this->InitFilter();
 	return this->supported;
 }

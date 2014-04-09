@@ -3,13 +3,13 @@
 
 #include "../Filter.h"
 
-class BandPassFilter : public Filter{
+class ppBandPassFilter : public ppFilter{
 private:
 	float gain;
 	float gainlf;
 	float gainhf;
 public:
-	BandPassFilter();
+	ppBandPassFilter();
 	void InitFilter();
 	void SetGain(float val);
 	void SetGainLF(float val);

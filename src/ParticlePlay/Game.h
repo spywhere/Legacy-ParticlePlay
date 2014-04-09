@@ -3,6 +3,7 @@
 
 #include <map>
 #include "Includes.h"
+#include "IMS/IMS.h"
 #include "Color.h"
 #include "Scene.h"
 
@@ -14,6 +15,7 @@ private:
 	SDL_Renderer* renderer;
 	ppColor* backgroundColor;
 	ppInput* gameInput;
+	ppIMS* ims;
 	bool debug;
 	const char* title;
 	ppScene* currentScene;
@@ -48,6 +50,7 @@ public:
 	int StartGame();
 	void QuitGame();
 	ppInput* GetGameInput();
+	ppIMS* GetInteractiveMusicSystem();
 	// GameIO* GetGameIO();
 	// SoundPlayer* GetSoundPlayer();
 	void AddScene(const char* name, ppScene* scene);

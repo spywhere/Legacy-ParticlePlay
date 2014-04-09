@@ -3,12 +3,12 @@
 
 #include "../Filter.h"
 
-class HighPassFilter : public Filter{
+class ppHighPassFilter : public ppFilter{
 private:
 	float gain;
 	float gainlf;
 public:
-	HighPassFilter();
+	ppHighPassFilter();
 	void InitFilter();
 	void SetGain(float val);
 	void SetGainLF(float val);
