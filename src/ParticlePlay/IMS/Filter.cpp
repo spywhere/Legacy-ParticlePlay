@@ -1,5 +1,11 @@
 #include "Filter.h"
 
+ppFilter::~ppFilter(){
+	if(this->supported){
+		alDeleteFilters(1, &this->filterID);
+	}
+}
+
 ALuint ppFilter::GetFilterID(){
 	return this->filterID;
 }

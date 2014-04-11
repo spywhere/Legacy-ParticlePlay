@@ -7,7 +7,7 @@ ppGame::ppGame(){
 	this->renderer = NULL;
 	this->backgroundColor = new ppColor();
 	this->gameInput = new ppInput();
-	this->ims = new ppIMS();
+	this->ims = NULL;
 	this->title = "My Game";
 	this->currentState = NULL;
 	this->width = 640;
@@ -216,6 +216,7 @@ int ppGame::StartGame(){
 				speedTimer = SDL_GetTicks();
 				std::cout << "Initializing OpenAL...";
 			#endif
+			this->ims = new ppIMS(this);
 			if(this->ims->Init()){
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenAL.", 0);
 				return 1;

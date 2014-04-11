@@ -1,33 +1,39 @@
 #ifndef CONTROL_HEADER
 #define CONTROL_HEADER
 
+#include <string>
 #include "../Includes.h"
 #include "../Input.h"
 #include "GUI.h"
-#include "GUIType.h"
+#include "ControlType.h"
 
 class ppGUI;
 class ppControl{
 protected:
-	int x, y;
+	int x, y, z;
 	bool visible;
 	ppControl* parent;
 	ppGUI* gui;
+	std::string name;
 public:
-	ppControl();
-	ppControl(int x, int y);
+	ppControl(const char *name, int x, int y);
+	ppControl(const char *name) : ppControl(name, 0, 0) {}
 	ppGUI* GetGUI();
 	void SetGUI(ppGUI* gui);
 	ppControl* GetParent();
 	void SetParent(ppControl* parent);
 	int GetX();
 	int GetY();
+	int GetZ();
 	void SetX(int x);
 	void SetY(int y);
+	void SetZ(int z);
+	std::string GetName();
+	void SetName(const char *name);
 	bool IsVisible();
 	void SetVisible(bool visible);
 	virtual void Render(SDL_Renderer* renderer);
 	virtual void Update(ppInput* input);
-	virtual ppGUIType GetType()=0;
+	virtual ppControlType GetType()=0;
 };
 #endif

@@ -8,7 +8,7 @@ void ppTestBed::OnInit(){
 	this->cd = 0;
 	this->physics = new ppPhysics(60, 0, 10);
 	this->gui = new ppGUI();
-	this->gui->AddControl("text", new ppLabel(10, 50));
+	this->gui->AddControl(new ppLabel("text", 10, 50));
 
 	b2BodyDef *myBodyDef = new b2BodyDef();
 	myBodyDef->type = b2_dynamicBody;

@@ -4,18 +4,18 @@
 #include "../Includes.h"
 #include "../Input.h"
 #include "Control.h"
-#include "GUIType.h"
+#include "ControlType.h"
 
 class ppLabel : public ppControl{
 private:
 	const char* text;
 public:
-	ppLabel();
-	ppLabel(int x, int y);
+	ppLabel(const char *name, int x, int y);
+	ppLabel(const char *name) : ppLabel(name, 0, 0) {}
 	const char* GetText();
 	void SetText(const char *text);
 	void Render(SDL_Renderer* renderer);
-	ppGUIType GetType();
+	ppControlType GetType();
 };
 
 #endif

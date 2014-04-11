@@ -3,11 +3,11 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include "ParticlePlay/GUI/Controls.h"
+#include "ParticlePlay/GUI/ControlType.h"
 #include "ParticlePlay/IMS/Filters.h"
 #include "ParticlePlay/IMS/IMS.h"
 #include "ParticlePlay/IMS/Sound.h"
-#include "ParticlePlay/GUI/Controls.h"
-#include "ParticlePlay/GUI/GUIType.h"
 
 #define TEST1 "cHiPiE"
 #define TEST2 "Sky Above"
@@ -18,33 +18,33 @@
 
 void TestIMS::OnInit(){
 	this->gui = new ppGUI();
-	this->gui->AddControl("filter", new ppLabel(10, 135));
-	this->gui->AddControl("sound1", new ppLabel(10, 150));
-	this->gui->AddControl("sound2", new ppLabel(10, 165));
-	this->gui->AddControl("sound3", new ppLabel(10, 180));
-	this->gui->AddControl("sound4", new ppLabel(10, 195));
+	this->gui->AddControl(new ppLabel("filter", 10, 135));
+	this->gui->AddControl(new ppLabel("sound1", 10, 150));
+	this->gui->AddControl(new ppLabel("sound2", 10, 165));
+	this->gui->AddControl(new ppLabel("sound3", 10, 180));
+	this->gui->AddControl(new ppLabel("sound4", 10, 195));
 
-	if(this->gui->GetControl("filter")->GetType()==GUI_LABEL){
+	if(this->gui->GetControl("filter")->GetType()==ppControlType::LABEL){
 		ppLabel* label = (ppLabel*)this->gui->GetControl("filter");
 		label->SetText("LPF");
 		label->SetVisible(false);
 	}
-	if(this->gui->GetControl("sound1")->GetType()==GUI_LABEL){
+	if(this->gui->GetControl("sound1")->GetType()==ppControlType::LABEL){
 		ppLabel* label = (ppLabel*)this->gui->GetControl("sound1");
 		label->SetText("");
 		label->SetVisible(false);
 	}
-	if(this->gui->GetControl("sound2")->GetType()==GUI_LABEL){
+	if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 		ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
 		label->SetText("");
 		label->SetVisible(false);
 	}
-	if(this->gui->GetControl("sound3")->GetType()==GUI_LABEL){
+	if(this->gui->GetControl("sound3")->GetType()==ppControlType::LABEL){
 		ppLabel* label = (ppLabel*)this->gui->GetControl("sound3");
 		label->SetText("");
 		label->SetVisible(false);
 	}
-	if(this->gui->GetControl("sound4")->GetType()==GUI_LABEL){
+	if(this->gui->GetControl("sound4")->GetType()==ppControlType::LABEL){
 		ppLabel* label = (ppLabel*)this->gui->GetControl("sound4");
 		label->SetText("");
 		label->SetVisible(false);
@@ -194,8 +194,8 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 	}
 	if(this->gui->GetDefaultFont()){
 		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
+		this->gui->Render(renderer);
 	}
-	this->gui->Render(renderer);
 }
 
 void TestIMS::OnUpdate(ppInput* input, int delta){
@@ -204,22 +204,22 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		if(input->IsKeyDown(SDL_SCANCODE_1)){
 			this->test = 1;
 
-			if(this->gui->GetControl("sound1")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound1")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound1");
 				label->SetText("Bass");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound2")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
 				label->SetText("Drum Bass");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound3")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound3")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound3");
 				label->SetText("Drum Snare");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound4")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound4")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound4");
 				label->SetText("Melody");
 				label->SetVisible(true);
@@ -229,7 +229,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppSound* sound2 = ims->NewSound("Drum_Bass", "res/cHiPiE/cHiPiE_drum_base.wav", 0);
 			ppSound* sound3 = ims->NewSound("Drum_Snare", "res/cHiPiE/cHiPiE_drum_snare.wav", 0);
 			ppSound* sound4 = ims->NewSound("Melody", "res/cHiPiE/cHiPiE_melody.wav", 0);
-			this->lpf = new ppLowPassFilter();
+			this->lpf = (ppLowPassFilter *)ims->NewFilter(ppFilterType::LOW_PASS);
 			ims->ApplyFilter(this->lpf);
 			if(sound&&sound2&&sound3&&sound4){
 				ims->SetLoop(true);
@@ -240,22 +240,22 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_2)){
 			this->test = 2;
 
-			if(this->gui->GetControl("sound1")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound1")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound1");
 				label->SetText("Drum");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound2")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
 				label->SetText("Base");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound3")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound3")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound3");
 				label->SetText("Melody");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound4")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound4")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound4");
 				label->SetText("Melody2");
 				label->SetVisible(true);
@@ -265,7 +265,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppSound* sound2 = ims->NewSound("Base", "res/skyabove/skyabove_base.wav", 0);
 			ppSound* sound3 = ims->NewSound("Melody", "res/skyabove/skyabove_melody.wav", 0);
 			ppSound* sound4 = ims->NewSound("Melody2", "res/skyabove/skyabove_melody2.wav", 0);
-			this->lpf = new ppLowPassFilter();
+			this->lpf = (ppLowPassFilter *)ims->NewFilter(ppFilterType::LOW_PASS);
 			ims->ApplyFilter(this->lpf);
 			if(sound&&sound2&&sound3&&sound4){
 				ims->SetLoop(true);
@@ -276,12 +276,12 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_3)){
 			this->test = 3;
 
-			if(this->gui->GetControl("sound1")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound1")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound1");
 				label->SetText("Be Wild");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound2")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
 				label->SetText("Be Cool");
 				label->SetVisible(true);
@@ -289,7 +289,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 
 			ppSound* bewild = ims->NewSound("BeWild", "res/FalkDemo.wav", 0);
 			ppSound* becool = ims->NewSound("BeCool", "res/FalkDemo.wav", 1);
-			this->lpf = new ppLowPassFilter();
+			this->lpf = (ppLowPassFilter *)ims->NewFilter(ppFilterType::LOW_PASS);
 			ims->ApplyFilter(this->lpf);
 			if(bewild&&becool){
 				ims->GetSound("BeCool")->SetVolumn(0);
@@ -300,22 +300,22 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_4)){
 			this->test = 4;
 
-			if(this->gui->GetControl("sound1")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound1")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound1");
 				label->SetText("Base");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound2")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
 				label->SetText("Critical");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound3")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound3")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound3");
 				label->SetText("Battle");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound4")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound4")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound4");
 				label->SetText("All");
 				label->SetVisible(true);
@@ -325,7 +325,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppSound* critical = ims->NewSound("Critical", "res/Music_Gameplay.wav", 1);
 			ppSound* battle = ims->NewSound("Battle", "res/Music_Gameplay.wav", 2);
 			ppSound* all = ims->NewSound("All", "res/Music_Gameplay.wav", 3);
-			this->lpf = new ppLowPassFilter();
+			this->lpf = (ppLowPassFilter *)ims->NewFilter(ppFilterType::LOW_PASS);
 			ims->ApplyFilter(this->lpf);
 			if(base&&critical&&battle&&all){
 				ims->SetLoop(true);
@@ -339,17 +339,17 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_5)){
 			this->test = 5;
 
-			if(this->gui->GetControl("sound1")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound1")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound1");
 				label->SetText("Base");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound2")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
 				label->SetText("Drum");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound3")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound3")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound3");
 				label->SetText("Tamborine");
 				label->SetVisible(true);
@@ -358,7 +358,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppSound* base = ims->NewSound("Base", "res/PvZ/PvZ_T1_Base.wav", 0);
 			ppSound* drum = ims->NewSound("Drum", "res/PvZ/PvZ_T1_Drum.wav", 0);
 			ppSound* tamborine = ims->NewSound("Tamborine", "res/PvZ/PvZ_T1_Tamborine.wav", 0);
-			this->lpf = new ppLowPassFilter();
+			this->lpf = (ppLowPassFilter *)ims->NewFilter(ppFilterType::LOW_PASS);
 			ims->ApplyFilter(this->lpf);
 			if(base&&drum&&tamborine){
 				this->soundInit = true;
@@ -367,22 +367,22 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_6)){
 			this->test = 6;
 
-			if(this->gui->GetControl("sound1")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound1")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound1");
 				label->SetText("Bass");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound2")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
 				label->SetText("Orchestra");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound3")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound3")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound3");
 				label->SetText("Percussion");
 				label->SetVisible(true);
 			}
-			if(this->gui->GetControl("sound4")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("sound4")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound4");
 				label->SetText("Various");
 				label->SetVisible(true);
@@ -392,7 +392,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppSound* sound2 = ims->NewSound("Orchestra", "res/wwise/Stress_Orchestra.wav", 0);
 			ppSound* sound3 = ims->NewSound("Percussion", "res/wwise/Stress_Percussion.wav", 0);
 			ppSound* sound4 = ims->NewSound("Various", "res/wwise/Stress_Various.wav", 0);
-			this->lpf = new ppLowPassFilter();
+			this->lpf = (ppLowPassFilter *)ims->NewFilter(ppFilterType::LOW_PASS);
 			ims->ApplyFilter(this->lpf);
 			if(sound&&sound2&&sound3&&sound4){
 				this->soundInit = true;
@@ -471,7 +471,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			}
 		}
 		if(sound&&sound->IsPlaying()&&this->cooldown--<=0){
-			if(this->gui->GetControl("filter")->GetType()==GUI_LABEL){
+			if(this->gui->GetControl("filter")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("filter");
 				label->SetVisible(true);
 			}

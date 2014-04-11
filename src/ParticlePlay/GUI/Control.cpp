@@ -1,19 +1,12 @@
 #include "Control.h"
 
-ppControl::ppControl(){
-	this->parent = NULL;
-	this->x = 0;
-	this->y = 0;
-	this->visible = true;
-	this->gui = NULL;
-	// Self-reference
-	// ppControl::Control(0, 0);
-}
-
-ppControl::ppControl(int x, int y){
+ppControl::ppControl(const char *name, int x, int y){
+	this->name = std::string(name);
 	this->parent = NULL;
 	this->x = x;
 	this->y = y;
+	this->z = 0;
+	this->visible = true;
 	this->gui = NULL;
 }
 
@@ -35,6 +28,10 @@ void ppControl::SetParent(ppControl* parent){
 	this->parent = parent;
 }
 
+std::string ppControl::GetName(){
+	return this->name;
+}
+
 int ppControl::GetX(){
 	return this->x;
 }
@@ -43,12 +40,24 @@ int ppControl::GetY(){
 	return this->y;
 }
 
+int ppControl::GetZ(){
+	return this->z;
+}
+
+void ppControl::SetName(const char *name){
+	this->name = std::string(name);
+}
+
 void ppControl::SetX(int x){
 	this->x = x;
 }
 
 void ppControl::SetY(int y){
 	this->y = y;
+}
+
+void ppControl::SetZ(int z){
+	this->z = z;
 }
 
 bool ppControl::IsVisible(){

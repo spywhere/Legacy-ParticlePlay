@@ -3,11 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include "ParticlePlay/GUI/Controls.h"
-#include "ParticlePlay/GUI/GUIType.h"
 
 void TestScene::OnInit(){
 	this->gui = new ppGUI();
-	this->gui->AddControl("text", new ppLabel(10, 50));
+	this->gui->AddControl(new ppLabel("text", 10, 50));
 	this->posx = 10;
 	this->posy = 10;
 	this->SetNeedInit(true);

@@ -10,6 +10,7 @@ ppSound::ppSound(ppIMS* ims){
 	this->targetChannels=1;
 	this->track = 0;
 	this->filter = NULL;
+	this->filePointer = NULL;
 }
 
 ppSound::~ppSound(){
@@ -143,6 +144,7 @@ int ppSound::LoadWaveFile(const char *filename, bool stereo){
 		}
 	}
 
+	alDeleteSources(1, &this->sourceID);
 	alDeleteBuffers(2, this->bufferSet);
 	alGenBuffers(2, this->bufferSet);
 	alGenSources(1, &this->sourceID);

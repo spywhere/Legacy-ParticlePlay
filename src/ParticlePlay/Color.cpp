@@ -1,13 +1,5 @@
 #include "Color.h"
 
-ppColor::ppColor(){
-	this->color = 0xff000000;
-}
-
-ppColor::ppColor(Uint8 r, Uint8 g, Uint8 b){
-	this->color = 0xff000000|(r<<16)|(g<<8)|b;
-}
-
 ppColor::ppColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a){
 	this->color = (a<<24)|(r<<16)|(g<<8)|b;
 }

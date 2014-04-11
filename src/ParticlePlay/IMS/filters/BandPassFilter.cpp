@@ -1,6 +1,6 @@
 #include "BandPassFilter.h"
 
-ppBandPassFilter::ppBandPassFilter(){
+ppBandPassFilter::ppBandPassFilter(ppIMS* ims){
 	this->supported = false;
 	this->gain = 1.0f;
 	this->gainlf = 1.0f;

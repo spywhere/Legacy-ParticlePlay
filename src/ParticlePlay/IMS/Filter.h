@@ -8,6 +8,7 @@ protected:
 	bool supported;
 	ALuint filterID;
 public:
+	virtual ~ppFilter();
 	ALuint GetFilterID();
 	virtual void InitFilter()=0;
 	bool IsSupported();

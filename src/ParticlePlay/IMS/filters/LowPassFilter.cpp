@@ -1,6 +1,6 @@
 #include "LowPassFilter.h"
 
-ppLowPassFilter::ppLowPassFilter(){
+ppLowPassFilter::ppLowPassFilter(ppIMS* ims){
 	this->supported = false;
 	this->gain = 1.0f;
 	this->gainhf = 1.0f;

@@ -1,6 +1,6 @@
 #include "HighPassFilter.h"
 
-ppHighPassFilter::ppHighPassFilter(){
+ppHighPassFilter::ppHighPassFilter(ppIMS* ims){
 	this->supported = false;
 	this->gain = 1.0f;
 	this->gainlf = 1.0f;

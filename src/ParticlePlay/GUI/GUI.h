@@ -1,7 +1,7 @@
 #ifndef GUI_HEADER
 #define GUI_HEADER
 
-#include <map>
+#include <vector>
 #include "../Includes.h"
 #include "../Input.h"
 #include "../BitmapFont.h"
@@ -11,10 +11,11 @@ class ppControl;
 class ppGUI{
 private:
 	ppBitmapFont* defaultFont;
-	std::map<const char*, ppControl*> controls;
+	std::vector<ppControl*> controls;
+	static bool ppControlOrdering(ppControl* a, ppControl* b);
 public:
 	ppGUI();
-	void AddControl(const char *name, ppControl* control);
+	void AddControl(ppControl* control);
 	ppControl* GetControl(const char *name);
 	ppBitmapFont* GetDefaultFont();
 	void RemoveControl(const char *name);

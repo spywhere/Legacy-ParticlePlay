@@ -1,12 +1,8 @@
 #include "Label.h"
 
 #include <sstream>
-#include "GUIType.h"
 
-ppLabel::ppLabel(){
-	this->text = "Label";
-}
-ppLabel::ppLabel(int x, int y) : ppControl(x, y){
+ppLabel::ppLabel(const char *name, int x, int y) : ppControl(name, x, y){
 	this->text = "Label";
 }
 
@@ -23,9 +19,11 @@ void ppLabel::Render(SDL_Renderer* renderer){
 	if(!this->visible){
 		return;
 	}
-	this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text, renderer);
+	if(this->GetGUI()->GetDefaultFont()){
+		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text, renderer);
+	}
 }
 
-ppGUIType ppLabel::GetType(){
-	return GUI_LABEL;
+ppControlType ppLabel::GetType(){
+	return ppControlType::LABEL;
 }

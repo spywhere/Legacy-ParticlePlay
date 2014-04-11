@@ -5,7 +5,6 @@
 #include "ParticlePlay/GUI/GUI.h"
 #include "ParticlePlay/IMS/IMS.h"
 #include "ParticlePlay/IMS/Filters.h"
-#include "ParticlePlay/IMS/Sound.h"
 #include "ParticlePlay/State.h"
 #include "ParticlePlay/Input.h"
 

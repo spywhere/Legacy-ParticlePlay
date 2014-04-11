@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+bool ppGUI::ppControlOrdering(ppControl* a, ppControl* b){
+	return a->GetZ()<b->GetZ();
+}
+
 ppGUI::ppGUI(){
 	this->defaultFont = NULL;
 	if(!IMG_Load("monaco12.png")){
@@ -12,12 +16,9 @@ ppGUI::ppGUI(){
 	}
 }
 
-void ppGUI::AddControl(const char *name, ppControl* control){
-	if(!this->GetDefaultFont()){
-		return;
-	}
+void ppGUI::AddControl(ppControl* control){
 	control->SetGUI(this);
-	this->controls.insert(std::pair<const char*, ppControl*>(name, control));
+	this->controls.push_back(control);
 }
 
 ppBitmapFont* ppGUI::GetDefaultFont(){
@@ -25,53 +26,45 @@ ppBitmapFont* ppGUI::GetDefaultFont(){
 }
 
 ppControl* ppGUI::GetControl(const char* name){
-	if(!this->GetDefaultFont() || this->controls.empty()){
+	if(this->controls.empty()){
 		return NULL;
 	}
-	std::map<const char*, ppControl*>::iterator it;
-	it = this->controls.find(name);
-	if(it != this->controls.end()){
-		return it->second;
+	for(auto control : this->controls){
+		if(control->GetName()==std::string(name)){
+			return control;
+		}
 	}
 	return NULL;
 }
 
 void ppGUI::RemoveControl(const char* name){
-	if(!this->GetDefaultFont() || this->controls.empty()){
+	if(this->controls.empty()){
 		return;
 	}
-	std::map<const char*, ppControl*>::iterator it;
-	it = this->controls.find(name);
-	if(it != this->controls.end()){
-		this->controls.erase(it);
+	int i=0;
+	for(auto control : this->controls){
+		if(control->GetName()==std::string(name)){
+			this->controls.erase(this->controls.begin()+i);
+			return;
+		}
+		i++;
 	}
 }
 
 void ppGUI::ClearControl(){
-	if(!this->GetDefaultFont()){
-		return;
-	}
 	this->controls.clear();
 }
 
 void ppGUI::Render(SDL_Renderer* renderer){
-	if(!this->GetDefaultFont()){
-		return;
-	}
-	std::map<const char*, ppControl*>::iterator it = this->controls.begin();
-	while(it!=this->controls.end()){
-		it->second->Render(renderer);
-		it++;
+	std::sort(this->controls.begin(), this->controls.end(), ppGUI::ppControlOrdering);
+	for(auto control : this->controls){
+		control->Render(renderer);
 	}
 }
 
 void ppGUI::Update(ppInput* input){
-	if(!this->GetDefaultFont()){
-		return;
-	}
-	std::map<const char*, ppControl*>::iterator it = this->controls.begin();
-	while(it!=this->controls.end()){
-		it->second->Update(input);
-		it++;
+	std::sort(this->controls.begin(), this->controls.end(), ppGUI::ppControlOrdering);
+	for(auto control : this->controls){
+		control->Update(input);
 	}
 }

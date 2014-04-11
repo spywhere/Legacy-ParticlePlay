@@ -2,10 +2,12 @@
 #define IMS_HEADER
 
 #include <map>
+#include <vector>
 #include "../Includes.h"
 #include "Sound.h"
-#include "Filter.h"
+#include "Filters.h"
 
+class ppGame;
 class ppSound;
 class ppIMS {
 private:
@@ -13,17 +15,20 @@ private:
 	bool preload;
 	ALCdevice* device;
 	ALCcontext* context;
+	std::vector<ppFilter*> filters;
 	std::map<std::string, ppSound*> sounds;
 public:
-	ppIMS();
+	ppIMS(ppGame* game);
 	int Init();
 	int Reinit();
 	void Quit();
 	ppSound* NewSound(const char *refname, const char *filename);
 	ppSound* NewSound(const char *refname, const char *filename, int track);
 	ppSound* NewSound(const char *refname, const char *filename, int track, bool stereo);
+	ppFilter* NewFilter(ppFilterType filterType);
 	ppSound* GetSound(const char *refname);
 	void RemoveSound(const char *refname);
+	void ClearFilter();
 	void ClearSound();
 	//Sound-related actions
 	void Preload();

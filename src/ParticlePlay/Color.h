@@ -7,9 +7,9 @@ class ppColor{
 private:
 	Uint32 color;
 public:
-	ppColor();
+	ppColor() : ppColor(0xff000000) {}
+	ppColor(Uint8 r, Uint8 g, Uint8 b) : ppColor(r, g, b, 0xff) {}
 	ppColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-	ppColor(Uint8 r, Uint8 g, Uint8 b);
 	ppColor(Uint32 color);
 	Uint32 GetColor();
 	Uint8 GetR();

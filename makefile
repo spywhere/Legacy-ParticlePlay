@@ -1,12 +1,12 @@
 CC=g++
 
 CPPFLAGS=\
+-std=c++11\
 -DPPDEBUG\
 -DAL_ALEXT_PROTOTYPES\
 -I/Library/Frameworks/SDL2.framework/Headers\
 -I/Library/Frameworks/SDL2_image.framework/Headers\
 -I/Library/Frameworks/SDL2_net.framework/Headers
-# -I/Library/Frameworks/SDL2_mixer.framework/Headers\
 
 # Library
 LIBS=\
@@ -16,8 +16,6 @@ LIBS=\
 -lOpenAL\
 -framework OpenGL\
 -lBox2D
-# -framework SDL2_mixer\
-# -framework Box2D
 # -openal32
 
 # Source goes here
