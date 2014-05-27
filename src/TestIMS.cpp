@@ -148,7 +148,7 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 		}else if(this->test==3){
 			this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("BeWild")->GetVolumn()*100, 165, 10, 10);
 		}else if(this->test==4){
-			this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Critical")->GetVolumn()*100, 165, 10, 10);
+			this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Drum")->GetVolumn()*100, 165, 10, 10);
 		}else if(this->test==5){
 			this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Drum")->GetVolumn()*100, 165, 10, 10);
 		}else if(this->test==6){
@@ -166,13 +166,13 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 			}else if(this->test==2){
 				this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Melody")->GetVolumn()*100, 180, 10, 10);
 			}else if(this->test==4){
-				this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Battle")->GetVolumn()*100, 180, 10, 10);
+				this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Critical")->GetVolumn()*100, 180, 10, 10);
 			}else if(this->test==5){
 				this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Tamborine")->GetVolumn()*100, 180, 10, 10);
 			}else if(this->test==6){
 				this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Percussion")->GetVolumn()*100, 180, 10, 10);
 			}
-			if(this->test!=3&&this->test!=5){
+			if(this->test!=3&&this->test!=4&&this->test!=5){
 				if(this->posy==4){
 					glColor3f(0.5f, 0.5f, 1);
 				}else{
@@ -183,8 +183,6 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 					this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Melody")->GetVolumn()*100, 195, 10, 10);
 				}else if(this->test==2){
 					this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Melody2")->GetVolumn()*100, 195, 10, 10);
-				}else if(this->test==4){
-					this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("All")->GetVolumn()*100, 195, 10, 10);
 				}else if(this->test==6){
 					this->DrawFillRect(100+this->GetGame()->GetInteractiveMusicSystem()->GetSound("Various")->GetVolumn()*100, 195, 10, 10);
 				}
@@ -307,31 +305,24 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			}
 			if(this->gui->GetControl("sound2")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound2");
-				label->SetText("Critical");
+				label->SetText("Drum");
 				label->SetVisible(true);
 			}
 			if(this->gui->GetControl("sound3")->GetType()==ppControlType::LABEL){
 				ppLabel* label = (ppLabel*)this->gui->GetControl("sound3");
-				label->SetText("Battle");
-				label->SetVisible(true);
-			}
-			if(this->gui->GetControl("sound4")->GetType()==ppControlType::LABEL){
-				ppLabel* label = (ppLabel*)this->gui->GetControl("sound4");
-				label->SetText("All");
+				label->SetText("Critical");
 				label->SetVisible(true);
 			}
 
-			ppSound* base = ims->NewSound("Base", "res/Music_Gameplay.wav", 0);
-			ppSound* critical = ims->NewSound("Critical", "res/Music_Gameplay.wav", 1);
-			ppSound* battle = ims->NewSound("Battle", "res/Music_Gameplay.wav", 2);
-			ppSound* all = ims->NewSound("All", "res/Music_Gameplay.wav", 3);
+			ppSound* base = ims->NewSound("Base", "res/Music Gameplay/Music_Gameplay_Base.wav", 0);
+			ppSound* drum = ims->NewSound("Drum", "res/Music Gameplay/Music_Gameplay_Drum.wav", 0);
+			ppSound* critical = ims->NewSound("Critical", "res/Music Gameplay/Music_Gameplay_Critical.wav", 0);
 			this->lpf = (ppLowPassFilter *)ims->NewFilter(ppFilterType::LOW_PASS);
 			ims->ApplyFilter(this->lpf);
-			if(base&&critical&&battle&&all){
+			if(base&&drum&&critical){
 				ims->SetLoop(true);
+				ims->GetSound("Drum")->SetVolumn(0);
 				ims->GetSound("Critical")->SetVolumn(0);
-				ims->GetSound("Battle")->SetVolumn(0);
-				ims->GetSound("All")->SetVolumn(0);
 
 				this->soundInit = true;
 				ims->Play();
@@ -441,11 +432,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			if(this->posy==1){
 				mixSound = ims->GetSound("Base");
 			}else if(this->posy==2){
-				mixSound = ims->GetSound("Critical");
+				mixSound = ims->GetSound("Drum");
 			}else if(this->posy==3){
-				mixSound = ims->GetSound("Battle");
-			}else if(this->posy==4){
-				mixSound = ims->GetSound("All");
+				mixSound = ims->GetSound("Critical");
 			}
 		}else if(this->test==5){
 			sound = ims->GetSound("Base");
@@ -483,7 +472,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		int soundmax = 4;
 		if(this->test==3){
 			soundmax = 2;
-		}else if(this->test==5){
+		}else if(this->test==4||this->test==5){
 			soundmax = 3;
 		}
 

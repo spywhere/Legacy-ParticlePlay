@@ -16,6 +16,9 @@ LIBS=\
 -lOpenAL\
 -framework OpenGL\
 -lBox2D
+# -logg
+# -lvorbis
+# -lvorbisfile
 # -openal32
 
 # Source goes here
