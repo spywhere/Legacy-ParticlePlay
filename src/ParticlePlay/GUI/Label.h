@@ -7,7 +7,7 @@
 #include "ControlType.h"
 
 class ppLabel : public ppControl{
-private:
+protected:
 	const char* text;
 public:
 	ppLabel(const char *name, int x, int y);

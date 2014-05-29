@@ -9,7 +9,7 @@
 
 class ppControl;
 class ppGUI{
-private:
+protected:
 	ppBitmapFont* defaultFont;
 	std::vector<ppControl*> controls;
 	static bool ppControlOrdering(ppControl* a, ppControl* b);

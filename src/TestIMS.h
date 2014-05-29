@@ -3,23 +3,13 @@
 
 #include "ParticlePlay/Includes.h"
 #include "ParticlePlay/GUI/GUI.h"
-#include "ParticlePlay/IMS/IMS.h"
-#include "ParticlePlay/IMS/Filters.h"
 #include "ParticlePlay/State.h"
 #include "ParticlePlay/Input.h"
 
 
 class TestIMS : public ppState{
-private:
+protected:
 	ppGUI* gui;
-	ppLowPassFilter* lpf;
-	bool soundInit;
-	bool isPause;
-	int posx, posy;
-	int test;
-	int cooldown;
-	float currentTime;
-	float totalTime;
 	void DrawRect(int x, int y, int w, int h);
 	void DrawFillRect(int x, int y, int w, int h);
 public:

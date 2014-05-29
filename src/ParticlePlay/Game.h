@@ -9,7 +9,7 @@
 
 class ppState;
 class ppGame{
-private:
+protected:
 	std::map<const char*, ppState*> states;
 	SDL_Window* mainWindow;
 	SDL_Renderer* renderer;

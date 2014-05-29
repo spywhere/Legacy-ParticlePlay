@@ -4,7 +4,7 @@
 #include "Includes.h"
 
 class ppBitmapFont{
-	private:
+	protected:
 		SDL_Renderer* renderer;
 		SDL_Surface* bitmap;
 		SDL_Texture* texture;

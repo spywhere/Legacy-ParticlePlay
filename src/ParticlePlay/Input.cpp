@@ -2,8 +2,61 @@
 
 ppInput::ppInput(){
 	this->keyCooldown = 0;
-	this->mouseCooldown = 0;
 	this->keyDown = false;
+	this->mouseCooldown = 0;
+	this->mouseDown = false;
+	this->clicks = 0;
+	this->mbtn = 0;
+	this->mx = -1;
+	this->my = -1;
+	this->rmx = -1;
+	this->rmy = -1;
+	this->mmx = 0;
+	this->mmy = 0;
+}
+
+int ppInput::GetMouseX(){
+	return this->mx;
+}
+
+int ppInput::GetMouseY(){
+	return this->my;
+}
+
+int ppInput::GetRelativeMouseX(){
+	return this->rmx;
+}
+
+int ppInput::GetRelativeMouseY(){
+	return this->rmy;
+}
+
+int ppInput::GetScrollX(){
+	return this->GetScrollX(true);
+}
+
+int ppInput::GetScrollY(){
+	return this->GetScrollY(true);
+}
+
+int ppInput::GetScrollX(bool once){
+	if(once){
+		int mm = this->mmx;
+		this->mmx = 0;
+		return mm;
+	}else{
+		return this->mmx;
+	}
+}
+
+int ppInput::GetScrollY(bool once){
+	if(once){
+		int mm = this->mmy;
+		this->mmy = 0;
+		return mm;
+	}else{
+		return this->mmy;
+	}
 }
 
 SDL_Keysym* ppInput::IsKeyDown(){
@@ -11,6 +64,13 @@ SDL_Keysym* ppInput::IsKeyDown(){
 		return &this->keyEvent->keysym;
 	}
 	return NULL;
+}
+
+int ppInput::IsMouseDown(){
+	if(this->mouseDown){
+		return this->mbtn;
+	}
+	return 0;
 }
 
 // SDL_Keysym* ppInput::isKeyDown(int cooldown){
@@ -64,11 +124,35 @@ bool ppInput::IsKeyDown(SDL_Scancode key, int cooldown){
 	return this->keyState[key];
 }
 
-bool ppInput::IsCoolDown(int cooldown){
+bool ppInput::IsMouseDown(int button){
+	int btn = this->IsMouseDown();
+	return btn>0&&btn==button;
+}
+
+bool ppInput::IsMouseDown(int button, int cooldown){
+	if(this->mouseCooldown > 0){
+		return false;
+	}
+	int btn = this->IsMouseDown();
+	if(btn>0&&btn==button){
+		this->mouseCooldown = cooldown;
+	}
+	return btn>0&&btn==button;
+}
+
+bool ppInput::IsKeyCoolDown(int cooldown){
 	if(this->keyCooldown > 0){
 		return false;
 	}
 	this->keyCooldown = cooldown;
+	return true;
+}
+
+bool ppInput::IsMouseCoolDown(int cooldown){
+	if(this->mouseCooldown > 0){
+		return false;
+	}
+	this->mouseCooldown = cooldown;
 	return true;
 }
 
@@ -79,6 +163,20 @@ void ppInput::OnEvent(SDL_Event* event){
 	}else if(event->type == SDL_KEYDOWN){
 		this->keyDown = true;
 		this->keyEvent = &event->key;
+	}else if(event->type == SDL_MOUSEMOTION){
+		this->mx = event->motion.x;
+		this->my = event->motion.y;
+		this->rmx = event->motion.xrel;
+		this->rmy = event->motion.xrel;
+	}else if(event->type == SDL_MOUSEBUTTONUP || event->type == SDL_MOUSEBUTTONDOWN){
+		this->mx = event->button.x;
+		this->my = event->button.y;
+		this->clicks = event->button.clicks;
+		this->mbtn = event->button.button;
+		this->mouseDown = event->type == SDL_MOUSEBUTTONDOWN;
+	}else if(event->type == SDL_MOUSEWHEEL){
+		this->mmx = event->wheel.x;
+		this->mmy = event->wheel.y;
 	}
 }
 
@@ -93,4 +191,8 @@ void ppInput::OnUpdate(){
 
 int ppInput::GetKeyCooldown(){
 	return this->keyCooldown;
+}
+
+int ppInput::GetMouseCooldown(){
+	return this->mouseCooldown;
 }

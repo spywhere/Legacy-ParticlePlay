@@ -4,6 +4,14 @@ ppColor::ppColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a){
 	this->color = (a<<24)|(r<<16)|(g<<8)|b;
 }
 
+ppColor::ppColor(float r, float g, float b, float a){
+	int aa = a*255;
+	int rr = r*255;
+	int gg = g*255;
+	int bb = b*255;
+	this->color = (aa<<24)|(rr<<16)|(gg<<8)|bb;
+}
+
 ppColor::ppColor(Uint32 color){
 	this->color = color;
 }

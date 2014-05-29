@@ -28,13 +28,7 @@ CUSTOM_SOURCES=\
 ParticlePlay/GUI/Control.cpp\
 ParticlePlay/GUI/GUI.cpp\
 ParticlePlay/GUI/Label.cpp\
-ParticlePlay/IMS/filters/BandPassFilter.cpp\
-ParticlePlay/IMS/filters/HighPassFilter.cpp\
-ParticlePlay/IMS/filters/LowPassFilter.cpp\
-ParticlePlay/IMS/Filter.cpp\
 ParticlePlay/IMS/IMS.cpp\
-ParticlePlay/IMS/Sound.cpp\
-ParticlePlay/IMS/Utils.cpp\
 ParticlePlay/BitmapFont.cpp\
 ParticlePlay/Color.cpp\
 ParticlePlay/Game.cpp\

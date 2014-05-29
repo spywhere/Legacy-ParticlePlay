@@ -18,6 +18,6 @@ int main(int argc, char* argv[]) {
     theApp->AddState("main", new TestScene());
     theApp->AddState("ims", new TestIMS());
     theApp->AddState("testbed", new TestTestbed());
-    theApp->EnterState("ims");
+    theApp->EnterState("testbed");
     return theApp->StartGame();
 }

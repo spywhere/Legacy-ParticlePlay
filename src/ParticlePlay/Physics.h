@@ -4,7 +4,7 @@
 #include "Includes.h"
 
 class ppPhysics{
-private:
+protected:
 	b2World* world;
 	int fps;
 public:

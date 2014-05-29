@@ -8,7 +8,7 @@
 #include "ParticlePlay/Input.h"
 
 class TestScene : public ppState{
-private:
+protected:
 	ppBitmapFont* font;
 	ppGUI* gui;
 	int posx, posy;
