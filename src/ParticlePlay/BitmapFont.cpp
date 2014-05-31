@@ -1,4 +1,4 @@
-#include "BitmapFont.h"
+#include "BitmapFont.hpp"
 
 #include <iostream>
 

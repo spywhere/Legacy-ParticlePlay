@@ -2,10 +2,10 @@
 #define CONTROL_HEADER
 
 #include <string>
-#include "../Includes.h"
-#include "../Input.h"
-#include "GUI.h"
-#include "ControlType.h"
+#include "../Includes.hpp"
+#include "../Input.hpp"
+#include "GUI.hpp"
+#include "ControlType.hpp"
 
 class ppGUI;
 class ppControl{

@@ -1,9 +1,9 @@
 #ifndef STATE_HEADER
 #define STATE_HEADER
 
-#include "Includes.h"
-#include "Input.h"
-#include "Game.h"
+#include "Includes.hpp"
+#include "Input.hpp"
+#include "Game.hpp"
 
 class ppGame;
 class ppState{

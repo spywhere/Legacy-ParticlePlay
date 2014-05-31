@@ -1,4 +1,4 @@
-#include "Color.h"
+#include "Color.hpp"
 
 ppColor::ppColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a){
 	this->color = (a<<24)|(r<<16)|(g<<8)|b;

@@ -1,4 +1,4 @@
-#include "Control.h"
+#include "Control.hpp"
 
 ppControl::ppControl(const char *name, int x, int y){
 	this->name = std::string(name);

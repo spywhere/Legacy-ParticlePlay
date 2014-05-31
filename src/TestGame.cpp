@@ -1,9 +1,9 @@
-#include "TestGame.h"
+#include "TestGame.hpp"
 
 #include <iostream>
-#include "TestScene.h"
-#include "TestIMS.h"
-#include "TestTestbed.h"
+#include "TestScene.hpp"
+#include "TestIMS.hpp"
+#include "TestTestbed.hpp"
 
 int main(int argc, char* argv[]) {
     TestGame* theApp = new TestGame();

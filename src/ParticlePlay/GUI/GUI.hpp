@@ -2,10 +2,10 @@
 #define GUI_HEADER
 
 #include <vector>
-#include "../Includes.h"
-#include "../Input.h"
-#include "../BitmapFont.h"
-#include "Control.h"
+#include "../Includes.hpp"
+#include "../Input.hpp"
+#include "../BitmapFont.hpp"
+#include "Control.hpp"
 
 class ppControl;
 class ppGUI{

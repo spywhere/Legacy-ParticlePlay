@@ -1,12 +1,12 @@
 #ifndef TESTBED_HEADER
 #define TESTBED_HEADER
 
-#include "Includes.h"
-#include "State.h"
-#include "BitmapFont.h"
-#include "Input.h"
-#include "Physics.h"
-#include "GUI/GUI.h"
+#include "Includes.hpp"
+#include "State.hpp"
+#include "BitmapFont.hpp"
+#include "Input.hpp"
+#include "Physics.hpp"
+#include "GUI/GUI.hpp"
 #include <vector>
 
 class ppTestBed : public ppState{

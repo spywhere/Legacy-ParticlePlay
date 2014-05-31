@@ -1,4 +1,4 @@
-#include "Physics.h"
+#include "Physics.hpp"
 
 #include <Box2D/Box2D.h>
 

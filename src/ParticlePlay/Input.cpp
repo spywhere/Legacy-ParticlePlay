@@ -1,4 +1,4 @@
-#include "Input.h"
+#include "Input.hpp"
 
 ppInput::ppInput(){
 	this->keyCooldown = 0;

@@ -1,7 +1,7 @@
 #ifndef TESTTESTBED_HEADER
 #define TESTTESTBED_HEADER
 
-#include "ParticlePlay/TestBed.h"
+#include "ParticlePlay/TestBed.hpp"
 
 class TestTestbed : public ppTestBed{
 public:

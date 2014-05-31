@@ -1,8 +1,8 @@
-#include "Testbed.h"
+#include "Testbed.hpp"
 
 #include <iostream>
 #include <sstream>
-#include "GUI/Controls.h"
+#include "GUI/Controls.hpp"
 
 void ppTestBed::OnInit(){
 	this->ptm = 1/30.0f;

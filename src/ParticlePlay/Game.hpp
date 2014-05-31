@@ -2,10 +2,10 @@
 #define GAME_HEADER
 
 #include <map>
-#include "Includes.h"
-#include "IMS/IMS.h"
-#include "Color.h"
-#include "State.h"
+#include "Includes.hpp"
+#include "IMS/IMS.hpp"
+#include "Color.hpp"
+#include "State.hpp"
 
 class ppState;
 class ppGame{

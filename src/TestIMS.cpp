@@ -1,4 +1,4 @@
-#include "TestIMS.h"
+#include "TestIMS.hpp"
 
 #include <iostream>
 #include <cmath>

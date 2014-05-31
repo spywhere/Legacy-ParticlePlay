@@ -1,4 +1,4 @@
-#include "State.h"
+#include "State.hpp"
 
 ppState::ppState(){
 	this->game = NULL;

@@ -1,11 +1,11 @@
 #ifndef TESTSCENE_HEADER
 #define TESTSCENE_HEADER
 
-#include "ParticlePlay/Includes.h"
-#include "ParticlePlay/GUI/GUI.h"
-#include "ParticlePlay/State.h"
-#include "ParticlePlay/BitmapFont.h"
-#include "ParticlePlay/Input.h"
+#include "ParticlePlay/Includes.hpp"
+#include "ParticlePlay/GUI/GUI.hpp"
+#include "ParticlePlay/State.hpp"
+#include "ParticlePlay/BitmapFont.hpp"
+#include "ParticlePlay/Input.hpp"
 
 class TestScene : public ppState{
 protected:

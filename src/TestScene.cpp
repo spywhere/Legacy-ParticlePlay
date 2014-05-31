@@ -1,8 +1,8 @@
-#include "TestScene.h"
+#include "TestScene.hpp"
 
 #include <iostream>
 #include <sstream>
-#include "ParticlePlay/GUI/Controls.h"
+#include "ParticlePlay/GUI/Controls.hpp"
 
 void TestScene::OnInit(){
 	this->gui = new ppGUI();

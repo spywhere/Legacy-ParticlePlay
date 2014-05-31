@@ -1,10 +1,10 @@
 #ifndef LABEL_HEADER
 #define LABEL_HEADER
 
-#include "../Includes.h"
-#include "../Input.h"
-#include "Control.h"
-#include "ControlType.h"
+#include "../Includes.hpp"
+#include "../Input.hpp"
+#include "Control.hpp"
+#include "ControlType.hpp"
 
 class ppLabel : public ppControl{
 protected:

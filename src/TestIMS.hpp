@@ -1,10 +1,10 @@
 #ifndef TESTIMS_HEADER
 #define TESTIMS_HEADER
 
-#include "ParticlePlay/Includes.h"
-#include "ParticlePlay/GUI/GUI.h"
-#include "ParticlePlay/State.h"
-#include "ParticlePlay/Input.h"
+#include "ParticlePlay/Includes.hpp"
+#include "ParticlePlay/GUI/GUI.hpp"
+#include "ParticlePlay/State.hpp"
+#include "ParticlePlay/Input.hpp"
 
 
 class TestIMS : public ppState{
