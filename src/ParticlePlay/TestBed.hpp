@@ -2,6 +2,7 @@
 #define TESTBED_HEADER
 
 #include "Includes.hpp"
+#include "Color.hpp"
 #include "State.hpp"
 #include "BitmapFont.hpp"
 #include "Input.hpp"

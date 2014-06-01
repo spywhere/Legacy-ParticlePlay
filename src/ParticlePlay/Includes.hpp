@@ -6,7 +6,6 @@
 		// SDL2
 		#include <SDL2/SDL.h>
 		#include <SDL2_image/SDL_image.h>
-		// #include <SDL2_mixer/SDL_mixer.h>
 		#include <SDL2_net/SDL_net.h>
 
 		// OpenGL
@@ -21,15 +20,8 @@
 		// Box2D
 		#include <Box2D/Box2D.h>
 
-		// XCode related
-		// #include <CoreFoundation/CoreFoundation.h>
-
-		//Redirect to resources folder
-		// char path[PATH_MAX];
-		// CFURLRef res = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
-		// CFURLGetFileSystemRepresentation(res, true, (UInt8 *)path, PATH_MAX);
-		// CFRelease(res);
-		// chdir(path);
+		// YAML-CPP
+		#include <yaml-cpp/yaml.h>
 	#elif _MSC_VER
 		//Compile with Visual Studio
 		#include <windows.h>
@@ -37,7 +29,6 @@
 		// SDL2
 		#include <SDL.h>
 		#include <SDL_image.h>
-		// #include <SDL_mixer.h>
 		#include <SDL_net.h>
 
 		// OpenGL
@@ -52,13 +43,15 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
+
+		// YAML-CPP
+		#include <yaml-cpp/yaml.h>
 	#elif __WIN32__
 		//Compile with MinGW
 
 		// SDL2
 		#include "SDL2/SDL.h"
 		#include "SDL2/SDL_image.h"
-		// #include "SDL2/SDL_mixer.h"
 		#include "SDL2/SDL_net.h"
 
 		// OpenGL
@@ -72,13 +65,15 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
+
+		// YAML-CPP
+		#include <yaml-cpp/yaml.h>
 	#elif __LINUX__
 		//Compile on Linux (not tested)
 
 		// SDL2
 		#include <SDL2/SDL.h>
 		#include <SDL2/SDL_image.h>
-		// #include <SDL2/SDL_mixer.h>
 		#include <SDL2/SDL_net.h>
 
 		// OpenGL
@@ -92,13 +87,15 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
+
+		// YAML-CPP
+		#include <yaml-cpp/yaml.h>
 	#else
 		//Other platform
 
 		// SDL2
 		#include <SDL2/SDL.h>
 		#include <SDL2/SDL_image.h>
-		// #include <SDL2/SDL_mixer.h>
 		#include <SDL2/SDL_net.h>
 
 		// OpenGL
@@ -112,5 +109,8 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
+
+		// YAML-CPP
+		#include <yaml-cpp/yaml.h>
 	#endif
 #endif

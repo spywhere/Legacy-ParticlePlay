@@ -1,11 +1,12 @@
 Dependency
 ================
- - OpenAL-Soft
+ - SDL2
+ - SDL2_image
+ - SDL2_net
+ - Box2D
  - OpenGL
-
- - libogg
- - libvorbis
- - flac
+ - OpenAL-Soft
+ - YAML-CPP
 
 Configurations
 ================

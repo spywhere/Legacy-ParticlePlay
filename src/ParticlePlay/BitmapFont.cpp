@@ -1,6 +1,8 @@
 #include "BitmapFont.hpp"
 
-#include <iostream>
+#ifdef PPDEBUG
+	#include <iostream>
+#endif
 
 ppBitmapFont::ppBitmapFont(SDL_Surface* surface){
 	this->bitmap = surface;
@@ -9,7 +11,9 @@ ppBitmapFont::ppBitmapFont(SDL_Surface* surface){
 	this->texture = NULL;
 	this->renderer = NULL;
 	if(!this->bitmap){
+		#ifdef PPDEBUG
 		std::cout << "BitmapFont Error: " << IMG_GetError() << std::endl;
+		#endif
 		return;
 	}
 	Uint32 bgColor = SDL_MapRGBA(bitmap->format, 0, 0, 0, 0);
@@ -51,44 +55,44 @@ ppBitmapFont::ppBitmapFont(SDL_Surface* surface){
 			}
 
 			for(int pRow=0;pRow<cellH;pRow++){
-                for(int pCol=0;pCol<cellW;pCol++){
-                    int pX = (cellW*x)+pCol;
-                    int pY = (cellH*y)+pRow;
-                    if(this->GetPixel(pX, pY, bitmap)!=bgColor){
-                        if( pRow < top ){
-                            top = pRow;
-                        }
-                        pCol = cellW;
-                        pRow = cellH;
-                    }
-                }
-            }
+				for(int pCol=0;pCol<cellW;pCol++){
+					int pX = (cellW*x)+pCol;
+					int pY = (cellH*y)+pRow;
+					if(this->GetPixel(pX, pY, bitmap)!=bgColor){
+						if( pRow < top ){
+							top = pRow;
+						}
+						pCol = cellW;
+						pRow = cellH;
+					}
+				}
+			}
 
-            if(currentChar=='A'){
-                for(int pRow=cellH-1;pRow>=0;pRow--){
-                    for(int pCol=0;pCol<cellW;pCol++){
-                        int pX = (cellW*x)+pCol;
-                        int pY = (cellH*y)+pRow;
+			if(currentChar=='A'){
+				for(int pRow=cellH-1;pRow>=0;pRow--){
+					for(int pCol=0;pCol<cellW;pCol++){
+						int pX = (cellW*x)+pCol;
+						int pY = (cellH*y)+pRow;
 						if(this->GetPixel(pX, pY, bitmap)!=bgColor){
-                            baseA = pRow;
-                            pCol = cellW;
-                            pRow = -1;
-                        }
-                    }
-                }
-            }
+							baseA = pRow;
+							pCol = cellW;
+							pRow = -1;
+						}
+					}
+				}
+			}
 
-            currentChar++;
+			currentChar++;
 		}
 	}
 
 	this->space = cellW / 3;
-    this->line = baseA - top;
+	this->line = baseA - top;
 
-    for(int t=0;t<256;t++){
-        chars[t].y += top;
-        chars[t].h -= top;
-    }
+	for(int t=0;t<256;t++){
+		chars[t].y += top;
+		chars[t].h -= top;
+	}
 }
 
 void ppBitmapFont::SetSpacing(int spacing){
@@ -100,16 +104,16 @@ void ppBitmapFont::SetLineSpacing(int spacing){
 }
 
 Uint32 ppBitmapFont::GetPixel(int x, int y, SDL_Surface* surface){
-    Uint32 *pixels = (Uint32 *)surface->pixels;
-    return pixels[ ( y * surface->w ) + x ];
+	Uint32 *pixels = (Uint32 *)surface->pixels;
+	return pixels[ ( y * surface->w ) + x ];
 }
 
 void ppBitmapFont::RenderSurface(int x, int y, SDL_Texture* texture, SDL_Rect* offset){
 	SDL_Rect off;
-    off.x = x;
-    off.y = y;
-    off.w = offset->w;
-    off.h = offset->h;
+	off.x = x;
+	off.y = y;
+	off.w = offset->w;
+	off.h = offset->h;
 	SDL_RenderCopy(this->renderer, texture, offset, &off);
 }
 
@@ -121,19 +125,19 @@ void ppBitmapFont::Render(int x, int y, const char* text, SDL_Renderer *renderer
 		this->renderer = renderer;
 		this->texture = SDL_CreateTextureFromSurface(this->renderer, this->bitmap);
 	}
-    int X = x, Y = y;
-    if(bitmap!=NULL){
-        for(int show=0;text[show]!='\0';show++){
-            if(text[show]==' '){
-                X+=this->space;
-            }else if(text[show]=='\n'){
-                Y+=this->line+this->linespacing;
-                X=x;
-            }else{
-                int ascii = (unsigned char)text[show];
-                this->RenderSurface(X, Y, this->texture, &chars[ascii]);
-                X += chars[ ascii ].w + this->spacing;
-            }
-    	}
-    }
+	int X = x, Y = y;
+	if(bitmap!=NULL){
+		for(int show=0;text[show]!='\0';show++){
+			if(text[show]==' '){
+				X+=this->space;
+			}else if(text[show]=='\n'){
+				Y+=this->line+this->linespacing;
+				X=x;
+			}else{
+				int ascii = (unsigned char)text[show];
+				this->RenderSurface(X, Y, this->texture, &chars[ascii]);
+				X += chars[ ascii ].w + this->spacing;
+			}
+		}
+	}
 }

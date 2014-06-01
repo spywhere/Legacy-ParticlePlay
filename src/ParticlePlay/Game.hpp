@@ -5,17 +5,19 @@
 #include "Includes.hpp"
 #include "IMS/IMS.hpp"
 #include "Color.hpp"
+#include "IO.hpp"
 #include "State.hpp"
 
 class ppState;
 class ppGame{
-protected:
+private:
 	std::map<const char*, ppState*> states;
 	SDL_Window* mainWindow;
 	SDL_Renderer* renderer;
 	SDL_GLContext glContext;
 	ppColor* backgroundColor;
 	ppInput* gameInput;
+	ppIO* gameIO;
 	ppIMS* ims;
 	const char* title;
 	ppState* currentState;
@@ -48,8 +50,8 @@ public:
 	int StartGame();
 	void QuitGame();
 	ppInput* GetGameInput();
+	ppIO* GetGameIO();
 	ppIMS* GetInteractiveMusicSystem();
-	// GameIO* GetGameIO();
 	// SoundPlayer* GetSoundPlayer();
 	void AddState(const char* name, ppState* state);
 	void EnterState(ppState* state);

@@ -15,16 +15,14 @@ LIBS=\
 -framework SDL2_net\
 -lOpenAL\
 -framework OpenGL\
--lBox2D
-# -logg
-# -lvorbis
-# -lvorbisfile
-# -openal32
+-lBox2D\
+-lyaml-cpp
+# -lopenal32
 
 # Source goes here
 SOURCEDIR=src
 # Engine
-CUSTOM_SOURCES=\
+ENGINE_SOURCES=\
 ParticlePlay/GUI/Control.cpp\
 ParticlePlay/GUI/GUI.cpp\
 ParticlePlay/GUI/Label.cpp\
@@ -33,6 +31,7 @@ ParticlePlay/BitmapFont.cpp\
 ParticlePlay/Color.cpp\
 ParticlePlay/Game.cpp\
 ParticlePlay/Input.cpp\
+ParticlePlay/IO.cpp\
 ParticlePlay/Physics.cpp\
 ParticlePlay/TestBed.cpp\
 ParticlePlay/State.cpp\
@@ -53,11 +52,11 @@ FULL_FLAGS=\
 
 # Info
 OBJDIR=objs
-OBJDIR_CUSTOM=$(OBJDIR)/custom
+OBJDIR_ENGINE=$(OBJDIR)/custom
 OBJDIR_DEMO=$(OBJDIR)/demo
 OBJDIR_FULL=$(OBJDIR)/full
 
-CUSTOM_OBJS=$(CUSTOM_SOURCES:%.cpp=$(OBJDIR_CUSTOM)/%.o)
+ENGINE_OBJS=$(ENGINE_SOURCES:%.cpp=$(OBJDIR_ENGINE)/%.o)
 ALL_OBJS=$(SOURCES:%.cpp=%.o)
 DEMO_OBJS=$(ALL_OBJS:%.o=$(OBJDIR_DEMO)/%.o)
 FULL_OBJS=$(ALL_OBJS:%.o=$(OBJDIR_FULL)/%.o)
@@ -71,8 +70,8 @@ all: preclean full-link demo-link
 demo: preclean demo-link
 full: preclean full-link
 
-$(OBJDIR_CUSTOM)/%.o: $(SOURCEDIR)/%.cpp
-	@echo "[Custom] Compiling $<"
+$(OBJDIR_ENGINE)/%.o: $(SOURCEDIR)/%.cpp
+	@echo "[Engine] Compiling $<"
 	@mkdir -p $(dir $@)
 	@$(CC) $(CPPFLAGS) $(DEMO_FLAGS) $(FULL_FLAGS) -c $< -o $@
 
@@ -86,26 +85,27 @@ $(OBJDIR_FULL)/%.o: $(SOURCEDIR)/%.cpp
 	@mkdir -p $(dir $@)
 	@$(CC) $(CPPFLAGS) $(FULL_FLAGS) -c $< -o $@
 
-demo-link: $(CUSTOM_OBJS) $(DEMO_OBJS)
+demo-link: $(ENGINE_OBJS) $(DEMO_OBJS)
 	@echo "[Demo] Linking..."
 	@mkdir -p $(OUTDIR)
 	@$(CC) -o $(OUTDIR)/$(DEMOEXE) $+ $(LIBS)
 
-full-link: $(CUSTOM_OBJS) $(FULL_OBJS)
+full-link: $(ENGINE_OBJS) $(FULL_OBJS)
 	@echo "[Full] Linking..."
 	@mkdir -p $(OUTDIR)
 	@$(CC) -o $(OUTDIR)/$(FULLEXE) $+ $(LIBS)
 
-run-demo:
+run-demo: demo
 	@echo "[Demo] Running..."
 	@$(OUTDIR)/$(DEMOEXE)
 
-run-full:
+run-full: full
 	@echo "[Full] Running..."
 	@$(OUTDIR)/$(FULLEXE)
 
 resources:
 	@echo "Copying resources..."
+	@mkdir -p $(OUTDIR)
 	@cp -R $(RESDIR)/* $(OUTDIR)/
 
 preclean:

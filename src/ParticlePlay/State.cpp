@@ -3,6 +3,7 @@
 ppState::ppState(){
 	this->game = NULL;
 	this->name = "";
+	this->customData = NULL;
 	this->needInit = false;
 }
 
@@ -24,6 +25,10 @@ void ppState::SetName(const char* name){
 
 ppGame* ppState::GetGame(){
 	return this->game;
+}
+
+void ppState::SetCustomData(void* customData){
+	this->customData = customData;
 }
 
 void ppState::SetGame(ppGame* game){

@@ -5,9 +5,7 @@
 #include <vector>
 #include "../Includes.hpp"
 
-
 class ppGame;
-class ppSound;
 class ppIMS {
 protected:
 	//// InteractiveMusicSystem will inherit from SoundSystem class

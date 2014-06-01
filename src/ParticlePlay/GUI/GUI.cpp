@@ -1,6 +1,8 @@
 #include "GUI.hpp"
 
-#include <iostream>
+#ifdef PPDEBUG
+	#include <iostream>
+#endif
 
 bool ppGUI::ppControlOrdering(ppControl* a, ppControl* b){
 	return a->GetZ()<b->GetZ();
@@ -9,8 +11,10 @@ bool ppGUI::ppControlOrdering(ppControl* a, ppControl* b){
 ppGUI::ppGUI(){
 	this->defaultFont = NULL;
 	if(!IMG_Load("monaco12.png")){
+		#ifdef PPDEBUG
 		std::cout << "Default GUI font is not found" << std::endl;
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!", "Default GUI font is not found.", 0);
+		#endif
 	}else{
 		this->defaultFont = new ppBitmapFont(IMG_Load("monaco12.png"));
 	}

@@ -10,6 +10,7 @@ class ppState{
 private:
 	ppGame* game;
 	const char* name;
+	void* customData;
 protected:
 	bool needInit;
 public:
@@ -18,6 +19,10 @@ public:
 	void SetNeedInit(bool needInit);
 	const char* GetName();
 	void SetName(const char* name);
+	void SetCustomData(void* customData);
+	template<typename ppType> ppType GetCustomData(){
+		return static_cast<ppType>(this->customData);
+	}
 	ppGame* GetGame();
 	void SetGame(ppGame* game);
 	virtual void OnInit()=0;

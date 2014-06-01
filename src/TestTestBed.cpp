@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 
-
 void TestTestbed::OnInit(){
 	ppTestBed::OnInit();
 	b2BodyDef* myBodyDef = new b2BodyDef();

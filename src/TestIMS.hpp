@@ -6,7 +6,6 @@
 #include "ParticlePlay/State.hpp"
 #include "ParticlePlay/Input.hpp"
 
-
 class TestIMS : public ppState{
 protected:
 	ppGUI* gui;

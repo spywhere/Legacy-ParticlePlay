@@ -1,12 +1,15 @@
 #include "Game.hpp"
 
-#include <iostream>
+#ifdef PPDEBUG
+	#include <iostream>
+#endif
 
 ppGame::ppGame(){
 	this->mainWindow = NULL;
 	this->renderer = NULL;
 	this->backgroundColor = new ppColor();
 	this->gameInput = new ppInput();
+	this->gameIO = new ppIO();
 	this->ims = NULL;
 	this->title = "My Game";
 	this->currentState = NULL;
@@ -235,8 +238,6 @@ int ppGame::StartGame(){
 		this->running = true;
 		SDL_Event* event = new SDL_Event();
 
-		SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
-
 		Uint32 lastTimer = SDL_GetTicks(), timeNow;
 		Uint32 lastTime = lastTimer, avgRenderTime = 0, avgUpdateTime = 0;
 		int renderDelta = 0, updateDelta = 0;
@@ -294,36 +295,42 @@ int ppGame::StartGame(){
 
 				if(this->showFPS){
 					// BG
-					SDL_Rect* rect = new SDL_Rect;
-					rect->x = 0;
-					rect->y = 0;
-					rect->w = this->width;
-					rect->h = 6;
-					SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 127);
-					SDL_RenderFillRect(this->renderer, rect);
+					glEnable(GL_BLEND);
+					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+					glBegin(GL_QUADS);
+					glColor4f(1, 1, 1, 0.5f);
+					glVertex3f(0, 0, 0);
+					glVertex3f(this->width, 0, 0);
+					glVertex3f(this->width, 6, 0);
+					glVertex3f(0, 6, 0);
+					glEnd();
 					// FPS
 					if(this->fps > 0){
-						rect->x = 0;
-						rect->y = 1;
-						rect->w = this->fps % this->width;
-						rect->h = 2;
 						Uint8 delta = this->fps / this->width;
-						SDL_SetRenderDrawColor(this->renderer, 0, 255-(delta*2), 0, 127);
-						SDL_RenderFillRect(this->renderer, rect);
+
+						glBegin(GL_QUADS);
+						glColor4f(0, (255-(delta*2))/255.0f, 0, 0.5f);
+						glVertex3f(0, 1, 0);
+						glVertex3f(this->fps % this->width, 1, 0);
+						glVertex3f(this->fps % this->width, 3, 0);
+						glVertex3f(0, 3, 0);
+						glEnd();
 					}
 					// UPS
 					if(this->ups > 0){
-						rect->x = 0;
-						rect->y = 3;
-						rect->w = this->ups % this->width;
-						rect->h = 2;
 						Uint8 delta = this->ups / this->width;
-						SDL_SetRenderDrawColor(this->renderer, 0, 0, 255-(delta*2), 127);
-						SDL_RenderFillRect(this->renderer, rect);
+
+						glBegin(GL_QUADS);
+						glColor4f(0, 0, (255-(delta*2))/255.0f, 0.5f);
+						glVertex3f(0, 3, 0);
+						glVertex3f(this->ups % this->width, 3, 0);
+						glVertex3f(this->ups % this->width, 5, 0);
+						glVertex3f(0, 5, 0);
+						glEnd();
 					}
+					glDisable(GL_BLEND);
 				}
 				SDL_GL_SwapWindow(this->mainWindow);
-				// SDL_RenderPresent(this->renderer);
 				avgRenderTime += SDL_GetTicks()-speedTimer;
 			}
 
@@ -390,6 +397,10 @@ void ppGame::QuitGame(){
 
 ppInput* ppGame::GetGameInput(){
 	return this->gameInput;
+}
+
+ppIO* ppGame::GetGameIO(){
+	return this->gameIO;
 }
 
 ppIMS* ppGame::GetInteractiveMusicSystem(){

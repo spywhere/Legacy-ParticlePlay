@@ -169,12 +169,11 @@ void ppTestBed::OnRender(SDL_Renderer* renderer, int delta){
 void ppTestBed::OnUpdate(ppInput* input, int delta){
 	if(input->IsKeyDown(SDL_SCANCODE_H, 10)){
 		this->help=(this->help+1) % 3;
-	}
-	if(input->IsKeyDown(SDL_SCANCODE_R)){
+	}else if(input->IsKeyDown(SDL_SCANCODE_R, 10)){
 		this->SetNeedInit(true);
 		this->GetGame()->EnterState(this);
 	}
-	if(input->IsMouseDown(SDL_BUTTON_LEFT, 10)){
+	if(input->IsMouseDown(SDL_BUTTON_LEFT, 30)){
 		b2BodyDef* myBodyDef = new b2BodyDef();
 
 		myBodyDef->type = b2_dynamicBody;
