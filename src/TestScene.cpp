@@ -10,6 +10,21 @@ void TestScene::OnInit(){
 	this->posx = 10;
 	this->posy = 10;
 	this->SetNeedInit(true);
+
+	this->loading = true;
+	this->percent = 0;
+
+	SDL_Thread *thread = SDL_CreateThread(TestScene::RunLoader, "TestThread", this);
+	SDL_DetachThread(thread);
+}
+
+int TestScene::RunLoader(void* data){
+	TestScene* scene = static_cast<TestScene*>(data);
+	while(++scene->percent<100){
+		SDL_Delay(50);
+	}
+	scene->loading = false;
+	return 0;
 }
 
 void TestScene::OnRender(SDL_Renderer* renderer, int delta){
@@ -20,11 +35,30 @@ void TestScene::OnRender(SDL_Renderer* renderer, int delta){
 		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
 	}
 
+	if(this->loading){
+		this->gui->GetDefaultFont()->Render(100, 180, "Loading...", renderer);
+		glBegin(GL_QUADS);
+			glColor3f(1, 1, 1);
+			glVertex3f(100, 200, 0);
+			glVertex3f(100+300, 200, 0);
+			glVertex3f(100+300, 200+20, 0);
+			glVertex3f(100, 200+20, 0);
+		glEnd();
+		glBegin(GL_QUADS);
+			glColor3f(0.5f, 0.5f, 1);
+			glVertex3f(100, 200, 0);
+			glVertex3f(100+(this->percent*300/100), 200, 0);
+			glVertex3f(100+(this->percent*300/100), 200+20, 0);
+			glVertex3f(100, 200+20, 0);
+		glEnd();
+		return;
+	}
+
 	glBegin(GL_QUADS);
-	glColor3f(1, 0, 0); glVertex3f(this->posx, this->posy, 0);
-	glColor3f(1, 1, 0); glVertex3f(this->posx+100, this->posy, 0);
-	glColor3f(1, 0, 1); glVertex3f(this->posx+100, this->posy+100, 0);
-	glColor3f(1, 1, 1); glVertex3f(this->posx, this->posy+100, 0);
+		glColor3f(1, 0, 0); glVertex3f(this->posx, this->posy, 0);
+		glColor3f(1, 1, 0); glVertex3f(this->posx+100, this->posy, 0);
+		glColor3f(1, 0, 1); glVertex3f(this->posx+100, this->posy+100, 0);
+		glColor3f(1, 1, 1); glVertex3f(this->posx, this->posy+100, 0);
 	glEnd();
 
 	SDL_Rect* rect = new SDL_Rect;

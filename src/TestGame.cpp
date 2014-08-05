@@ -56,6 +56,8 @@ int main(int argc, char* argv[]) {
 	game->AddState("main", new TestScene());
 	game->AddState("ims", new TestIMS());
 	game->AddState("testbed", new TestTestbed());
-	game->EnterState("testbed");
+	// game->EnterState("main");
+	game->EnterState("ims");
+	// game->EnterState("testbed");
 	return game->StartGame();
 }

@@ -23,10 +23,15 @@ LIBS=\
 SOURCEDIR=src
 # Engine
 ENGINE_SOURCES=\
+ParticlePlay/GUI/Control/Label.cpp\
+ParticlePlay/GUI/Control/SoundView.cpp\
 ParticlePlay/GUI/Control.cpp\
 ParticlePlay/GUI/GUI.cpp\
-ParticlePlay/GUI/Label.cpp\
+ParticlePlay/IMS/Format/Format.cpp\
+ParticlePlay/IMS/Format/WaveFormat.cpp\
 ParticlePlay/IMS/IMS.cpp\
+ParticlePlay/IMS/Sound.cpp\
+ParticlePlay/IMS/Utils.cpp\
 ParticlePlay/BitmapFont.cpp\
 ParticlePlay/Color.cpp\
 ParticlePlay/Game.cpp\

@@ -15,10 +15,19 @@ int ppIMS::Init(){
 	this->context = alcCreateContext(this->device, NULL);
 	if(!this->context){
 		// std::cout << "Cannot create context" << std::endl;
-		return 1;
+		return 2;
 	}
 	alcMakeContextCurrent(this->context);
 	return 0;
+}
+
+ppFormat *ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo){
+	if(audioFormat == ppAudioFormat::WAVE){
+		ppWaveFormat *format = new ppWaveFormat(this);
+		format->Init(filename, stereo);
+		return format;
+	}
+	return NULL;
 }
 
 int ppIMS::Reinit(){

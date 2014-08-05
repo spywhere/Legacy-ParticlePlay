@@ -4,6 +4,11 @@
 #include <map>
 #include <vector>
 #include "../Includes.hpp"
+#include "Format/AudioFormat.hpp"
+#include "Format/WaveFormat.hpp"
+
+//Pre-included
+#include "Sound.hpp"
 
 class ppGame;
 class ppIMS {
@@ -14,6 +19,7 @@ protected:
 	ALCcontext* context;
 public:
 	ppIMS(ppGame* game);
+	ppFormat *CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo);
 	int Init();
 	int Reinit();
 	void Quit();

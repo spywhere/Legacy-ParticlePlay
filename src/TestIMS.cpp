@@ -6,24 +6,13 @@
 
 void TestIMS::OnInit(){
 	this->gui = new ppGUI();
-}
-
-void TestIMS::DrawRect(int x, int y, int w, int h){
-	glBegin(GL_LINE_LOOP);
-		glVertex3f(x, y, 0);
-		glVertex3f(x+w, y, 0);
-		glVertex3f(x+w, y+h, 0);
-		glVertex3f(x, y+h, 0);
-	glEnd();
-}
-
-void TestIMS::DrawFillRect(int x, int y, int w, int h){
-	glBegin(GL_QUADS);
-		glVertex3f(x, y, 0);
-		glVertex3f(x+w, y, 0);
-		glVertex3f(x+w, y+h, 0);
-		glVertex3f(x, y+h, 0);
-	glEnd();
+	this->gui->AddControl(new ppLabel("text", 10, 50));
+	this->ims = new ppIMS(this->GetGame());
+	this->soundFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/FalkDemo.wav", true);
+	this->sound = new ppSound("sound", this->soundFormat, 1);
+	this->sound->SetSize(300, 30);
+	this->sound->SetLocation(10, 100);
+	this->gui->AddControl(this->sound);
 }
 
 void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
@@ -31,10 +20,16 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 	ss << "FPS: " << this->GetGame()->GetFPS() << " [" << this->GetGame()->GetAvgRenderTime() << "ms]\n";
 	ss << "UPS: " << this->GetGame()->GetUPS() << " [" << this->GetGame()->GetAvgUpdateTime() << "ms]\n";
 	if(this->gui->GetDefaultFont()){
+		glColor3f(1 ,1 ,1);
 		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
 	}
+	this->gui->Render(renderer);
 }
 
 void TestIMS::OnUpdate(ppInput* input, int delta){
 	this->gui->Update(input);
+	ppLabel* label = (ppLabel*)this->gui->GetControl("text");
+	std::stringstream msg;
+	msg << this->soundFormat->GetFileName() << " Track " << this->sound->GetTrack() << "/" << this->soundFormat->GetTotalTrack() << " " << " " << this->sound->GetCurrentTime() << "/" << this->sound->GetTotalTime();
+	label->SetText(msg.str());
 }

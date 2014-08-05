@@ -1,11 +1,13 @@
 #include "Control.hpp"
 
-ppControl::ppControl(const char *name, int x, int y){
+ppControl::ppControl(const char *name, int x, int y, int width, int height){
 	this->name = std::string(name);
 	this->parent = NULL;
 	this->x = x;
 	this->y = y;
 	this->z = 0;
+	this->width = width;
+	this->height = height;
 	this->visible = true;
 	this->gui = NULL;
 }
@@ -44,6 +46,24 @@ int ppControl::GetZ(){
 	return this->z;
 }
 
+int ppControl::GetWidth(){
+	return this->width;
+}
+
+int ppControl::GetHeight(){
+	return this->height;
+}
+
+void ppControl::SetLocation(int x, int y){
+	this->x = x;
+	this->y = y;
+}
+
+void ppControl::SetSize(int width, int height){
+	this->width = width;
+	this->height = height;
+}
+
 void ppControl::SetName(const char *name){
 	this->name = std::string(name);
 }
@@ -58,6 +78,14 @@ void ppControl::SetY(int y){
 
 void ppControl::SetZ(int z){
 	this->z = z;
+}
+
+void ppControl::SetWidth(int width){
+	this->width = width;
+}
+
+void ppControl::SetHeight(int height){
+	this->height = height;
 }
 
 bool ppControl::IsVisible(){

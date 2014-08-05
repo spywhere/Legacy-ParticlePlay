@@ -1,16 +1,14 @@
 #include "Label.hpp"
 
-#include <sstream>
-
 ppLabel::ppLabel(const char *name, int x, int y) : ppControl(name, x, y){
 	this->text = "Label";
 }
 
-const char* ppLabel::GetText(){
+std::string ppLabel::GetText(){
 	return this->text;
 }
 
-void ppLabel::SetText(const char *text){
+void ppLabel::SetText(std::string text){
 	this->text = text;
 }
 
@@ -20,7 +18,7 @@ void ppLabel::Render(SDL_Renderer* renderer){
 		return;
 	}
 	if(this->GetGUI()->GetDefaultFont()){
-		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text, renderer);
+		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text.c_str(), renderer);
 	}
 }
 

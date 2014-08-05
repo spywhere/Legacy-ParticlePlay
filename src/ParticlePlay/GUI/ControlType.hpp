@@ -2,7 +2,7 @@
 #define CONTROLTYPE_HEADER
 
 enum class ppControlType{
-	LABEL
+	LABEL, SOUND_VIEW
 };
 
 #endif
