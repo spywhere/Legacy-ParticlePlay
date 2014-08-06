@@ -13,11 +13,12 @@ protected:
 public:
 	ppFormat(ppIMS* ims);
 	virtual int Init(const char *filename, bool stereo);
-	// virtual void Read(int position)=0;
-	// virtual void Read(int position, int track)=0;
-	virtual int GetPositionLength()=0;
-	virtual float PositionToTime(int position)=0;
-	virtual int TimeToPosition(float time)=0;
+	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size, int track)=0;
+	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size);
+	virtual Sint64 ActualPosition(Sint64 relativePosition)=0;
+	virtual Sint64 GetPositionLength()=0;
+	virtual float PositionToTime(Sint64 position)=0;
+	virtual Sint64 TimeToPosition(float time)=0;
 	virtual int GetSampleRate()=0;
 	virtual ALuint GetFormat()=0;
 	virtual int GetTotalTrack()=0;

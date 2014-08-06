@@ -1,8 +1,6 @@
 #include "IMS.hpp"
 
-#include <string>
-
-ppIMS::ppIMS(ppGame* game){
+ppIMS::ppIMS(ppGame* game) : ppPlaylist("global") {
 	this->preload = false;
 }
 
@@ -21,7 +19,7 @@ int ppIMS::Init(){
 	return 0;
 }
 
-ppFormat *ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo){
+ppFormat* ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo){
 	if(audioFormat == ppAudioFormat::WAVE){
 		ppWaveFormat *format = new ppWaveFormat(this);
 		format->Init(filename, stereo);
@@ -42,6 +40,8 @@ void ppIMS::Quit(){
 	if(!this->device || !this->context){
 		return;
 	}
+	this->ClearSound();
+	this->ClearPlaylist();
 	alcDestroyContext(this->context);
 	alcCloseDevice(this->device);
 }
@@ -50,4 +50,5 @@ void ppIMS::Update(){
 	if(!this->device || !this->context){
 		return;
 	}
+	ppPlaylist::Update();
 }

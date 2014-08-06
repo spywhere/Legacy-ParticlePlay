@@ -13,15 +13,16 @@ protected:
 	int sampleRate;
 	int audioDataSize;
 	ALuint audioFormat;
+	Sint64 startReadPosition;
 	void GetWaveChunkInfo(SDL_RWops *filePointer, char *chunkName, int &chunkSize);
 public:
 	ppWaveFormat(ppIMS* ims);
 	virtual int Init(const char *filename, bool stereo);
-	// virtual void Read(int position);
-	// virtual void Read(int position, int track);
-	virtual int GetPositionLength();
-	virtual float PositionToTime(int position);
-	virtual int TimeToPosition(float time);
+	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size, int track);
+	virtual Sint64 ActualPosition(Sint64 relativePosition);
+	virtual Sint64 GetPositionLength();
+	virtual float PositionToTime(Sint64 position);
+	virtual Sint64 TimeToPosition(float time);
 	virtual int GetSampleRate();
 	virtual ALuint GetFormat();
 	virtual int GetTotalTrack();

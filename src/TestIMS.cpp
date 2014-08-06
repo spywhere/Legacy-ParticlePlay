@@ -7,12 +7,6 @@
 void TestIMS::OnInit(){
 	this->gui = new ppGUI();
 	this->gui->AddControl(new ppLabel("text", 10, 50));
-	this->ims = new ppIMS(this->GetGame());
-	this->soundFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/FalkDemo.wav", true);
-	this->sound = new ppSound("sound", this->soundFormat, 1);
-	this->sound->SetSize(300, 30);
-	this->sound->SetLocation(10, 100);
-	this->gui->AddControl(this->sound);
 }
 
 void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
@@ -27,9 +21,23 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 }
 
 void TestIMS::OnUpdate(ppInput* input, int delta){
+	this->ims = this->GetGame()->GetInteractiveMusicSystem();
+	if(this->ims && !this->sound){
+		this->soundFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/TestTrack_MC.wav", true);
+		this->sound = this->ims->NewSound("sound", this->soundFormat, 1);
+		this->sound->SetSize(300, 30);
+		this->sound->SetLocation(10, 100);
+		this->gui->AddControl(this->sound);
+	}
+	if(this->sound){
+		ppLabel* label = (ppLabel*)this->gui->GetControl("text");
+		std::stringstream msg;
+		msg << this->soundFormat->GetFileName() << " Track " << this->sound->GetTrack() << "/" << this->soundFormat->GetTotalTrack() << " " << " " << this->sound->GetCurrentTime() << "/" << this->sound->GetTotalTime();
+		label->SetText(msg.str());
+		if(this->sound->IsStop()){
+			this->sound->Preload();
+			this->sound->Play();
+		}
+	}
 	this->gui->Update(input);
-	ppLabel* label = (ppLabel*)this->gui->GetControl("text");
-	std::stringstream msg;
-	msg << this->soundFormat->GetFileName() << " Track " << this->sound->GetTrack() << "/" << this->soundFormat->GetTotalTrack() << " " << " " << this->sound->GetCurrentTime() << "/" << this->sound->GetTotalTime();
-	label->SetText(msg.str());
 }

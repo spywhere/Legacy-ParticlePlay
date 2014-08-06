@@ -1,17 +1,13 @@
 #ifndef IMS_HEADER
 #define IMS_HEADER
 
-#include <map>
-#include <vector>
 #include "../Includes.hpp"
 #include "Format/AudioFormat.hpp"
 #include "Format/WaveFormat.hpp"
-
-//Pre-included
-#include "Sound.hpp"
+#include "Playlist.hpp"
 
 class ppGame;
-class ppIMS {
+class ppIMS : public ppPlaylist {
 protected:
 	//// InteractiveMusicSystem will inherit from SoundSystem class
 	bool preload;

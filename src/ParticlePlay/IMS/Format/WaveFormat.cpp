@@ -18,6 +18,7 @@ int ppWaveFormat::Init(const char *filename, bool stereo){
 	int valid = 0;
 	int chunkSize;
 	char buffer[4];
+	this->filePointer = SDL_RWFromFile(this->filename.c_str(), "rb");
 	while(!SDL_RWread(this->filePointer, buffer, 0, 1)&&valid<3){
 		this->GetWaveChunkInfo(this->filePointer, buffer, chunkSize);
 		// std::cout << "Reading... " << buffer << std::endl;
@@ -49,6 +50,7 @@ int ppWaveFormat::Init(const char *filename, bool stereo){
 			valid++;
 		}else if(strncmp(buffer, "data", 4)==0){
 			this->audioDataSize=chunkSize;
+			this->startReadPosition = SDL_RWtell(this->filePointer);
 			chunkSize = 0;
 			valid++;
 		}
@@ -80,16 +82,44 @@ int ppWaveFormat::Init(const char *filename, bool stereo){
 	return 0;
 }
 
-int ppWaveFormat::GetPositionLength(){
+Sint64 ppWaveFormat::Read(char *bufferData, Sint64 position, Sint64 size, int track){
+	int bytePerSample = this->bitPerSample/8;
+	Sint64 bufferOffset = 0;
+	int outputChannels = (stereo?2:1);
+	this->filePointer = SDL_RWFromFile(this->filename.c_str(), "rb");
+	SDL_RWseek(this->filePointer, this->startReadPosition+(position*this->audioChannels/outputChannels), RW_SEEK_SET);
+
+	while(bufferOffset < size){
+		char *rawBufferData = new char[this->audioChannels * 2];
+		if(!SDL_RWread(this->filePointer, rawBufferData, this->audioChannels * 2, 1)){
+			delete[] rawBufferData;
+			break;
+		}
+		for(int c=0;c<outputChannels;c++){
+			for(int byte=0;byte<bytePerSample;byte++){
+				bufferData[bufferOffset++]=rawBufferData[track*(outputChannels*2)+(c*outputChannels+byte)];
+			}
+		}
+		delete[] rawBufferData;
+	}
+	SDL_RWclose(this->filePointer);
+	return bufferOffset;
+}
+
+Sint64 ppWaveFormat::ActualPosition(Sint64 relativePosition){
+	return relativePosition*this->audioChannels/(this->stereo?2:1);
+}
+
+Sint64 ppWaveFormat::GetPositionLength(){
 	return this->audioDataSize;
 }
 
-float ppWaveFormat::PositionToTime(int position){
+float ppWaveFormat::PositionToTime(Sint64 position){
 	float sampleLength = position * 8 / (this->audioChannels * this->bitPerSample);
 	return sampleLength / this->sampleRate;
 }
 
-int ppWaveFormat::TimeToPosition(float time){
+Sint64 ppWaveFormat::TimeToPosition(float time){
 	float sampleLength = time * this->sampleRate;
 	return sampleLength * this->audioChannels * this->bitPerSample / 8;
 }
