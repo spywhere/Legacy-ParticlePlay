@@ -16,6 +16,7 @@ public:
 	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size, int track)=0;
 	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size);
 	virtual Sint64 ActualPosition(Sint64 relativePosition)=0;
+	virtual Sint64 RelativePosition(Sint64 actualPosition)=0;
 	virtual Sint64 GetPositionLength()=0;
 	virtual float PositionToTime(Sint64 position)=0;
 	virtual Sint64 TimeToPosition(float time)=0;

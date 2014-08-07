@@ -110,6 +110,10 @@ Sint64 ppWaveFormat::ActualPosition(Sint64 relativePosition){
 	return relativePosition*this->audioChannels/(this->stereo?2:1);
 }
 
+Sint64 ppWaveFormat::RelativePosition(Sint64 actualPosition){
+	return actualPosition/this->audioChannels*(this->stereo?2:1);
+}
+
 Sint64 ppWaveFormat::GetPositionLength(){
 	return this->audioDataSize;
 }

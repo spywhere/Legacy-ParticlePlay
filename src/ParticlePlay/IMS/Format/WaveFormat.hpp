@@ -20,6 +20,7 @@ public:
 	virtual int Init(const char *filename, bool stereo);
 	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size, int track);
 	virtual Sint64 ActualPosition(Sint64 relativePosition);
+	virtual Sint64 RelativePosition(Sint64 actualPosition);
 	virtual Sint64 GetPositionLength();
 	virtual float PositionToTime(Sint64 position);
 	virtual Sint64 TimeToPosition(float time);

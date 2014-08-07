@@ -14,6 +14,7 @@ protected:
 	ppIMS* ims;
 	ppFormat* soundFormat;
 	ppSound* sound;
+	bool played;
 	void DrawRect(int x, int y, int w, int h);
 	void DrawFillRect(int x, int y, int w, int h);
 public:
