@@ -3,14 +3,23 @@
 
 #include "../GUI/Control.hpp"
 #include "Format/Format.hpp"
+#include <list>
+#include <ctime>
+#include <cstdlib>
+
+enum class ppSoundPlayOrder{
+	LOOP, SEQUENCE, RANDOM, SHUFFLE
+};
 
 class ppSound : public ppControl {
 protected:
+	std::list<int> trackList;
 	int track;
+	int loadingTrack;
 	bool preload;
 	bool stop;
 	bool pause;
-	bool loop;
+	int loop;
 	int bufferSize;
 	int totalBufferProcessed;
 	float volume, speed;
@@ -19,6 +28,8 @@ protected:
 	ppFormat* audioFormat;
 	ALuint sourceID;
 	ALuint bufferSet[2];
+	ppSoundPlayOrder playOrder;
+	void GetNextTrack();
 	int GetTotalBuffer(bool countCurrent);
 public:
 	ppSound(const char *name, ppFormat* audioFormat, int track);
@@ -34,9 +45,11 @@ public:
 
 	void Seek(Sint64 position);
 	void Seek(float time);
-	void SetLoop(bool loop);
+	void SetLoop(int loop);
 	void SetVolume(float volume);
 	void SetSpeed(float speed);
+	void SetPlayOrder(ppSoundPlayOrder playOrder);
+	void SetTrack(int track);
 	bool IsLoop();
 	bool IsReady();
 	bool IsStop();
