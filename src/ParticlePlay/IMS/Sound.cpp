@@ -2,25 +2,20 @@
 
 #include <iostream>
 
-ppSound::ppSound(const char *name, ppFormat* audioFormat, int track) : ppControl(name, 0, 0) {
+ppSound::ppSound(const char *name, ppFormat* audioFormat, int track) : ppGenericSound(), ppControl(name, 0, 0){
 	this->SetTrack(track);
 	this->audioFormat = audioFormat;
 	this->bufferSize = audioFormat->GetSampleRate()*2;
-	this->preload = false;
-	this->stop = true;
-	this->pause = false;
 	this->nextReadPosition = 0;
 	this->startReadPosition = 0;
 	this->totalBufferProcessed = 0;
-	this->volume = 1;
-	this->speed = 1;
-	this->loop = 0;
 	alGenBuffers(2, this->bufferSet);
 	alGenSources(1, &this->sourceID);
 	this->SetPlayOrder(ppSoundPlayOrder::LOOP);
 }
 
 ppSound::~ppSound(){
+	ppPlayable::~ppPlayable();
 	alDeleteSources(1, &this->sourceID);
     alDeleteBuffers(2, this->bufferSet);
 }
@@ -136,12 +131,12 @@ void ppSound::Update(){
 }
 
 void ppSound::Stop(){
-	if(this->stop){
+	if(!this->isPlaying){
 		return;
 	}
+	ppPlayable::Stop();
 	alSourceStop(this->sourceID);
 	this->preload = false;
-	this->stop = true;
 }
 
 void ppSound::Play(){
@@ -153,7 +148,7 @@ void ppSound::Play(){
 	if(!this->preload){
 		this->Preload();
 	}
-	this->stop = false;
+	ppPlayable::Play();
 	alSourcePlay(this->sourceID);
 }
 
@@ -168,38 +163,14 @@ void ppSound::Seek(float time){
 	this->Seek(this->audioFormat->RelativePosition(this->audioFormat->TimeToPosition(time)));
 }
 
-void ppSound::SetLoop(int loop){
-	this->loop = loop;
-}
-
 void ppSound::SetVolume(float volume){
-	this->volume = volume;
+	ppGenericSound::SetVolume(volume);
 	alSourcef(this->sourceID, AL_GAIN, this->volume);
 }
 
 void ppSound::SetSpeed(float speed){
-	this->speed = speed;
+	ppGenericSound::SetSpeed(speed);
 	alSourcef(this->sourceID, AL_PITCH, this->speed);
-}
-
-float ppSound::GetVolume(){
-	return this->volume;
-}
-
-float ppSound::GetSpeed(){
-	return this->speed;
-}
-
-bool ppSound::IsLoop(){
-	return this->loop != 0;
-}
-
-bool ppSound::IsReady(){
-	return this->preload && this->IsStop();
-}
-
-bool ppSound::IsStop(){
-	return this->stop;
 }
 
 Sint64 ppSound::GetCurrentPosition(){

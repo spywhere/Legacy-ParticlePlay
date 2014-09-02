@@ -28,8 +28,10 @@ ParticlePlay/GUI/Control.cpp\
 ParticlePlay/GUI/GUI.cpp\
 ParticlePlay/IMS/Format/Format.cpp\
 ParticlePlay/IMS/Format/WaveFormat.cpp\
+ParticlePlay/IMS/Interfaces.cpp\
 ParticlePlay/IMS/IMS.cpp\
 ParticlePlay/IMS/Playlist.cpp\
+ParticlePlay/IMS/Segment.cpp\
 ParticlePlay/IMS/Sound.cpp\
 ParticlePlay/IMS/Utils.cpp\
 ParticlePlay/BitmapFont.cpp\
