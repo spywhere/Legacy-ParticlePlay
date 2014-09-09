@@ -32,30 +32,30 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 
 		this->soundFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Music Gameplay/Music_Gameplay_Drum.wav");
 		this->sound = this->ims->CreateSound("sound", this->soundFormat);
-		this->sound->SetLoop(-1);
-		this->sound->SetSize(300, 30);
-		this->sound->SetLocation(10, 100);
-		this->gui->AddControl(this->sound);
 
 		ppFormat *criticalFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Music Gameplay/Music_Gameplay_Critical.wav");
 		ppSound *critical = this->ims->CreateSound("critical", criticalFormat);
-		critical->SetLoop(-1);
 
 		ppFormat *melodyFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Music Gameplay/Music_Gameplay_Base.wav");
 		ppSound *melody = this->ims->CreateSound("melody", melodyFormat);
-		melody->SetLoop(-1);
 
 		this->segment = this->ims->CreateSegment("Level1");
 		this->segment->AddSound(melody);
+		critical->SetOffset(criticalFormat->TimeToPosition(5));
 		this->segment->AddSound(critical);
 		this->segment->AddSound(sound);
+		this->segment->SetLoop(-1);
+		this->segment->SetSize(300, 30);
+		this->segment->SetLocation(10, 100);
+		this->gui->AddControl(this->segment);
 	}
-	if(this->sound){
+	if(this->segment){
 		ppLabel* label = (ppLabel*)this->gui->GetControl("text");
 		std::stringstream msg;
-		msg << this->soundFormat->GetFileName() << " Track " << this->sound->GetTrack() << "/" << this->soundFormat->GetTotalTrack() << " " << " " << this->sound->GetCurrentTime() << "/" << this->sound->GetTotalTime();
+		// msg << this->soundFormat->GetFileName() << " Track " << this->sound->GetTrack() << "/" << this->soundFormat->GetTotalTrack() << " " << " " << this->sound->GetCurrentTime() << "/" << this->sound->GetTotalTime();
+		msg << this->segment->GetCurrentTime() << "/" << this->segment->GetTotalTime();
 		label->SetText(msg.str());
-		if(this->sound->IsStop()&&!this->played){
+		if(this->segment->IsStop()&&!this->played){
 			// if(!this->played){
 			// 	this->sound->Seek(60.0f);
 			// }

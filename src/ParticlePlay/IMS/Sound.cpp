@@ -262,5 +262,5 @@ void ppSound::Update(ppInput* input){
 }
 
 ppControlType ppSound::GetType(){
-	return ppControlType::SOUND_VIEW;
+	return ppControlType::SOUND_CONTROL;
 }

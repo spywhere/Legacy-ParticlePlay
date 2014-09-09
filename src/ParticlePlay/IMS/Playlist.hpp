@@ -4,14 +4,18 @@
 #include <list>
 #include "Interfaces.hpp"
 
-class ppPlaylist : public ppPlayable {
+class ppPlaylist : public ppGenericSound {
 protected:
-	std::list<ppPlayable*> sounds;
+	std::list<ppGenericSound*> sounds;
 public:
 	ppPlaylist();
-	void AddSound(ppPlayable *sound);
+	void AddSound(ppGenericSound *sound);
 	void ClearSound();
 	void Update();
+	Sint64 GetCurrentPosition();
+	Sint64 GetPositionLength();
+	float GetCurrentTime();
+	float GetTotalTime();
 };
 
 #endif

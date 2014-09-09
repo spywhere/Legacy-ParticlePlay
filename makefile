@@ -26,6 +26,7 @@ ENGINE_SOURCES=\
 ParticlePlay/GUI/Control/Label.cpp\
 ParticlePlay/GUI/Control.cpp\
 ParticlePlay/GUI/GUI.cpp\
+ParticlePlay/IMS/Format/EmptyFormat.cpp\
 ParticlePlay/IMS/Format/Format.cpp\
 ParticlePlay/IMS/Format/WaveFormat.cpp\
 ParticlePlay/IMS/Interfaces.cpp\

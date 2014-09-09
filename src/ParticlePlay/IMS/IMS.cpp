@@ -19,6 +19,16 @@ int ppIMS::Init(){
 	return 0;
 }
 
+ppFormat* ppIMS::CreateEmptyFormat(Sint64 length, bool stereo){
+	ppEmptyFormat *format = new ppEmptyFormat(this, length);
+	format->Init("", stereo);
+	return format;
+}
+
+ppFormat* ppIMS::CreateEmptyFormat(Sint64 length){
+	return this->CreateEmptyFormat(length, true);
+}
+
 ppFormat* ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo){
 	if(audioFormat == ppAudioFormat::WAVE){
 		ppWaveFormat *format = new ppWaveFormat(this);
@@ -43,7 +53,7 @@ ppSound *ppIMS::CreateSound(const char *name, ppFormat* audioFormat){
 }
 
 ppSegment *ppIMS::CreateSegment(const char *name){
-	ppSegment *segment = new ppSegment();
+	ppSegment *segment = new ppSegment(name, this);
 	this->sounds[name] = segment;
 	return segment;
 }

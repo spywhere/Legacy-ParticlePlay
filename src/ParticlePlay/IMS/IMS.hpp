@@ -5,11 +5,13 @@
 #include <map>
 #include "Format/AudioFormat.hpp"
 #include "Format/Format.hpp"
+#include "Format/EmptyFormat.hpp"
 #include "Format/WaveFormat.hpp"
 #include "Playlist.hpp"
 #include "Segment.hpp"
 #include "Sound.hpp"
 
+class ppSegment;
 class ppGame;
 class ppIMS {
 protected:
@@ -20,6 +22,8 @@ protected:
 	ALCcontext* context;
 public:
 	ppIMS(ppGame* game);
+	ppFormat *CreateEmptyFormat(Sint64 length, bool stereo);
+	ppFormat *CreateEmptyFormat(Sint64 length);
 	ppFormat *CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo);
 	ppFormat *CreateFormat(ppAudioFormat audioFormat, const char *filename);
 	ppSound *CreateSound(const char *name, ppFormat* audioFormat, int track);

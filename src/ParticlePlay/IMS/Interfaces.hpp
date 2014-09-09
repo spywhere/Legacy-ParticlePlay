@@ -21,6 +21,10 @@ public:
 	virtual bool IsPause();
 	virtual bool IsStop();
 	virtual bool IsPlaying();
+	virtual Sint64 GetCurrentPosition()=0;
+	virtual Sint64 GetPositionLength()=0;
+	virtual float GetCurrentTime()=0;
+	virtual float GetTotalTime()=0;
 };
 
 class ppClippable {
@@ -53,15 +57,11 @@ protected:
 	ppGenericSound();
 public:
 	virtual ~ppGenericSound();
-	virtual void Seek(Sint64 position)=0;
-	virtual void Seek(float time)=0;
+	virtual void Seek(Sint64 position);
+	virtual void Seek(float time);
 	virtual void SetLoop(int loop);
 	virtual void SetVolume(float volume);
 	virtual void SetSpeed(float speed);
-	virtual Sint64 GetCurrentPosition()=0;
-	virtual Sint64 GetPositionLength()=0;
-	virtual float GetCurrentTime()=0;
-	virtual float GetTotalTime()=0;
 	virtual float GetVolume();
 	virtual float GetSpeed();
 	virtual bool IsLoop();

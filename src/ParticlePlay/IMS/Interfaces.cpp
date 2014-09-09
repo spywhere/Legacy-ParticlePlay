@@ -75,6 +75,10 @@ ppGenericSound::ppGenericSound(){
 
 ppGenericSound::~ppGenericSound(){}
 
+void ppGenericSound::Seek(Sint64 position){}
+
+void ppGenericSound::Seek(float time){}
+
 void ppGenericSound::SetLoop(int loop){
 	this->loop = loop;
 }
@@ -102,3 +106,4 @@ bool ppGenericSound::IsLoop(){
 bool ppGenericSound::IsReady(){
 	return this->preload && this->IsStop();
 }
+
