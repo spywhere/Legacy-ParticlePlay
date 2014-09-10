@@ -74,8 +74,6 @@ void ppSegment::Update(){
 	for(auto sound : this->sounds){
 		if(sound->GetOffset()<this->GetCurrentPosition() && sound->IsStop() && this->GetCurrentPosition() < sound->GetPositionLength()){
 			sound->Play();
-		}else if(!sound->IsStop()){
-			sound->Stop();
 		}
 		sound->Update();
 	}
