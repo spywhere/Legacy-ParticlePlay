@@ -35,7 +35,7 @@ bool ppPlayable::IsStop(){
 
 ppClippable::ppClippable(){
 	this->clipStart = 0;
-	this->clipEnd = -1;
+	this->clipEnd = 0;
 }
 
 void ppClippable::SetClipStart(Sint64 clipping) {

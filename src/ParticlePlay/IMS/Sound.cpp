@@ -75,6 +75,17 @@ int ppSound::GetTotalBuffer(bool countCurrent){
 	return totalBuffer;
 }
 
+void ppSound::SetClipStart(Sint64 clipping){
+	clipping = this->audioFormat->RelativePosition(clipping);
+	ppClippable::SetClipStart(clipping);
+	this->nextReadPosition = this->clipStart;
+}
+
+void ppSound::SetClipEnd(Sint64 clipping){
+	clipping = this->audioFormat->RelativePosition(clipping);
+	ppClippable::SetClipEnd(clipping);
+}
+
 void ppSound::Preload(){
 	this->Stop();
 	alSourceUnqueueBuffers(this->sourceID, 2, this->bufferSet);
@@ -82,13 +93,17 @@ void ppSound::Preload(){
 	char *bufferData = new char[this->bufferSize];
 	int totalBuffer = 0;
 	while(totalBuffer<2){
-		Sint64 size = this->audioFormat->Read(bufferData, this->nextReadPosition, this->bufferSize, this->loadingTrack);
+		Sint64 sizeLeft = this->audioFormat->RelativePosition(this->GetPositionLength())-this->nextReadPosition+this->clipStart;
+		if(this->bufferSize < sizeLeft){
+			sizeLeft = this->bufferSize;
+		}
+		Sint64 size = this->audioFormat->Read(bufferData, this->nextReadPosition, sizeLeft, this->loadingTrack);
 		this->nextReadPosition += size;
 		alBufferData(this->bufferSet[totalBuffer], this->audioFormat->GetFormat(), bufferData, size, this->audioFormat->GetSampleRate());
 		totalBuffer++;
 		if(size<this->bufferSize){
 			this->GetNextTrack();
-			this->nextReadPosition = 0;
+			this->nextReadPosition = this->clipStart;
 		}
 	}
 	delete[] bufferData;
@@ -107,19 +122,24 @@ void ppSound::Update(){
 		this->totalBufferProcessed++;
 		ALuint bufferID;
 		alSourceUnqueueBuffers(this->sourceID, 1, &bufferID);
-		Sint64 size = this->audioFormat->Read(bufferData, this->nextReadPosition, this->bufferSize, this->loadingTrack);
+
+		Sint64 sizeLeft = this->audioFormat->RelativePosition(this->GetPositionLength())-this->nextReadPosition+this->clipStart;
+		if(this->bufferSize < sizeLeft){
+			sizeLeft = this->bufferSize;
+		}
+		Sint64 size = this->audioFormat->Read(bufferData, this->nextReadPosition, sizeLeft, this->loadingTrack);
 		this->nextReadPosition += size;
 		alBufferData(bufferID, this->audioFormat->GetFormat(), bufferData, size, this->audioFormat->GetSampleRate());
 		alSourceQueueBuffers(this->sourceID, 1, &bufferID);
 		if(size<this->bufferSize){
 			this->GetNextTrack();
-			this->nextReadPosition = 0;
+			this->nextReadPosition = this->clipStart;
 		}
 	}
 	if(this->GetCurrentPosition()>=this->GetPositionLength()||this->totalBufferProcessed>=this->GetTotalBuffer(true)){
 		this->track = this->loadingTrack;
 		if(this->loop == 0){
-			this->nextReadPosition = 0;
+			this->nextReadPosition = this->clipStart;
 			this->Stop();
 		}else if(loop > 0){
 			this->loop--;
@@ -154,7 +174,7 @@ void ppSound::Play(){
 
 void ppSound::Seek(Sint64 position){
 	this->startReadPosition = position;
-	this->nextReadPosition = position;
+	this->nextReadPosition = this->clipStart+position;
 	this->totalBufferProcessed = 0;
 	this->Preload();
 }
@@ -180,7 +200,7 @@ Sint64 ppSound::GetCurrentPosition(){
 }
 
 Sint64 ppSound::GetPositionLength(){
-	return this->audioFormat->GetPositionLength();
+	return this->audioFormat->GetPositionLength()-this->audioFormat->ActualPosition(this->clipStart+this->clipEnd);
 }
 
 float ppSound::GetCurrentTime(){
@@ -249,7 +269,7 @@ void ppSound::Render(SDL_Renderer* renderer){
 	glBegin(GL_LINE_STRIP);
 	{
 		glColor3f(1, 1, 1);
-		int offset = this->audioFormat->ActualPosition(this->nextReadPosition)*(this->width-2)/this->GetPositionLength();
+		int offset = this->audioFormat->ActualPosition(this->nextReadPosition-this->clipStart)*(this->width-2)/this->GetPositionLength();
 		glVertex3f(this->x+offset-3, this->y+4, 0);
 		glVertex3f(this->x+offset, this->y+1, 0);
 		glVertex3f(this->x+offset+3, this->y+4, 0);

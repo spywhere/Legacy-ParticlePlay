@@ -41,6 +41,10 @@ public:
 	void Stop();
 	void Update();
 
+	//Clippable
+	void SetClipStart(Sint64 clipping);
+	void SetClipEnd(Sint64 clipping);
+
 	//GenericSound
 	void Seek(Sint64 position);
 	void Seek(float time);
