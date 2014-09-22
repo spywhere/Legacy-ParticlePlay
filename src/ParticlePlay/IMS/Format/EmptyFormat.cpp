@@ -1,7 +1,8 @@
 #include "EmptyFormat.hpp"
 
-ppEmptyFormat::ppEmptyFormat(ppIMS* ims, Sint64 length) : ppFormat(ims){
+ppEmptyFormat::ppEmptyFormat(ppIMS* ims, Sint64 length, ppFormat* audioFormat) : ppFormat(ims){
 	this->length = length;
+	this->sourceAudioFormat = audioFormat;
 }
 
 int ppEmptyFormat::Init(const char *filename, bool stereo){
@@ -11,7 +12,6 @@ int ppEmptyFormat::Init(const char *filename, bool stereo){
 	}
 	this->audioChannels = (stereo?2:1);
 	this->audioTracks = 1;
-	this->sampleRate = 44100;
 	this->bitPerSample = 16;
 	this->audioFormat = (stereo?AL_FORMAT_STEREO16:AL_FORMAT_MONO16);
 	return 0;
@@ -38,16 +38,16 @@ Sint64 ppEmptyFormat::GetPositionLength(){
 
 float ppEmptyFormat::PositionToTime(Sint64 position){
 	float sampleLength = position * 8 / (this->audioChannels * this->bitPerSample);
-	return sampleLength / this->sampleRate;
+	return sampleLength / this->sourceAudioFormat->GetSampleRate();
 }
 
 Sint64 ppEmptyFormat::TimeToPosition(float time){
-	float sampleLength = time * this->sampleRate;
+	float sampleLength = time * this->sourceAudioFormat->GetSampleRate();
 	return sampleLength * this->audioChannels * this->bitPerSample / 8;
 }
 
 int ppEmptyFormat::GetSampleRate(){
-	return this->sampleRate;
+	return this->sourceAudioFormat->GetSampleRate();
 }
 
 ALuint ppEmptyFormat::GetFormat(){

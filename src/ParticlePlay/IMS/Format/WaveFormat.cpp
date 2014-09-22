@@ -1,7 +1,6 @@
 #include "WaveFormat.hpp"
 
-ppWaveFormat::ppWaveFormat(ppIMS* ims) : ppFormat(ims){
-}
+ppWaveFormat::ppWaveFormat(ppIMS* ims) : ppFormat(ims){}
 
 void ppWaveFormat::GetWaveChunkInfo(SDL_RWops *filePointer, char *chunkName, int &chunkSize){
 	char buffer[4];

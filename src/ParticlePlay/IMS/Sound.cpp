@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-ppSound::ppSound(const char *name, ppFormat* audioFormat, int track) : ppGenericSound(), ppControl(name, 0, 0){
+ppSound::ppSound(const char *name, ppFormat* audioFormat, int track) : ppGenericSound(name){
 	this->SetTrack(track);
 	this->audioFormat = audioFormat;
 	this->bufferSize = audioFormat->GetSampleRate()*2;
@@ -146,6 +146,9 @@ void ppSound::Update(){
 		}
 		this->totalBufferProcessed = 0;
 		this->startReadPosition = 0;
+		if(!this->IsAutoLoop()){
+			this->Stop();
+		}
 	}
 	delete[] bufferData;
 }
@@ -213,10 +216,6 @@ float ppSound::GetTotalTime(){
 
 int ppSound::GetTrack(){
 	return this->track+1;
-}
-
-ppFormat *ppSound::GetAudioFormat(){
-	return this->audioFormat;
 }
 
 void ppSound::Render(SDL_Renderer* renderer){

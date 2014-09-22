@@ -1,8 +1,6 @@
 #ifndef SOUND_HEADER
 #define SOUND_HEADER
 
-#include "../GUI/Control.hpp"
-#include "Format/Format.hpp"
 #include "Interfaces.hpp"
 #include <list>
 #include <ctime>
@@ -12,7 +10,7 @@ enum class ppSoundPlayOrder {
 	LOOP, SEQUENCE, RANDOM, SHUFFLE
 };
 
-class ppSound : public ppGenericSound, public ppControl {
+class ppSound : public ppGenericSound {
 protected:
 	std::list<int> trackList;
 	int track;
@@ -21,7 +19,6 @@ protected:
 	int totalBufferProcessed;
 	Sint64 nextReadPosition;
 	Sint64 startReadPosition;
-	ppFormat* audioFormat;
 	ALuint sourceID;
 	ALuint bufferSet[2];
 	ppSoundPlayOrder playOrder;
@@ -31,7 +28,6 @@ public:
 	ppSound(const char *name, ppFormat* audioFormat, int track);
 	~ppSound();
 	int GetTrack();
-	ppFormat *GetAudioFormat();
 	void SetPlayOrder(ppSoundPlayOrder playOrder);
 	void SetTrack(int track);
 	void Preload();

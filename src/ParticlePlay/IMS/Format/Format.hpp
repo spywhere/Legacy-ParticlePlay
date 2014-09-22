@@ -12,6 +12,7 @@ protected:
 	SDL_RWops* filePointer;
 public:
 	ppFormat(ppIMS* ims);
+	virtual ~ppFormat();
 	virtual int Init(const char *filename, bool stereo);
 	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size, int track)=0;
 	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size);

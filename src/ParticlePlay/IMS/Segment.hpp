@@ -7,7 +7,7 @@
 #include "Sound.hpp"
 #include <list>
 
-class ppSegment : public ppGenericSound, public ppControl {
+class ppSegment : public ppGenericSound {
 protected:
 	std::list<ppGenericSound *> sounds;
 	ppIMS* ims;

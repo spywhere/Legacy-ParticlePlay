@@ -1,8 +1,8 @@
 #include "Format.hpp"
 
-ppFormat::ppFormat(ppIMS* ims){
+ppFormat::ppFormat(ppIMS* ims){}
 
-}
+ppFormat::~ppFormat(){}
 
 int ppFormat::Init(const char *filename, bool stereo){
 	this->filename = std::string(filename);

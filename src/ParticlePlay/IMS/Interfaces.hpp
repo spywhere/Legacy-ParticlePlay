@@ -2,6 +2,8 @@
 #define INTERFACES_HEADER
 
 #include "../Includes.hpp"
+#include "../GUI/Control.hpp"
+#include "Format/Format.hpp"
 
 class ppUpdatable {
 public:
@@ -12,6 +14,8 @@ class ppPlayable : public ppUpdatable {
 protected:
 	bool isPlaying;
 	bool isPause;
+	Sint64 entryCue;
+	Sint64 exitCue;
 	ppPlayable();
 public:
 	virtual ~ppPlayable();
@@ -21,6 +25,10 @@ public:
 	virtual bool IsPause();
 	virtual bool IsStop();
 	virtual bool IsPlaying();
+	virtual void SetEntryCue(Sint64 entryCue);
+	virtual void SetExitCue(Sint64 exitCue);
+	virtual Sint64 GetEntryCue();
+	virtual Sint64 GetExitCue();
 	virtual Sint64 GetCurrentPosition()=0;
 	virtual Sint64 GetPositionLength()=0;
 	virtual float GetCurrentTime()=0;
@@ -48,24 +56,33 @@ public:
 	Sint64 GetOffset();
 };
 
-class ppGenericSound : public ppPlayable, public ppClippable, public ppOffsetable {
+class ppGenericSound : public ppPlayable, public ppClippable, public ppOffsetable, public ppControl {
 protected:
 	bool preload;
+	bool autoloop;
 	int loop;
 	float volume;
 	float speed;
-	ppGenericSound();
+	ppFormat* audioFormat;
+	ppGenericSound(const char *name);
 public:
 	virtual ~ppGenericSound();
 	virtual void Seek(Sint64 position);
 	virtual void Seek(float time);
 	virtual void SetLoop(int loop);
+	virtual void SetAutoLoop(bool autoloop);
 	virtual void SetVolume(float volume);
 	virtual void SetSpeed(float speed);
 	virtual float GetVolume();
 	virtual float GetSpeed();
+	virtual ppFormat *GetAudioFormat();
 	virtual bool IsLoop();
+	virtual bool IsAutoLoop();
 	virtual bool IsReady();
+	virtual void Update();
+	virtual void Render(SDL_Renderer* renderer);
+	virtual void Update(ppInput* input);
+	virtual ppControlType GetType();
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include "../Includes.hpp"
 #include <map>
+#include <list>
 #include "Format/AudioFormat.hpp"
 #include "Format/Format.hpp"
 #include "Format/EmptyFormat.hpp"
@@ -18,12 +19,13 @@ protected:
 	//// InteractiveMusicSystem will inherit from SoundSystem class
 	bool preload;
 	std::map<std::string, ppPlayable*> sounds;
+	std::list<ppFormat*> formats;
 	ALCdevice* device;
 	ALCcontext* context;
 public:
 	ppIMS(ppGame* game);
-	ppFormat *CreateEmptyFormat(Sint64 length, bool stereo);
-	ppFormat *CreateEmptyFormat(Sint64 length);
+	ppFormat *CreateEmptyFormat(Sint64 length, ppFormat* audioFormat, bool stereo);
+	ppFormat *CreateEmptyFormat(Sint64 length, ppFormat* audioFormat);
 	ppFormat *CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo);
 	ppFormat *CreateFormat(ppAudioFormat audioFormat, const char *filename);
 	ppSound *CreateSound(const char *name, ppFormat* audioFormat, int track);

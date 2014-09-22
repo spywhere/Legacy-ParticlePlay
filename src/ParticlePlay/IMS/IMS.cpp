@@ -19,20 +19,22 @@ int ppIMS::Init(){
 	return 0;
 }
 
-ppFormat* ppIMS::CreateEmptyFormat(Sint64 length, bool stereo){
-	ppEmptyFormat *format = new ppEmptyFormat(this, length);
+ppFormat* ppIMS::CreateEmptyFormat(Sint64 length, ppFormat* audioFormat, bool stereo){
+	ppEmptyFormat *format = new ppEmptyFormat(this, length, audioFormat);
 	format->Init("", stereo);
+	this->formats.push_back(format);
 	return format;
 }
 
-ppFormat* ppIMS::CreateEmptyFormat(Sint64 length){
-	return this->CreateEmptyFormat(length, true);
+ppFormat* ppIMS::CreateEmptyFormat(Sint64 length, ppFormat* audioFormat){
+	return this->CreateEmptyFormat(length, audioFormat, true);
 }
 
 ppFormat* ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo){
 	if(audioFormat == ppAudioFormat::WAVE){
 		ppWaveFormat *format = new ppWaveFormat(this);
 		format->Init(filename, stereo);
+		this->formats.push_back(format);
 		return format;
 	}
 	return NULL;
@@ -59,7 +61,7 @@ ppSegment *ppIMS::CreateSegment(const char *name){
 }
 
 ppPlaylist* ppIMS::CreatePlaylist(const char *name){
-	ppPlaylist* playlist = new ppPlaylist();
+	ppPlaylist* playlist = new ppPlaylist(name);
 	this->sounds[name] = playlist;
 	return playlist;
 }
@@ -78,6 +80,9 @@ void ppIMS::Quit(){
 	}
 	for(auto sound : this->sounds){
 		delete sound.second;
+	}
+	for(auto format : this->formats){
+		delete format;
 	}
 	alcDestroyContext(this->context);
 	alcCloseDevice(this->device);

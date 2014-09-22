@@ -13,8 +13,9 @@ protected:
 	int sampleRate;
 	Sint64 length;
 	ALuint audioFormat;
+	ppFormat* sourceAudioFormat;
 public:
-	ppEmptyFormat(ppIMS* ims, Sint64 length);
+	ppEmptyFormat(ppIMS* ims, Sint64 length, ppFormat* audioFormat);
 	virtual int Init(const char *filename, bool stereo);
 	virtual Sint64 Read(char *bufferData, Sint64 position, Sint64 size, int track);
 	virtual Sint64 ActualPosition(Sint64 relativePosition);

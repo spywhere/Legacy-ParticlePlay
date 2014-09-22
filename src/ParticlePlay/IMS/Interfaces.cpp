@@ -19,7 +19,26 @@ void ppPlayable::Pause(){
 void ppPlayable::Stop(){
 	this->isPlaying = false;
 	this->isPause = false;
+	this->entryCue = 0;
+	this->exitCue = -1;
 }
+
+Sint64 ppPlayable::GetEntryCue(){
+	return this->entryCue;
+}
+
+Sint64 ppPlayable::GetExitCue(){
+	return this->exitCue;
+}
+
+void ppPlayable::SetEntryCue(Sint64 entryCue){
+	this->entryCue = entryCue;
+}
+
+void ppPlayable::SetExitCue(Sint64 exitCue){
+	this->exitCue = exitCue;
+}
+
 
 bool ppPlayable::IsPause(){
 	return this->isPause;
@@ -66,11 +85,12 @@ Sint64 ppOffsetable::GetOffset(){
 	return this->offset;
 }
 
-ppGenericSound::ppGenericSound(){
+ppGenericSound::ppGenericSound(const char *name) : ppControl(name, 0, 0) {
 	this->preload = false;
 	this->volume = 1;
 	this->speed = 1;
 	this->loop = 0;
+	this->audioFormat = NULL;
 }
 
 ppGenericSound::~ppGenericSound(){}
@@ -81,6 +101,10 @@ void ppGenericSound::Seek(float time){}
 
 void ppGenericSound::SetLoop(int loop){
 	this->loop = loop;
+}
+
+void ppGenericSound::SetAutoLoop(bool autoloop){
+	this->autoloop = autoloop;
 }
 
 void ppGenericSound::SetVolume(float volume){
@@ -99,11 +123,34 @@ float ppGenericSound::GetSpeed(){
 	return this->speed;
 }
 
+ppFormat* ppGenericSound::GetAudioFormat(){
+	return this->audioFormat;
+}
+
 bool ppGenericSound::IsLoop(){
 	return this->loop != 0;
+}
+
+bool ppGenericSound::IsAutoLoop(){
+	return this->autoloop;
 }
 
 bool ppGenericSound::IsReady(){
 	return this->preload && this->IsStop();
 }
 
+void ppGenericSound::Update(){
+	ppUpdatable::Update();
+}
+
+void ppGenericSound::Render(SDL_Renderer* renderer){
+	ppControl::Render(renderer);
+}
+
+void ppGenericSound::Update(ppInput* input){
+	ppControl::Update(input);
+}
+
+ppControlType ppGenericSound::GetType(){
+	return ppControlType::GENERIC_SOUND_CONTROL;
+}

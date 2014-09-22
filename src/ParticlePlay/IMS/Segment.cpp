@@ -1,6 +1,6 @@
 #include "Segment.hpp"
 
-ppSegment::ppSegment(const char *name, ppIMS* ims) : ppGenericSound(), ppControl(name, 0, 0){
+ppSegment::ppSegment(const char *name, ppIMS* ims) : ppGenericSound(name){
 	this->ims = ims;
 	this->emptySound = NULL;
 }
@@ -24,7 +24,7 @@ void ppSegment::AddSound(ppGenericSound *sound){
 			maxtime = sound->GetOffset()+sound->GetPositionLength();
 		}
 	}
-	this->emptySound = new ppSound("_empty", ims->CreateEmptyFormat(maxtime), 1);
+	this->emptySound = new ppSound("_empty", ims->CreateEmptyFormat(maxtime, sound->GetAudioFormat()), 1);
 }
 
 void ppSegment::ClearSound(){
