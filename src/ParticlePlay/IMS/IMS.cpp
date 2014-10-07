@@ -66,6 +66,30 @@ ppPlaylist* ppIMS::CreatePlaylist(const char *name){
 	return playlist;
 }
 
+ppGenericSound* ppIMS::GetSound(const char *name){
+	auto it = this->sounds.find(name);
+	if (it != this->sounds.end()){
+		return it->second;
+	}
+	return NULL;
+}
+
+void ppIMS::RemoveSound(const char *name){
+	ppGenericSound* sound = this->GetSound(name);
+	if(sound){
+		sound->Stop();
+		this->sounds.erase(name);
+		delete sound;
+	}
+}
+
+void ppIMS::ClearSound(){
+	for(auto sound : this->sounds){
+		delete sound.second;
+	}
+	this->sounds.clear();
+}
+
 int ppIMS::Reinit(){
 	if(!this->device || !this->context){
 		return 1;
@@ -78,9 +102,7 @@ void ppIMS::Quit(){
 	if(!this->device || !this->context){
 		return;
 	}
-	for(auto sound : this->sounds){
-		delete sound.second;
-	}
+	this->ClearSound();
 	for(auto format : this->formats){
 		delete format;
 	}

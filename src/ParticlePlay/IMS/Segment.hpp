@@ -26,6 +26,12 @@ public:
 	Sint64 GetPositionLength();
 	float GetCurrentTime();
 	float GetTotalTime();
+	bool IsLoop();
+	bool IsPause();
+	bool IsStop();
+	bool IsPlaying();
+	int GetLoop();
+	int GetTotalSound();
 	void Render(SDL_Renderer* renderer);
 	void Update(ppInput* input);
 	ppControlType GetType();

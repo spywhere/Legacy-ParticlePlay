@@ -13,6 +13,7 @@ ppSegment::~ppSegment(){
 }
 
 void ppSegment::AddSound(ppGenericSound *sound){
+	sound->SetAutoLoop(false);
 	this->sounds.push_back(sound);
 
 	if(this->emptySound){
@@ -29,6 +30,10 @@ void ppSegment::AddSound(ppGenericSound *sound){
 
 void ppSegment::ClearSound(){
 	this->sounds.clear();
+}
+
+int ppSegment::GetTotalSound(){
+	return this->sounds.size();
 }
 
 Sint64 ppSegment::GetCurrentPosition(){
@@ -51,18 +56,43 @@ void ppSegment::SetLoop(int loop){
 	this->emptySound->SetLoop(loop);
 }
 
+bool ppSegment::IsLoop(){
+	return this->emptySound->IsLoop();
+}
+
+bool ppSegment::IsPause(){
+	return this->emptySound->IsPause();
+}
+
+bool ppSegment::IsStop(){
+	return this->emptySound->IsStop();
+}
+
+bool ppSegment::IsPlaying(){
+	return this->emptySound->IsPlaying();
+}
+
+int ppSegment::GetLoop(){
+	return this->emptySound->GetLoop();
+}
+
 void ppSegment::Play(){
+	ppGenericSound::Play();
 	this->emptySound->Play();
 }
 
 void ppSegment::Pause(){
+	ppGenericSound::Pause();
 	this->emptySound->Pause();
 	for(auto sound : this->sounds){
-		sound->Pause();
+		if(sound->IsPlaying()){
+			sound->Pause();
+		}
 	}
 }
 
 void ppSegment::Stop(){
+	ppGenericSound::Stop();
 	this->emptySound->Stop();
 	for(auto sound : this->sounds){
 		sound->Stop();
@@ -73,6 +103,9 @@ void ppSegment::Update(){
 	this->emptySound->Update();
 	for(auto sound : this->sounds){
 		if(sound->GetOffset()<this->GetCurrentPosition() && sound->IsStop() && this->GetCurrentPosition() < sound->GetPositionLength()){
+			sound->Play();
+		}
+		if(!this->IsPause() && sound->IsPause()){
 			sound->Play();
 		}
 		sound->Update();

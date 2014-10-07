@@ -25,11 +25,13 @@ Sint64 ppEmptyFormat::Read(char *bufferData, Sint64 position, Sint64 size, int t
 }
 
 Sint64 ppEmptyFormat::ActualPosition(Sint64 relativePosition){
-	return relativePosition*this->audioChannels/(this->stereo?2:1);
+	return this->sourceAudioFormat->ActualPosition(relativePosition);
+	// return relativePosition*this->audioChannels/(this->stereo?2:1);
 }
 
 Sint64 ppEmptyFormat::RelativePosition(Sint64 actualPosition){
-	return actualPosition/this->audioChannels*(this->stereo?2:1);
+	return this->sourceAudioFormat->RelativePosition(actualPosition);
+	// return actualPosition/this->audioChannels*(this->stereo?2:1);
 }
 
 Sint64 ppEmptyFormat::GetPositionLength(){
@@ -37,11 +39,13 @@ Sint64 ppEmptyFormat::GetPositionLength(){
 }
 
 float ppEmptyFormat::PositionToTime(Sint64 position){
-	float sampleLength = position * 8 / (this->audioChannels * this->bitPerSample);
-	return sampleLength / this->sourceAudioFormat->GetSampleRate();
+	return this->sourceAudioFormat->PositionToTime(position);
+	// float sampleLength = position * 8 / (this->audioChannels * this->bitPerSample);
+	// return sampleLength / this->sourceAudioFormat->GetSampleRate();
 }
 
 Sint64 ppEmptyFormat::TimeToPosition(float time){
+	return this->sourceAudioFormat->TimeToPosition(time);
 	float sampleLength = time * this->sourceAudioFormat->GetSampleRate();
 	return sampleLength * this->audioChannels * this->bitPerSample / 8;
 }

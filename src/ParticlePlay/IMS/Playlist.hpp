@@ -16,10 +16,16 @@ public:
 	void AddSound(ppGenericSound *sound);
 	void ClearSound();
 
+	ppGenericSound* GetSoundAtIndex(int index);
+	int GetTotalSound();
+
 	void Play();
+	void Pause();
 	void Stop();
 
 	void Update();
+	Sint64 GetEntryCue();
+	Sint64 GetExitCue();
 	Sint64 GetCurrentPosition();
 	Sint64 GetPositionLength();
 	float GetCurrentTime();

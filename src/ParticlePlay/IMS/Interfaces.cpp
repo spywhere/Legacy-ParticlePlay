@@ -4,12 +4,18 @@ void ppUpdatable::Update(){}
 
 ppPlayable::ppPlayable(){
 	this->Stop();
+	this->entryCue = 0;
+	this->exitCue = -1;
 }
 
 ppPlayable::~ppPlayable(){}
 
 void ppPlayable::Play(){
-	this->isPlaying = true;
+	if(this->isPlaying){
+		this->isPause = false;
+	}else{
+		this->isPlaying = true;
+	}
 }
 
 void ppPlayable::Pause(){
@@ -19,8 +25,6 @@ void ppPlayable::Pause(){
 void ppPlayable::Stop(){
 	this->isPlaying = false;
 	this->isPause = false;
-	this->entryCue = 0;
-	this->exitCue = -1;
 }
 
 Sint64 ppPlayable::GetEntryCue(){
@@ -38,7 +42,6 @@ void ppPlayable::SetEntryCue(Sint64 entryCue){
 void ppPlayable::SetExitCue(Sint64 exitCue){
 	this->exitCue = exitCue;
 }
-
 
 bool ppPlayable::IsPause(){
 	return this->isPause;
@@ -89,6 +92,7 @@ ppGenericSound::ppGenericSound(const char *name) : ppControl(name, 0, 0) {
 	this->preload = false;
 	this->volume = 1;
 	this->speed = 1;
+	this->autoloop = true;
 	this->loop = 0;
 	this->audioFormat = NULL;
 }
@@ -125,6 +129,10 @@ float ppGenericSound::GetSpeed(){
 
 ppFormat* ppGenericSound::GetAudioFormat(){
 	return this->audioFormat;
+}
+
+int ppGenericSound::GetLoop(){
+	return this->loop;
 }
 
 bool ppGenericSound::IsLoop(){

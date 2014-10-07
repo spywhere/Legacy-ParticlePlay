@@ -31,9 +31,11 @@ public:
 	void SetPlayOrder(ppSoundPlayOrder playOrder);
 	void SetTrack(int track);
 	void Preload();
+	ppSoundPlayOrder GetPlayOrder();
 
 	//Playable
 	void Play();
+	void Pause();
 	void Stop();
 	void Update();
 

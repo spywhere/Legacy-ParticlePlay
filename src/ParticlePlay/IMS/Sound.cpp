@@ -15,7 +15,7 @@ ppSound::ppSound(const char *name, ppFormat* audioFormat, int track) : ppGeneric
 }
 
 ppSound::~ppSound(){
-	ppPlayable::~ppPlayable();
+	ppGenericSound::~ppGenericSound();
 	alDeleteSources(1, &this->sourceID);
     alDeleteBuffers(2, this->bufferSet);
 }
@@ -54,6 +54,10 @@ void ppSound::SetPlayOrder(ppSoundPlayOrder playOrder){
 	this->track = this->loadingTrack;
 }
 
+ppSoundPlayOrder ppSound::GetPlayOrder(){
+	return this->playOrder;
+}
+
 void ppSound::GetNextTrack(){
 	if(this->track!=this->loadingTrack){
 		return;
@@ -87,6 +91,7 @@ void ppSound::SetClipEnd(Sint64 clipping){
 }
 
 void ppSound::Preload(){
+	// this->GetNextTrack();
 	this->Stop();
 	alSourceUnqueueBuffers(this->sourceID, 2, this->bufferSet);
 
@@ -157,8 +162,14 @@ void ppSound::Stop(){
 	if(!this->isPlaying){
 		return;
 	}
-	ppPlayable::Stop();
+	ppGenericSound::Stop();
 	alSourceStop(this->sourceID);
+	alSourceUnqueueBuffers(this->sourceID, 2, this->bufferSet);
+
+	this->track = this->loadingTrack;
+	this->nextReadPosition = this->clipStart;
+	this->totalBufferProcessed = 0;
+	this->startReadPosition = 0;
 	this->preload = false;
 }
 
@@ -168,11 +179,19 @@ void ppSound::Play(){
 	if(sourceState==AL_PLAYING){
 		return;
 	}
-	if(!this->preload){
+	if(!this->IsPause() && !this->preload){
 		this->Preload();
 	}
-	ppPlayable::Play();
+	ppGenericSound::Play();
 	alSourcePlay(this->sourceID);
+}
+
+void ppSound::Pause(){
+	if(this->IsPause()){
+		return;
+	}
+	ppGenericSound::Pause();
+	alSourcePause(this->sourceID);
 }
 
 void ppSound::Seek(Sint64 position){

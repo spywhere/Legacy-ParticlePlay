@@ -76,6 +76,7 @@ public:
 	virtual float GetVolume();
 	virtual float GetSpeed();
 	virtual ppFormat *GetAudioFormat();
+	virtual int GetLoop();
 	virtual bool IsLoop();
 	virtual bool IsAutoLoop();
 	virtual bool IsReady();

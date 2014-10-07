@@ -18,7 +18,7 @@ class ppIMS {
 protected:
 	//// InteractiveMusicSystem will inherit from SoundSystem class
 	bool preload;
-	std::map<std::string, ppPlayable*> sounds;
+	std::map<std::string, ppGenericSound*> sounds;
 	std::list<ppFormat*> formats;
 	ALCdevice* device;
 	ALCcontext* context;
@@ -32,6 +32,9 @@ public:
 	ppSound *CreateSound(const char *name, ppFormat* audioFormat);
 	ppSegment *CreateSegment(const char *name);
 	ppPlaylist* CreatePlaylist(const char *name);
+	ppGenericSound* GetSound(const char *name);
+	void RemoveSound(const char *name);
+	void ClearSound();
 	int Init();
 	int Reinit();
 	void Quit();

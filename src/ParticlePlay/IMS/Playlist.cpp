@@ -1,5 +1,7 @@
 #include "Playlist.hpp"
 
+#include <iterator>
+
 ppPlaylist::ppPlaylist(const char *name) : ppGenericSound(name){
 	this->current = NULL;
 	this->next = NULL;
@@ -17,14 +19,35 @@ void ppPlaylist::ClearSound(){
 }
 
 void ppPlaylist::Play(){
-	this->current = this->queue.front();
-	this->queue.pop_front();
-	this->queue.push_back(current);
-	this->next = this->queue.front();
-	this->current->Play();
+	ppGenericSound::Play();
+	if(!this->current || !this->current->IsPause()){
+		this->current = this->queue.front();
+		this->queue.pop_front();
+		this->queue.push_back(current);
+		this->next = this->queue.front();
+		this->current->Play();
+	}else{
+		for(auto sound : this->sounds){
+			if(sound->IsPause()){
+				sound->Play();
+			}
+		}
+	}
+}
+
+void ppPlaylist::Pause(){
+	ppGenericSound::Pause();
+	for(auto sound : this->sounds){
+		if(sound->IsPlaying()){
+			sound->Pause();
+		}
+	}
 }
 
 void ppPlaylist::Stop(){
+	ppGenericSound::Stop();
+	this->playDuration = 0;
+	this->current->Stop();
 	this->current = NULL;
 	this->next = NULL;
 	this->queue.clear();
@@ -33,26 +56,87 @@ void ppPlaylist::Stop(){
 	}
 }
 
+ppGenericSound *ppPlaylist::GetSoundAtIndex(int index){
+	if(index < this->sounds.size()){
+		return *std::next(this->sounds.begin(), index);
+	}
+	return NULL;
+}
+
+int ppPlaylist::GetTotalSound(){
+	return this->sounds.size();
+}
+
+Sint64 ppPlaylist::GetEntryCue(){
+	if(this->sounds.size()<=0){
+		return 0;
+	}
+	return this->sounds.front()->GetEntryCue();
+}
+
+Sint64 ppPlaylist::GetExitCue(){
+	if(this->sounds.size()<=0){
+		return 0;
+	}
+	Sint64 exitCue = this->sounds.back()->GetExitCue();
+	if(exitCue >= 0){
+		exitCue = this->GetPositionLength()-(this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue());
+	}else{
+		exitCue *= -1;
+	}
+	return exitCue;
+}
+
 Sint64 ppPlaylist::GetCurrentPosition(){
-	return this->playDuration;
+	if(!this->current){
+		return 0;
+	}
+	if(playDuration == 0){
+		return this->current->GetCurrentPosition();
+	}else{
+		return this->current->GetCurrentPosition()-this->current->GetEntryCue()+this->playDuration;
+	}
 }
 
 Sint64 ppPlaylist::GetPositionLength(){
-	return this->playDuration;
+	Sint64 totalLength = 0;
+	for(auto sound : this->sounds){
+		if(sound->GetExitCue() < 0){
+			totalLength += sound->GetPositionLength()-sound->GetEntryCue()+sound->GetExitCue();
+		}else{
+			totalLength += sound->GetExitCue()-sound->GetEntryCue();
+		}
+	}
+	if(this->sounds.size()>0){
+		if(this->sounds.back()->GetExitCue() < 0){
+			totalLength -= this->sounds.back()->GetExitCue();
+		}else{
+			totalLength += this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue();
+		}
+	}
+	return totalLength;
 }
 
 float ppPlaylist::GetCurrentTime(){
-	// if(this->current!=NULL){
-	// 	return this->current->GetAudioFormat()->PositionToTime(this->playDuration);
-	// }
-	return 0;
+	if(!this->current){
+		if(this->sounds.size()<=0){
+			return 0;
+		}else{
+			return this->sounds.front()->GetCurrentTime();
+		}
+	}
+	return this->current->GetCurrentTime();
 }
 
 float ppPlaylist::GetTotalTime(){
-	// if(this->current!=NULL){
-	// 	return this->current->GetAudioFormat()->PositionToTime(this->playDuration);
-	// }
-	return 0;
+	if(!this->current){
+		if(this->sounds.size()<=0){
+			return 0;
+		}else{
+			return this->sounds.front()->GetTotalTime();
+		}
+	}
+	return this->current->GetTotalTime();
 }
 
 void ppPlaylist::Update(){
@@ -62,11 +146,14 @@ void ppPlaylist::Update(){
 			length = this->current->GetPositionLength() + this->current->GetExitCue() - this->next->GetEntryCue();
 		}
 		if(this->current->GetCurrentPosition() >= length){
-			this->current = this->queue.front();
-			this->queue.pop_front();
-			this->queue.push_back(current);
-			this->next = this->queue.front();
-			this->current->Play();
+			this->playDuration += length;
+			if(this->IsAutoLoop() || this->queue.front() != this->sounds.front()){
+				this->current = this->queue.front();
+				this->queue.pop_front();
+				this->queue.push_back(current);
+				this->next = this->queue.front();
+				this->current->Play();
+			}
 		}
 	}
 	for(auto sound : this->sounds){

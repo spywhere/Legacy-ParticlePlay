@@ -12,10 +12,8 @@ class TestIMS : public ppState {
 protected:
 	ppGUI* gui;
 	ppIMS* ims;
-	ppFormat* soundFormat;
-	ppSound* sound;
-	ppSegment* segment;
-	bool played;
+	int test;
+	int playlist_track;
 	void DrawRect(int x, int y, int w, int h);
 	void DrawFillRect(int x, int y, int w, int h);
 public:
