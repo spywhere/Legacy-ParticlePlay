@@ -16,6 +16,7 @@ public:
 	void AddSound(ppGenericSound *sound);
 	void ClearSound();
 
+	ppGenericSound* GetPlayingSound();
 	ppGenericSound* GetSoundAtIndex(int index);
 	int GetTotalSound();
 

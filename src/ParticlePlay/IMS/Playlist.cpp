@@ -50,14 +50,22 @@ void ppPlaylist::Stop(){
 		return;
 	}
 	ppGenericSound::Stop();
+	for(auto sound : this->sounds){
+		if(sound->IsPlaying()){
+			sound->Stop();
+		}
+	}
 	this->playDuration = 0;
-	this->current->Stop();
 	this->current = NULL;
 	this->next = NULL;
 	this->queue.clear();
 	for(auto sound : this->sounds){
 		this->queue.push_back(sound);
 	}
+}
+
+ppGenericSound *ppPlaylist::GetPlayingSound(){
+	return this->current;
 }
 
 ppGenericSound *ppPlaylist::GetSoundAtIndex(int index){
@@ -176,7 +184,7 @@ void ppPlaylist::Update(){
 }
 
 void ppPlaylist::Render(SDL_Renderer* renderer){
-	int index=1;
+	int index=0;
 	int height=this->height/(this->sounds.size()+1);
 	for(auto sound : this->sounds){
 		int width = sound->GetCurrentPosition()*(this->width-2)/sound->GetPositionLength();

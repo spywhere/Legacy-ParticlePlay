@@ -1,5 +1,7 @@
 #include "Segment.hpp"
 
+#include <sstream>
+
 ppSegment::ppSegment(const char *name, ppIMS* ims) : ppGenericSound(name){
 	this->ims = ims;
 	this->emptySound = NULL;
@@ -149,6 +151,14 @@ void ppSegment::Render(SDL_Renderer* renderer){
 		glVertex3f(this->x, this->y+height, 0);
 	}
 	glEnd();
+
+	std::stringstream ss;
+	ss << this->GetName();
+	if(this->GetGUI()->GetDefaultFont()){
+		glColor3f(1 ,1 ,1);
+		this->GetGUI()->GetDefaultFont()->Render(this->x+5, this->y+(height/2)-5, ss.str().c_str(), renderer);
+	}
+
 	for(auto sound : this->sounds){
 		int offset_width = sound->GetOffset()*(this->width-2)/this->GetPositionLength();
 		int width = sound->GetCurrentPosition()*(this->width-2)/this->GetPositionLength();
@@ -173,6 +183,13 @@ void ppSegment::Render(SDL_Renderer* renderer){
 			glVertex3f(this->x+offset_width, this->y+(index*height)+height, 0);
 		}
 		glEnd();
+
+		std::stringstream ss;
+		ss << sound->GetName();
+		if(this->GetGUI()->GetDefaultFont()){
+			glColor3f(1 ,1 ,1);
+			this->GetGUI()->GetDefaultFont()->Render(this->x+5, this->y+(index*height)+(height/2)-5, ss.str().c_str(), renderer);
+		}
 		index++;
 	}
 }
