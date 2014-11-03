@@ -6,38 +6,38 @@
 #include "TestIMS.hpp"
 #include "TestTestbed.hpp"
 
-void printOffset(int level){
-	for(int i=0;i<level;i++){
-		std::cout << "  ";
-	}
-}
+// void printOffset(int level){
+// 	for(int i=0;i<level;i++){
+// 		std::cout << "  ";
+// 	}
+// }
 
-void printYAML(YAML::Node node, int level){
-	if(node.IsMap()){
-		std::cout << std::endl;
-		for(auto it=node.begin();it!=node.end();++it) {
-			printOffset(level);
-			std::cout << it->first.as<std::string>() << ": ";
-			printYAML(it->second, level+1);
-			if(it->second.IsScalar() || it->second.IsSequence()){
-				std::cout << std::endl;
-			}
-		}
-	}else if(node.IsSequence()){
-		std::cout << "[";
-		for(auto it=node.begin();it!=node.end();++it) {
-			if(it!=node.begin()){
-				std::cout << ", ";
-			}
-			printYAML(*it, level+1);
-		}
-		std::cout << "]";
-	}else if(node.IsScalar()){
-		std::cout << node.as<std::string>();
-	}else{
-		std::cout << "What?" << std::endl;
-	}
-}
+// void printYAML(YAML::Node node, int level){
+// 	if(node.IsMap()){
+// 		std::cout << std::endl;
+// 		for(auto it=node.begin();it!=node.end();++it) {
+// 			printOffset(level);
+// 			std::cout << it->first.as<std::string>() << ": ";
+// 			printYAML(it->second, level+1);
+// 			if(it->second.IsScalar() || it->second.IsSequence()){
+// 				std::cout << std::endl;
+// 			}
+// 		}
+// 	}else if(node.IsSequence()){
+// 		std::cout << "[";
+// 		for(auto it=node.begin();it!=node.end();++it) {
+// 			if(it!=node.begin()){
+// 				std::cout << ", ";
+// 			}
+// 			printYAML(*it, level+1);
+// 		}
+// 		std::cout << "]";
+// 	}else if(node.IsScalar()){
+// 		std::cout << node.as<std::string>();
+// 	}else{
+// 		std::cout << "What?" << std::endl;
+// 	}
+// }
 
 int main(int argc, char* argv[]) {
 	TestGame* game = new TestGame();

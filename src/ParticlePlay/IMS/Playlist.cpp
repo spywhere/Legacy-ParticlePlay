@@ -1,6 +1,7 @@
 #include "Playlist.hpp"
 
 #include <iterator>
+#include <sstream>
 
 ppPlaylist::ppPlaylist(const char *name) : ppGenericSound(name){
 	this->current = NULL;
@@ -45,6 +46,9 @@ void ppPlaylist::Pause(){
 }
 
 void ppPlaylist::Stop(){
+	if(this->IsStop()){
+		return;
+	}
 	ppGenericSound::Stop();
 	this->playDuration = 0;
 	this->current->Stop();
@@ -78,11 +82,10 @@ Sint64 ppPlaylist::GetExitCue(){
 	if(this->sounds.size()<=0){
 		return 0;
 	}
+
 	Sint64 exitCue = this->sounds.back()->GetExitCue();
 	if(exitCue >= 0){
-		exitCue = this->GetPositionLength()-(this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue());
-	}else{
-		exitCue *= -1;
+		exitCue = this->GetPositionLength()-this->GetEntryCue()-(this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue()-this->sounds.back()->GetEntryCue());
 	}
 	return exitCue;
 }
@@ -104,14 +107,15 @@ Sint64 ppPlaylist::GetPositionLength(){
 		if(sound->GetExitCue() < 0){
 			totalLength += sound->GetPositionLength()-sound->GetEntryCue()+sound->GetExitCue();
 		}else{
-			totalLength += sound->GetExitCue()-sound->GetEntryCue();
+			totalLength += sound->GetExitCue();
 		}
 	}
 	if(this->sounds.size()>0){
+		totalLength += this->sounds.front()->GetEntryCue();
 		if(this->sounds.back()->GetExitCue() < 0){
 			totalLength -= this->sounds.back()->GetExitCue();
 		}else{
-			totalLength += this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue();
+			totalLength += this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue()-this->sounds.back()->GetEntryCue();
 		}
 	}
 	return totalLength;
@@ -141,12 +145,19 @@ float ppPlaylist::GetTotalTime(){
 
 void ppPlaylist::Update(){
 	if(this->current!=NULL){
-		Sint64 length = this->current->GetEntryCue() + this->current->GetExitCue() - this->next->GetEntryCue();
+		Sint64 length = this->current->GetExitCue();
+		Sint64 triggerLength = this->current->GetEntryCue() + this->current->GetExitCue() - this->next->GetEntryCue();
 		if(this->current->GetExitCue() < 0){
-			length = this->current->GetPositionLength() + this->current->GetExitCue() - this->next->GetEntryCue();
+			length = this->current->GetPositionLength() + this->current->GetExitCue() - this->current->GetEntryCue();
+			triggerLength = this->current->GetPositionLength() + this->current->GetExitCue() - this->next->GetEntryCue();
 		}
-		if(this->current->GetCurrentPosition() >= length){
-			this->playDuration += length;
+		if(this->current->GetCurrentPosition() >= triggerLength){
+			if(this->playDuration == 0){
+				this->playDuration += this->current->GetEntryCue();
+			}
+			if(this->current != this->sounds.back()){
+				this->playDuration += length;
+			}
 			if(this->IsAutoLoop() || this->queue.front() != this->sounds.front()){
 				this->current = this->queue.front();
 				this->queue.pop_front();
@@ -154,6 +165,9 @@ void ppPlaylist::Update(){
 				this->next = this->queue.front();
 				this->current->Play();
 			}
+		}
+		if(!this->IsAutoLoop() && this->current == this->sounds.back() && this->current->IsStop()){
+			this->playDuration = 0;
 		}
 	}
 	for(auto sound : this->sounds){
@@ -199,12 +213,12 @@ void ppPlaylist::Render(SDL_Renderer* renderer){
 		//Exit Cue
 		glBegin(GL_LINES);
 		{
-			Sint64 length = sound->GetEntryCue() + sound->GetExitCue();
+			Sint64 exitCue = sound->GetEntryCue() + sound->GetExitCue();
 			if(sound->GetExitCue() < 0){
-				length = sound->GetPositionLength() + sound->GetExitCue();
+				exitCue = sound->GetPositionLength() + sound->GetExitCue();
 			}
 			glColor3f(1, 1, 1);
-			int offset = length*(this->width-2)/sound->GetPositionLength();
+			int offset = exitCue*(this->width-2)/sound->GetPositionLength();
 			glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
 			glVertex3f(this->x+offset, this->y+(index*height)+height, 0);
 		}

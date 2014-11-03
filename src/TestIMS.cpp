@@ -263,9 +263,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppFormat* seg11format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-11.wav");
 			ppFormat* seg12format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-12.wav");
 
-			ppSound* seg1 = this->ims->CreateSound("seg1sound", seg1format);
-			ppSound* seg2 = this->ims->CreateSound("seg2sound", seg2format);
-			ppSound* seg3 = this->ims->CreateSound("seg3sound", seg3format);
+			ppSound* seg1sound = this->ims->CreateSound("seg1sound", seg1format);
+			ppSound* seg2sound = this->ims->CreateSound("seg2sound", seg2format);
+			ppSound* seg3sound = this->ims->CreateSound("seg3sound", seg3format);
 			ppSound* seg4 = this->ims->CreateSound("seg4sound", seg4format);
 			ppSound* seg5 = this->ims->CreateSound("seg5sound", seg5format);
 			ppSound* seg6 = this->ims->CreateSound("seg6sound", seg6format);
@@ -288,13 +288,13 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			// ppSound* seg11sound = this->ims->CreateSound("seg11sound", seg11format);
 			// ppSound* seg12sound = this->ims->CreateSound("seg12sound", seg12format);
 
-			// ppSegment* seg1 = this->ims->CreateSegment("seg1");
+			ppSegment* seg1 = this->ims->CreateSegment("seg1");
 			seg1->SetEntryCue(seg1format->TimeToPosition(1.5f));
 			seg1->SetExitCue(seg1format->TimeToPosition(4.5f));
-			// ppSegment* seg2 = this->ims->CreateSegment("seg2");
+			ppSegment* seg2 = this->ims->CreateSegment("seg2");
 			seg2->SetEntryCue(seg1format->TimeToPosition(1.125f));
 			seg2->SetExitCue(seg1format->TimeToPosition(4.5f));
-			// ppSegment* seg3 = this->ims->CreateSegment("seg3");
+			ppSegment* seg3 = this->ims->CreateSegment("seg3");
 			seg3->SetEntryCue(seg1format->TimeToPosition(1.5f));
 			seg3->SetExitCue(seg1format->TimeToPosition(4.5f));
 			// ppSegment* seg4 = this->ims->CreateSegment("seg4");
@@ -325,9 +325,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			seg12->SetEntryCue(seg1format->TimeToPosition(2.625f));
 			seg12->SetExitCue(seg1format->TimeToPosition(4.5f));
 
-			// seg1->AddSound(seg1sound);
-			// seg2->AddSound(seg2sound);
-			// seg3->AddSound(seg3sound);
+			seg1->AddSound(seg1sound);
+			seg2->AddSound(seg2sound);
+			seg3->AddSound(seg3sound);
 			// seg4->AddSound(seg4sound);
 			// seg5->AddSound(seg5sound);
 			// seg6->AddSound(seg6sound);
@@ -345,22 +345,22 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			playlist->AddSound(seg4);
 			playlist->AddSound(seg5);
 			playlist->AddSound(seg6);
-			playlist->AddSound(seg7);
-			playlist->AddSound(seg8);
-			playlist->AddSound(seg9);
-			playlist->AddSound(seg10);
-			playlist->AddSound(seg11);
-			playlist->AddSound(seg12);
+			// playlist->AddSound(seg7);
+			// playlist->AddSound(seg8);
+			// playlist->AddSound(seg9);
+			// playlist->AddSound(seg10);
+			// playlist->AddSound(seg11);
+			// playlist->AddSound(seg12);
 
-			// ppPlaylist* playlist2 = this->ims->CreatePlaylist("playlist2");
-			// playlist2->AddSound(seg7);
-			// playlist2->AddSound(seg8);
-			// playlist2->AddSound(seg9);
-			// playlist2->AddSound(seg10);
-			// playlist2->AddSound(seg11);
-			// playlist2->AddSound(seg12);
+			ppPlaylist* playlist2 = this->ims->CreatePlaylist("playlist2");
+			playlist2->AddSound(seg7);
+			playlist2->AddSound(seg8);
+			playlist2->AddSound(seg9);
+			playlist2->AddSound(seg10);
+			playlist2->AddSound(seg11);
+			playlist2->AddSound(seg12);
 
-			// playlist->AddSound(playlist2);
+			playlist->AddSound(playlist2);
 
 			playlist->SetSize(300, 250);
 			playlist->SetLocation(10, 100);

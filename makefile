@@ -15,8 +15,7 @@ LIBS=\
 -framework SDL2_net\
 -lOpenAL\
 -framework OpenGL\
--lBox2D\
--lyaml-cpp
+-lBox2D
 # -lopenal32
 
 # Source goes here

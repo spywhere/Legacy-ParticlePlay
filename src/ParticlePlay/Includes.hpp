@@ -19,9 +19,6 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
-
-		// YAML-CPP
-		#include <yaml-cpp/yaml.h>
 	#elif _MSC_VER
 		//Compile with Visual Studio
 		#include <windows.h>
@@ -43,9 +40,6 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
-
-		// YAML-CPP
-		#include <yaml-cpp/yaml.h>
 	#elif __WIN32__
 		//Compile with MinGW
 
@@ -87,9 +81,6 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
-
-		// YAML-CPP
-		#include <yaml-cpp/yaml.h>
 	#else
 		//Other platform
 
@@ -109,8 +100,5 @@
 
 		// Box2D
 		#include <Box2D/Box2D.h>
-
-		// YAML-CPP
-		#include <yaml-cpp/yaml.h>
 	#endif
 #endif
