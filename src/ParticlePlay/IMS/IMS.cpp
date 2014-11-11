@@ -1,7 +1,12 @@
 #include "IMS.hpp"
 
-ppIMS::ppIMS(ppGame* game) {
+ppIMS::ppIMS(ppGame* game, ppRandomizer* randomizer) {
+	this->randomizer = randomizer;
 	this->preload = false;
+}
+
+ppRandomizer* ppIMS::GetRandomizer(){
+	return this->randomizer;
 }
 
 int ppIMS::Init(){
@@ -45,7 +50,7 @@ ppFormat* ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename){
 }
 
 ppSound *ppIMS::CreateSound(const char *name, ppFormat* audioFormat, int track){
-	ppSound* sound = new ppSound(name, audioFormat, track);
+	ppSound* sound = new ppSound(name, audioFormat, track, this->randomizer);
 	this->sounds[name] = sound;
 	return sound;
 }
@@ -61,7 +66,7 @@ ppSegment *ppIMS::CreateSegment(const char *name){
 }
 
 ppPlaylist* ppIMS::CreatePlaylist(const char *name){
-	ppPlaylist* playlist = new ppPlaylist(name);
+	ppPlaylist* playlist = new ppPlaylist(name, this->randomizer);
 	this->sounds[name] = playlist;
 	return playlist;
 }

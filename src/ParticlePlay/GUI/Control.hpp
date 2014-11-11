@@ -17,7 +17,7 @@ protected:
 	std::string name;
 public:
 	ppControl(const char *name, int x, int y, int w, int h);
-	ppControl(const char *name, int x, int y) : ppControl(name, x, y, 0 ,0) {}
+	ppControl(const char *name, int x, int y) : ppControl(name, x, y, 0 ,0) {};
 	ppControl(const char *name) : ppControl(name, 0, 0) {}
 	ppGUI* GetGUI();
 	void SetGUI(ppGUI* gui);

@@ -1,6 +1,5 @@
 #include "Testbed.hpp"
 
-#include <iostream>
 #include <sstream>
 #include "GUI/Controls.hpp"
 

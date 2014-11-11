@@ -3,20 +3,57 @@
 #include <iterator>
 #include <sstream>
 
-ppPlaylist::ppPlaylist(const char *name) : ppGenericSound(name){
+ppPlaylist::ppPlaylist(const char *name, ppRandomizer* randomizer) : ppGenericSound(name){
+	this->randomizer = randomizer;
 	this->current = NULL;
 	this->next = NULL;
 	this->playDuration = 0;
+	this->SetPlayOrder(ppPlaylistPlayOrder::SEQUENCE_CONTINUOUS);
 }
 
 void ppPlaylist::AddSound(ppGenericSound *sound){
 	sound->SetAutoLoop(false);
 	this->sounds.push_back(sound);
-	this->queue.push_back(sound);
+	this->SetPlayOrder(this->GetPlayOrder());
 }
 
 void ppPlaylist::ClearSound(){
 	this->sounds.clear();
+}
+
+void ppPlaylist::SetPlayOrder(ppPlaylistPlayOrder playOrder){
+	this->playOrder = playOrder;
+	this->queue.clear();
+	this->soundOrder.clear();
+	if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS || this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP){
+		std::list<ppGenericSound*> sequencelist;
+		for(auto sound : this->sounds){
+			sequencelist.push_back(sound);
+		}
+		while(!sequencelist.empty()){
+			auto numit = sequencelist.begin();
+			int x = this->randomizer->NextInt(sequencelist.size());
+			advance(numit, x);
+			this->soundOrder.push_back(*numit);
+			this->queue.push_back(*numit);
+			sequencelist.erase(numit);
+			if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP){
+				break;
+			}
+		}
+	}else if(this->playOrder == ppPlaylistPlayOrder::SEQUENCE_CONTINUOUS || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+		for(auto sound : this->sounds){
+			this->soundOrder.push_back(sound);
+			this->queue.push_back(sound);
+			if(this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+				break;
+			}
+		}
+	}
+}
+
+ppPlaylistPlayOrder ppPlaylist::GetPlayOrder(){
+	return this->playOrder;
 }
 
 void ppPlaylist::Play(){
@@ -51,17 +88,13 @@ void ppPlaylist::Stop(){
 	}
 	ppGenericSound::Stop();
 	for(auto sound : this->sounds){
-		if(sound->IsPlaying()){
+		if(!sound->IsStop()){
 			sound->Stop();
 		}
 	}
 	this->playDuration = 0;
 	this->current = NULL;
 	this->next = NULL;
-	this->queue.clear();
-	for(auto sound : this->sounds){
-		this->queue.push_back(sound);
-	}
 }
 
 ppGenericSound *ppPlaylist::GetPlayingSound(){
@@ -69,8 +102,8 @@ ppGenericSound *ppPlaylist::GetPlayingSound(){
 }
 
 ppGenericSound *ppPlaylist::GetSoundAtIndex(int index){
-	if(index < this->sounds.size()){
-		return *std::next(this->sounds.begin(), index);
+	if(index < this->soundOrder.size()){
+		return *std::next(this->soundOrder.begin(), index);
 	}
 	return NULL;
 }
@@ -80,20 +113,20 @@ int ppPlaylist::GetTotalSound(){
 }
 
 Sint64 ppPlaylist::GetEntryCue(){
-	if(this->sounds.size()<=0){
+	if(this->soundOrder.size()<=0){
 		return 0;
 	}
-	return this->sounds.front()->GetEntryCue();
+	return this->soundOrder.front()->GetEntryCue();
 }
 
 Sint64 ppPlaylist::GetExitCue(){
-	if(this->sounds.size()<=0){
+	if(this->soundOrder.size()<=0){
 		return 0;
 	}
 
-	Sint64 exitCue = this->sounds.back()->GetExitCue();
+	Sint64 exitCue = this->soundOrder.back()->GetExitCue();
 	if(exitCue >= 0){
-		exitCue = this->GetPositionLength()-this->GetEntryCue()-(this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue()-this->sounds.back()->GetEntryCue());
+		exitCue = this->GetPositionLength()-this->GetEntryCue()-(this->soundOrder.back()->GetPositionLength()-this->soundOrder.back()->GetExitCue()-this->soundOrder.back()->GetEntryCue());
 	}
 	return exitCue;
 }
@@ -111,19 +144,19 @@ Sint64 ppPlaylist::GetCurrentPosition(){
 
 Sint64 ppPlaylist::GetPositionLength(){
 	Sint64 totalLength = 0;
-	for(auto sound : this->sounds){
+	for(auto sound : this->soundOrder){
 		if(sound->GetExitCue() < 0){
 			totalLength += sound->GetPositionLength()-sound->GetEntryCue()+sound->GetExitCue();
 		}else{
 			totalLength += sound->GetExitCue();
 		}
 	}
-	if(this->sounds.size()>0){
-		totalLength += this->sounds.front()->GetEntryCue();
-		if(this->sounds.back()->GetExitCue() < 0){
-			totalLength -= this->sounds.back()->GetExitCue();
+	if(this->soundOrder.size()>0){
+		totalLength += this->soundOrder.front()->GetEntryCue();
+		if(this->soundOrder.back()->GetExitCue() < 0){
+			totalLength -= this->soundOrder.back()->GetExitCue();
 		}else{
-			totalLength += this->sounds.back()->GetPositionLength()-this->sounds.back()->GetExitCue()-this->sounds.back()->GetEntryCue();
+			totalLength += this->soundOrder.back()->GetPositionLength()-this->soundOrder.back()->GetExitCue()-this->soundOrder.back()->GetEntryCue();
 		}
 	}
 	return totalLength;
@@ -131,10 +164,10 @@ Sint64 ppPlaylist::GetPositionLength(){
 
 float ppPlaylist::GetCurrentTime(){
 	if(!this->current){
-		if(this->sounds.size()<=0){
+		if(this->soundOrder.size()<=0){
 			return 0;
 		}else{
-			return this->sounds.front()->GetCurrentTime();
+			return this->soundOrder.front()->GetCurrentTime();
 		}
 	}
 	return this->current->GetCurrentTime();
@@ -142,10 +175,10 @@ float ppPlaylist::GetCurrentTime(){
 
 float ppPlaylist::GetTotalTime(){
 	if(!this->current){
-		if(this->sounds.size()<=0){
+		if(this->soundOrder.size()<=0){
 			return 0;
 		}else{
-			return this->sounds.front()->GetTotalTime();
+			return this->soundOrder.front()->GetTotalTime();
 		}
 	}
 	return this->current->GetTotalTime();
@@ -163,10 +196,10 @@ void ppPlaylist::Update(){
 			if(this->playDuration == 0){
 				this->playDuration += this->current->GetEntryCue();
 			}
-			if(this->current != this->sounds.back()){
+			if(this->current != this->soundOrder.back()){
 				this->playDuration += length;
 			}
-			if(this->IsAutoLoop() || this->queue.front() != this->sounds.front()){
+			if(this->IsAutoLoop() || this->queue.front() != this->soundOrder.front()){
 				this->current = this->queue.front();
 				this->queue.pop_front();
 				this->queue.push_back(current);
@@ -174,8 +207,9 @@ void ppPlaylist::Update(){
 				this->current->Play();
 			}
 		}
-		if(!this->IsAutoLoop() && this->current == this->sounds.back() && this->current->IsStop()){
+		if(!this->IsAutoLoop() && this->current == this->soundOrder.back() && this->current->IsStop()){
 			this->playDuration = 0;
+			this->SetPlayOrder(this->GetPlayOrder());
 		}
 	}
 	for(auto sound : this->sounds){
@@ -184,9 +218,13 @@ void ppPlaylist::Update(){
 }
 
 void ppPlaylist::Render(SDL_Renderer* renderer){
+	ppControl::Render(renderer);
+	if(!this->visible){
+		return;
+	}
 	int index=0;
-	int height=this->height/(this->sounds.size()+1);
-	for(auto sound : this->sounds){
+	int height=this->height/(this->soundOrder.size()+1);
+	for(auto sound : this->soundOrder){
 		int width = sound->GetCurrentPosition()*(this->width-2)/sound->GetPositionLength();
 		int max_width = sound->GetPositionLength()*(this->width-2)/sound->GetPositionLength();
 		//Total playing time

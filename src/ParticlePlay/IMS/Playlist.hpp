@@ -3,18 +3,28 @@
 
 #include <list>
 #include "Interfaces.hpp"
+#include "../Randomizer.hpp"
+
+enum class ppPlaylistPlayOrder {
+	SEQUENCE_CONTINUOUS, SHUFFLE_CONTINUOUS, SEQUENCE_STEP, SHUFFLE_STEP
+};
 
 class ppPlaylist : public ppGenericSound {
 protected:
 	std::list<ppGenericSound*> sounds;
+	std::list<ppGenericSound*> soundOrder;
 	std::list<ppGenericSound*> queue;
 	ppGenericSound *current;
 	ppGenericSound *next;
 	Sint64 playDuration;
+	ppPlaylistPlayOrder playOrder;
+	ppRandomizer* randomizer;
 public:
-	ppPlaylist(const char *name);
+	ppPlaylist(const char *name, ppRandomizer* randomizer);
 	void AddSound(ppGenericSound *sound);
 	void ClearSound();
+	void SetPlayOrder(ppPlaylistPlayOrder playOrder);
+	ppPlaylistPlayOrder GetPlayOrder();
 
 	ppGenericSound* GetPlayingSound();
 	ppGenericSound* GetSoundAtIndex(int index);

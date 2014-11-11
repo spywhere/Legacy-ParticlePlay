@@ -2,6 +2,7 @@
 #define IMS_HEADER
 
 #include "../Includes.hpp"
+#include "../Randomizer.hpp"
 #include <map>
 #include <list>
 #include "Format/AudioFormat.hpp"
@@ -22,8 +23,10 @@ protected:
 	std::list<ppFormat*> formats;
 	ALCdevice* device;
 	ALCcontext* context;
+	ppRandomizer* randomizer;
 public:
-	ppIMS(ppGame* game);
+	ppIMS(ppGame* game, ppRandomizer* randomizer);
+	ppRandomizer* GetRandomizer();
 	ppFormat *CreateEmptyFormat(Sint64 length, ppFormat* audioFormat, bool stereo);
 	ppFormat *CreateEmptyFormat(Sint64 length, ppFormat* audioFormat);
 	ppFormat *CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo);

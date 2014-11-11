@@ -6,6 +6,7 @@
 #include "IMS/IMS.hpp"
 #include "Color.hpp"
 #include "IO.hpp"
+#include "Randomizer.hpp"
 #include "State.hpp"
 
 class ppState;
@@ -19,6 +20,7 @@ private:
 	ppInput* gameInput;
 	ppIO* gameIO;
 	ppIMS* ims;
+	ppRandomizer* randomizer;
 	const char* title;
 	ppState* currentState;
 	int width, height;
@@ -53,6 +55,7 @@ public:
 	ppIO* GetGameIO();
 	ppIMS* GetInteractiveMusicSystem();
 	// SoundPlayer* GetSoundPlayer();
+	ppRandomizer* GetRandomizer();
 	void AddState(const char* name, ppState* state);
 	void EnterState(ppState* state);
 	void EnterState(const char* name);

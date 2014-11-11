@@ -33,7 +33,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		msg << "1 = Sound Test\n";
 		msg << "2 = Segment Test\n";
 		msg << "3 = Playlist Test\n";
-		msg << "4 = Complex Playlist Test";
+		msg << "4 = Complex Playlist Test\n";
+		msg << "5 = Playlist Play Order Test";
 
 		if(input->IsKeyDown(SDL_SCANCODE_1, 10)){
 			this->test = 1;
@@ -43,6 +44,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			this->test = 3;
 		}else if(input->IsKeyDown(SDL_SCANCODE_4, 10)){
 			this->test = 4;
+		}else if(input->IsKeyDown(SDL_SCANCODE_5, 10)){
+			this->test = 5;
 		}
 	}else if(this->test == 1){
 		msg << "Sound Test\n";
@@ -52,6 +55,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		msg << "Playlist Test\n";
 	}else if(this->test == 4){
 		msg << "Complex Playlist Test\n";
+	}else if(this->test == 4){
+		msg << "Playlist Play Order Test\n";
 	}
 	if(this->test != 0){
 		msg << "Press 'R' to select a new test";
@@ -64,6 +69,14 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			this->gui->RemoveControl("seg1");
 			this->gui->RemoveControl("seg2");
 			this->gui->RemoveControl("seg3");
+			//Clear Test 5
+			this->gui->RemoveControl("seg1playlist");
+			this->gui->RemoveControl("seg2playlist");
+			this->gui->RemoveControl("seg3playlist");
+			this->gui->RemoveControl("seg4playlist");
+			this->gui->RemoveControl("seg5playlist");
+			this->gui->RemoveControl("seg6playlist");
+			this->gui->RemoveControl("seg7playlist");
 			//Clear Test 3 & 4
 			this->gui->RemoveControl("playlist");
 			this->gui->RemoveControl("playlist2");
@@ -558,6 +571,242 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 					msg << "play";
 				}
 				msg << " playlist";
+				if(playlist->IsStop()){
+					ppGenericSound* sound = playlist->GetSoundAtIndex(this->playlist_track);
+					msg << "\nPress 'Space' to ";
+					if(sound->IsPlaying()){
+						msg << "stop";
+					}else {
+						msg << "preview";
+					}
+					msg << " sound ";
+					msg << "\"" << sound->GetName() << "\"";
+					if(input->IsKeyDown(SDL_SCANCODE_UP, 10)){
+						if(this->playlist_track == 0){
+							this->playlist_track = playlist->GetTotalSound();
+						}
+						this->playlist_track--;
+					}else if(input->IsKeyDown(SDL_SCANCODE_DOWN, 10)){
+						this->playlist_track++;
+						this->playlist_track %= playlist->GetTotalSound();
+					}else if(input->IsKeyDown(SDL_SCANCODE_SPACE, 10)){
+						if(sound->IsPlaying()){
+							sound->Stop();
+						}else{
+							sound->Play();
+						}
+					}
+					for(int i=0;i<playlist->GetTotalSound();i++){
+						ppGenericSound* sound = playlist->GetSoundAtIndex(i);
+						sound->SetVisible(i==this->playlist_track);
+					}
+					if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
+						playlist->GetSoundAtIndex(this->playlist_track)->Stop();
+						playlist->Play();
+					}
+				}else{
+					for(int i=playlist->GetTotalSound()-1;i>=0;i--){
+						ppGenericSound* sound = playlist->GetSoundAtIndex(i);
+						sound->SetVisible(false);
+					}
+					playlist->GetPlayingSound()->SetVisible(true);
+					msg << "\nPress 'S' to stop\n\n";
+					if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
+						if(playlist->IsPause()){
+							playlist->Play();
+						}else{
+							playlist->Pause();
+						}
+					}
+					if(input->IsKeyDown(SDL_SCANCODE_S, 10)){
+						playlist->Stop();
+					}
+				}
+			}
+		}
+	}else if(this->test == 5){
+		//////////////////////////////
+		//          TEST 5          //
+		// PLAYLIST PLAY ORDER TEST //
+		//////////////////////////////
+		if(!this->ims->GetSound("playlist")){
+			this->playlist_track = 0;
+			// Formats
+			ppFormat* seg1AFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack01_Seg 01a (A) [light groove].wav");
+			ppFormat* seg1BFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack02_Seg 01b (B) [light groove].wav");
+
+			ppFormat* seg2AFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack03_Seg 01c (A) [light groove].wav");
+			ppFormat* seg2BFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack04_Seg 01d (B) [light groove].wav");
+
+			ppFormat* seg3AFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack05_Seg 02a (A) [medium groove + bass].wav");
+			ppFormat* seg3BFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack06_Seg 02b (B) [medium groove + bass].wav");
+
+			ppFormat* seg4AFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack07_Seg 02c (A) [medium groove + bass].wav");
+			ppFormat* seg4BFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack08_Seg 02d (B) [medium groove + bass].wav");
+
+			ppFormat* seg5AFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack09_Seg 03a (A) [full groove + horns].wav");
+			ppFormat* seg5BFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack10_Seg 03b (B) [full groove + horns].wav");
+
+			ppFormat* seg6AFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack11_Seg 03c (A) [full groove + horns].wav");
+			ppFormat* seg6BFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack12_Seg 03d (B) [full groove + horns].wav");
+
+			ppFormat* seg7AFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack18_Seg 04e [break - full].wav");
+			ppFormat* seg7BFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Attack19_Seg 04f [break - full].wav");
+
+			// Sounds
+			ppSound* seg1ASound = this->ims->CreateSound("seg1ASound", seg1AFormat);
+			ppSound* seg1BSound = this->ims->CreateSound("seg1BSound", seg1BFormat);
+			ppSound* seg2ASound = this->ims->CreateSound("seg2ASound", seg2AFormat);
+			ppSound* seg2BSound = this->ims->CreateSound("seg2BSound", seg2BFormat);
+			ppSound* seg3ASound = this->ims->CreateSound("seg3ASound", seg3AFormat);
+			ppSound* seg3BSound = this->ims->CreateSound("seg3BSound", seg3BFormat);
+			ppSound* seg4ASound = this->ims->CreateSound("seg4ASound", seg4AFormat);
+			ppSound* seg4BSound = this->ims->CreateSound("seg4BSound", seg4BFormat);
+			ppSound* seg5ASound = this->ims->CreateSound("seg5ASound", seg5AFormat);
+			ppSound* seg5BSound = this->ims->CreateSound("seg5BSound", seg5BFormat);
+			ppSound* seg6ASound = this->ims->CreateSound("seg6ASound", seg6AFormat);
+			ppSound* seg6BSound = this->ims->CreateSound("seg6BSound", seg6BFormat);
+			ppSound* seg7ASound = this->ims->CreateSound("seg7ASound", seg7AFormat);
+			ppSound* seg7BSound = this->ims->CreateSound("seg7BSound", seg7BFormat);
+
+			// Segment Setups
+			ppSegment* seg1a = this->ims->CreateSegment("seg1a");
+			seg1a->SetEntryCue(seg1AFormat->TimeToPosition(2.0f));
+			seg1a->SetExitCue(seg1AFormat->TimeToPosition(4.0f));
+			ppSegment* seg1b = this->ims->CreateSegment("seg1b");
+			seg1b->SetEntryCue(seg1BFormat->TimeToPosition(0.0f));
+			seg1b->SetExitCue(seg1BFormat->TimeToPosition(4.0f));
+			ppSegment* seg2a = this->ims->CreateSegment("seg2a");
+			seg2a->SetEntryCue(seg2AFormat->TimeToPosition(2.0f));
+			seg2a->SetExitCue(seg2AFormat->TimeToPosition(4.0f));
+			ppSegment* seg2b = this->ims->CreateSegment("seg2b");
+			seg2b->SetEntryCue(seg2BFormat->TimeToPosition(0.0f));
+			seg2b->SetExitCue(seg2BFormat->TimeToPosition(4.0f));
+			ppSegment* seg3a = this->ims->CreateSegment("seg3a");
+			seg3a->SetEntryCue(seg3AFormat->TimeToPosition(2.0f));
+			seg3a->SetExitCue(seg3AFormat->TimeToPosition(4.0f));
+			ppSegment* seg3b = this->ims->CreateSegment("seg3b");
+			seg3b->SetEntryCue(seg3BFormat->TimeToPosition(0.0f));
+			seg3b->SetExitCue(seg3BFormat->TimeToPosition(4.0f));
+			ppSegment* seg4a = this->ims->CreateSegment("seg4a");
+			seg4a->SetEntryCue(seg4AFormat->TimeToPosition(2.0f));
+			seg4a->SetExitCue(seg4AFormat->TimeToPosition(4.0f));
+			ppSegment* seg4b = this->ims->CreateSegment("seg4b");
+			seg4b->SetEntryCue(seg4BFormat->TimeToPosition(0.0f));
+			seg4b->SetExitCue(seg4BFormat->TimeToPosition(4.0f));
+			ppSegment* seg5a = this->ims->CreateSegment("seg5a");
+			seg5a->SetEntryCue(seg5AFormat->TimeToPosition(2.0f));
+			seg5a->SetExitCue(seg5AFormat->TimeToPosition(4.0f));
+			ppSegment* seg5b = this->ims->CreateSegment("seg5b");
+			seg5b->SetEntryCue(seg5BFormat->TimeToPosition(0.0f));
+			seg5b->SetExitCue(seg5BFormat->TimeToPosition(4.0f));
+			ppSegment* seg6a = this->ims->CreateSegment("seg6a");
+			seg6a->SetEntryCue(seg6AFormat->TimeToPosition(2.0f));
+			seg6a->SetExitCue(seg6AFormat->TimeToPosition(4.0f));
+			ppSegment* seg6b = this->ims->CreateSegment("seg6b");
+			seg6b->SetEntryCue(seg6BFormat->TimeToPosition(0.0f));
+			seg6b->SetExitCue(seg6BFormat->TimeToPosition(4.0f));
+			ppSegment* seg7a = this->ims->CreateSegment("seg7a");
+			seg7a->SetEntryCue(seg7AFormat->TimeToPosition(0.0f));
+			seg7a->SetExitCue(seg7AFormat->TimeToPosition(4.0f));
+			ppSegment* seg7b = this->ims->CreateSegment("seg7b");
+			seg7b->SetEntryCue(seg7BFormat->TimeToPosition(0.0f));
+			seg7b->SetExitCue(seg7BFormat->TimeToPosition(4.0f));
+
+			//Segment 1
+			seg1a->AddSound(seg1ASound);
+			seg1b->AddSound(seg1BSound);
+			//Segment 2
+			seg2a->AddSound(seg2ASound);
+			seg2b->AddSound(seg2BSound);
+			//Segment 3
+			seg3a->AddSound(seg3ASound);
+			seg3b->AddSound(seg3BSound);
+			//Segment 4
+			seg4a->AddSound(seg4ASound);
+			seg4b->AddSound(seg4BSound);
+			//Segment 5
+			seg5a->AddSound(seg5ASound);
+			seg5b->AddSound(seg5BSound);
+			//Segment 6
+			seg6a->AddSound(seg6ASound);
+			seg6b->AddSound(seg6BSound);
+			//Segment 7
+			seg7a->AddSound(seg7ASound);
+			seg7b->AddSound(seg7BSound);
+
+			ppPlaylist* seg1playlist = this->ims->CreatePlaylist("seg1playlist");
+			seg1playlist->AddSound(seg1a);
+			seg1playlist->AddSound(seg1b);
+			seg1playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			ppPlaylist* seg2playlist = this->ims->CreatePlaylist("seg2playlist");
+			seg2playlist->AddSound(seg2a);
+			seg2playlist->AddSound(seg2b);
+			seg2playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			ppPlaylist* seg3playlist = this->ims->CreatePlaylist("seg3playlist");
+			seg3playlist->AddSound(seg3a);
+			seg3playlist->AddSound(seg3b);
+			seg3playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			ppPlaylist* seg4playlist = this->ims->CreatePlaylist("seg4playlist");
+			seg4playlist->AddSound(seg4a);
+			seg4playlist->AddSound(seg4b);
+			seg4playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			ppPlaylist* seg5playlist = this->ims->CreatePlaylist("seg5playlist");
+			seg5playlist->AddSound(seg5a);
+			seg5playlist->AddSound(seg5b);
+			seg5playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			ppPlaylist* seg6playlist = this->ims->CreatePlaylist("seg6playlist");
+			seg6playlist->AddSound(seg6a);
+			seg6playlist->AddSound(seg6b);
+			seg6playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			ppPlaylist* seg7playlist = this->ims->CreatePlaylist("seg7playlist");
+			seg7playlist->AddSound(seg7a);
+			seg7playlist->AddSound(seg7b);
+
+			ppPlaylist* playlist = this->ims->CreatePlaylist("playlist");
+			playlist->AddSound(seg1playlist);
+			playlist->AddSound(seg2playlist);
+			playlist->AddSound(seg3playlist);
+			playlist->AddSound(seg4playlist);
+			playlist->AddSound(seg5playlist);
+			playlist->AddSound(seg6playlist);
+			playlist->AddSound(seg7playlist);
+
+			playlist->SetSize(300, 250);
+			playlist->SetLocation(10, 150);
+			seg1playlist->SetSize(300, 250);
+			seg1playlist->SetLocation(330, 150);
+			seg2playlist->SetSize(300, 250);
+			seg2playlist->SetLocation(330, 150);
+			seg3playlist->SetSize(300, 250);
+			seg3playlist->SetLocation(330, 150);
+			seg4playlist->SetSize(300, 250);
+			seg4playlist->SetLocation(330, 150);
+			seg5playlist->SetSize(300, 250);
+			seg5playlist->SetLocation(330, 150);
+			seg6playlist->SetSize(300, 250);
+			seg6playlist->SetLocation(330, 150);
+			seg7playlist->SetSize(300, 250);
+			seg7playlist->SetLocation(330, 150);
+			this->gui->AddControl(playlist);
+			this->gui->AddControl(seg1playlist);
+			this->gui->AddControl(seg2playlist);
+			this->gui->AddControl(seg3playlist);
+			this->gui->AddControl(seg4playlist);
+			this->gui->AddControl(seg5playlist);
+			this->gui->AddControl(seg6playlist);
+			this->gui->AddControl(seg7playlist);
+		}else{
+			ppPlaylist* playlist = (ppPlaylist*)this->ims->GetSound("playlist");
+
+			msg << "\n\nPress 'P' to ";
+
+			if(playlist){
+				if(playlist->IsPlaying()){
+					msg << "pause";
+				}else{
+					msg << "play";
+				}
 				if(playlist->IsStop()){
 					ppGenericSound* sound = playlist->GetSoundAtIndex(this->playlist_track);
 					msg << "\nPress 'Space' to ";

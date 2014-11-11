@@ -27,7 +27,7 @@ void ppSegment::AddSound(ppGenericSound *sound){
 			maxtime = sound->GetOffset()+sound->GetPositionLength();
 		}
 	}
-	this->emptySound = new ppSound("_empty", ims->CreateEmptyFormat(maxtime, sound->GetAudioFormat()), 1);
+	this->emptySound = new ppSound("_empty", ims->CreateEmptyFormat(maxtime, sound->GetAudioFormat()), 1, ims->GetRandomizer());
 }
 
 void ppSegment::ClearSound(){

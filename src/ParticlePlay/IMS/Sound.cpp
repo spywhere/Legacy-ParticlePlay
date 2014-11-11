@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-ppSound::ppSound(const char *name, ppFormat* audioFormat, int track) : ppGenericSound(name){
+ppSound::ppSound(const char *name, ppFormat* audioFormat, int track, ppRandomizer* randomizer) : ppGenericSound(name){
+	this->randomizer = randomizer;
 	this->SetTrack(track);
 	this->audioFormat = audioFormat;
 	this->bufferSize = audioFormat->GetSampleRate()*2;
@@ -31,7 +32,6 @@ void ppSound::SetTrack(int track){
 void ppSound::SetPlayOrder(ppSoundPlayOrder playOrder){
 	this->playOrder = playOrder;
 	this->trackList.clear();
-	std::srand(unsigned(std::time(0)));
 	if(this->playOrder == ppSoundPlayOrder::LOOP || this->playOrder == ppSoundPlayOrder::RANDOM){
 		this->trackList.push_back(this->track);
 	}else if(this->playOrder == ppSoundPlayOrder::SHUFFLE){
@@ -41,7 +41,7 @@ void ppSound::SetPlayOrder(ppSoundPlayOrder playOrder){
 		}
 		while(!sequencelist.empty()){
 			auto numit = sequencelist.begin();
-			advance(numit, std::rand()%sequencelist.size());
+			advance(numit, this->randomizer->NextInt(sequencelist.size()));
 			this->trackList.push_back((this->track+(*numit))%this->audioFormat->GetTotalTrack());
 			sequencelist.erase(numit);
 		}
@@ -65,7 +65,7 @@ void ppSound::GetNextTrack(){
 	this->loadingTrack = this->trackList.front();
 	this->trackList.pop_front();
 	if(this->playOrder == ppSoundPlayOrder::RANDOM){
-		this->loadingTrack = std::rand()%this->audioFormat->GetTotalTrack();
+		this->loadingTrack = this->randomizer->NextInt(this->audioFormat->GetTotalTrack());
 	}
 	this->trackList.push_back(this->loadingTrack);
 }

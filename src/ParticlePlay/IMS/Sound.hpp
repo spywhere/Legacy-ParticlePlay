@@ -1,10 +1,9 @@
 #ifndef SOUND_HEADER
 #define SOUND_HEADER
 
-#include "Interfaces.hpp"
 #include <list>
-#include <ctime>
-#include <cstdlib>
+#include "Interfaces.hpp"
+#include "../Randomizer.hpp"
 
 enum class ppSoundPlayOrder {
 	LOOP, SEQUENCE, RANDOM, SHUFFLE
@@ -22,10 +21,11 @@ protected:
 	ALuint sourceID;
 	ALuint bufferSet[2];
 	ppSoundPlayOrder playOrder;
+	ppRandomizer* randomizer;
 	void GetNextTrack();
 	int GetTotalBuffer(bool countCurrent);
 public:
-	ppSound(const char *name, ppFormat* audioFormat, int track);
+	ppSound(const char *name, ppFormat* audioFormat, int track, ppRandomizer* randomizer);
 	~ppSound();
 	int GetTrack();
 	void SetPlayOrder(ppSoundPlayOrder playOrder);
