@@ -384,6 +384,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 
 			playlist->AddSound(playlist2);
 
+			playlist2->SetLoop(1);
+			playlist->SetLoop(1);
+
 			playlist->SetSize(300, 250);
 			playlist->SetLocation(10, 150);
 			playlist2->SetSize(300, 250);
@@ -738,27 +741,27 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppPlaylist* seg1playlist = this->ims->CreatePlaylist("seg1playlist");
 			seg1playlist->AddSound(seg1a);
 			seg1playlist->AddSound(seg1b);
-			seg1playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			seg1playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
 			ppPlaylist* seg2playlist = this->ims->CreatePlaylist("seg2playlist");
 			seg2playlist->AddSound(seg2a);
 			seg2playlist->AddSound(seg2b);
-			seg2playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			seg2playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
 			ppPlaylist* seg3playlist = this->ims->CreatePlaylist("seg3playlist");
 			seg3playlist->AddSound(seg3a);
 			seg3playlist->AddSound(seg3b);
-			seg3playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			seg3playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
 			ppPlaylist* seg4playlist = this->ims->CreatePlaylist("seg4playlist");
 			seg4playlist->AddSound(seg4a);
 			seg4playlist->AddSound(seg4b);
-			seg4playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			seg4playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
 			ppPlaylist* seg5playlist = this->ims->CreatePlaylist("seg5playlist");
 			seg5playlist->AddSound(seg5a);
 			seg5playlist->AddSound(seg5b);
-			seg5playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			seg5playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
 			ppPlaylist* seg6playlist = this->ims->CreatePlaylist("seg6playlist");
 			seg6playlist->AddSound(seg6a);
 			seg6playlist->AddSound(seg6b);
-			seg6playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
+			seg6playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
 			ppPlaylist* seg7playlist = this->ims->CreatePlaylist("seg7playlist");
 			seg7playlist->AddSound(seg7a);
 			seg7playlist->AddSound(seg7b);

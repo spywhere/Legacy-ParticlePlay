@@ -199,12 +199,28 @@ void ppPlaylist::Update(){
 			if(this->current != this->soundOrder.back()){
 				this->playDuration += length;
 			}
+			bool willPlay = false;
 			if(this->IsAutoLoop() || this->queue.front() != this->soundOrder.front()){
+				if(this->IsAutoLoop() && this->queue.front() == this->soundOrder.front()){
+					if(loop > 0){
+						this->loop--;
+						willPlay = true;
+					}
+				}else{
+					willPlay = true;
+				}
+			}
+			if(willPlay){
 				this->current = this->queue.front();
 				this->queue.pop_front();
 				this->queue.push_back(current);
 				this->next = this->queue.front();
 				this->current->Play();
+			}
+		}
+		if(this->queue.back() == this->soundOrder.back() && this->queue.back()->IsStop()){
+			if(!this->IsAutoLoop() || this->loop == 0){
+				this->Stop();
 			}
 		}
 		if(!this->IsAutoLoop() && this->current == this->soundOrder.back() && this->current->IsStop()){
