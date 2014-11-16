@@ -550,6 +550,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			playlist->AddSound(seg2);
 			playlist->AddSound(seg3);
 
+			playlist->SetLoop(-1);
+
 			playlist->SetSize(300, 250);
 			playlist->SetLocation(10, 150);
 			seg1->SetSize(300, 150);
@@ -774,6 +776,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			playlist->AddSound(seg5playlist);
 			playlist->AddSound(seg6playlist);
 			playlist->AddSound(seg7playlist);
+
+			playlist->SetLoop(-1);
 
 			playlist->SetSize(300, 250);
 			playlist->SetLocation(10, 150);

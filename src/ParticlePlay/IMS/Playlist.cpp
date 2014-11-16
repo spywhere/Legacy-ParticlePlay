@@ -202,9 +202,9 @@ void ppPlaylist::Update(){
 			bool willPlay = false;
 			if(this->IsAutoLoop() || this->queue.front() != this->soundOrder.front()){
 				if(this->IsAutoLoop() && this->queue.front() == this->soundOrder.front()){
+					willPlay = loop != 0;
 					if(loop > 0){
 						this->loop--;
-						willPlay = true;
 					}
 				}else{
 					willPlay = true;
