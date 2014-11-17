@@ -22,6 +22,9 @@ LIBS=\
 SOURCEDIR=src
 # Engine
 ENGINE_SOURCES=\
+ParticlePlay/Graphics/BitmapFont.cpp\
+ParticlePlay/Graphics/Graphics.cpp\
+ParticlePlay/Graphics/Image.cpp\
 ParticlePlay/GUI/Control/Label.cpp\
 ParticlePlay/GUI/Control.cpp\
 ParticlePlay/GUI/GUI.cpp\
@@ -34,7 +37,6 @@ ParticlePlay/IMS/Playlist.cpp\
 ParticlePlay/IMS/Segment.cpp\
 ParticlePlay/IMS/Sound.cpp\
 ParticlePlay/IMS/Utils.cpp\
-ParticlePlay/BitmapFont.cpp\
 ParticlePlay/Color.cpp\
 ParticlePlay/Game.cpp\
 ParticlePlay/Input.cpp\
@@ -46,6 +48,7 @@ ParticlePlay/TestBed.cpp\
 
 # Game
 SOURCES=\
+FarmState.cpp\
 TestGame.cpp\
 TestScene.cpp\
 TestIMS.cpp\

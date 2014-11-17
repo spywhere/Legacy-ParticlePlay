@@ -8,14 +8,13 @@ ppBitmapFont::ppBitmapFont(SDL_Surface* surface){
 	this->bitmap = surface;
 	this->spacing = 1;
 	this->linespacing = 3;
-	this->texture = NULL;
-	this->renderer = NULL;
 	if(!this->bitmap){
 		#ifdef PPDEBUG
 		std::cout << "BitmapFont Error: " << IMG_GetError() << std::endl;
 		#endif
 		return;
 	}
+	this->image = new ppImage(this->bitmap);
 	Uint32 bgColor = SDL_MapRGBA(bitmap->format, 0, 0, 0, 0);
 
 	int cellW = bitmap->w/16;
@@ -108,36 +107,21 @@ Uint32 ppBitmapFont::GetPixel(int x, int y, SDL_Surface* surface){
 	return pixels[ ( y * surface->w ) + x ];
 }
 
-void ppBitmapFont::RenderSurface(int x, int y, SDL_Texture* texture, SDL_Rect* offset){
-	SDL_Rect off;
-	off.x = x;
-	off.y = y;
-	off.w = offset->w;
-	off.h = offset->h;
-	SDL_RenderCopy(this->renderer, texture, offset, &off);
-}
-
 void ppBitmapFont::Render(int x, int y, const char* text, SDL_Renderer *renderer){
 	if(!this->bitmap){
 		return;
 	}
-	if(!this->texture||this->renderer!=renderer){
-		this->renderer = renderer;
-		this->texture = SDL_CreateTextureFromSurface(this->renderer, this->bitmap);
-	}
 	int X = x, Y = y;
-	if(bitmap!=NULL){
-		for(int show=0;text[show]!='\0';show++){
-			if(text[show]==' '){
-				X+=this->space;
-			}else if(text[show]=='\n'){
-				Y+=this->line+this->linespacing;
-				X=x;
-			}else{
-				int ascii = (unsigned char)text[show];
-				this->RenderSurface(X, Y, this->texture, &chars[ascii]);
-				X += chars[ ascii ].w + this->spacing;
-			}
+	for(int show=0;text[show]!='\0';show++){
+		if(text[show]==' '){
+			X+=this->space;
+		}else if(text[show]=='\n'){
+			Y+=this->line+this->linespacing;
+			X=x;
+		}else{
+			int ascii = (unsigned char)text[show];
+			this->image->Render(renderer, X, Y, chars[ascii].x, chars[ascii].y, chars[ascii].w, chars[ascii].h);
+			X += chars[ascii].w + this->spacing;
 		}
 	}
 }

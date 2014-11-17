@@ -4,7 +4,7 @@
 #include "Includes.hpp"
 #include "Color.hpp"
 #include "State.hpp"
-#include "BitmapFont.hpp"
+#include "Graphics/BitmapFont.hpp"
 #include "Input.hpp"
 #include "Physics.hpp"
 #include "GUI/GUI.hpp"

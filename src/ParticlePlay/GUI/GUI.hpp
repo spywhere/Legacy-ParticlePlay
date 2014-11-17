@@ -4,7 +4,7 @@
 #include <vector>
 #include "../Includes.hpp"
 #include "../Input.hpp"
-#include "../BitmapFont.hpp"
+#include "../Graphics/BitmapFont.hpp"
 #include "Control.hpp"
 
 class ppControl;

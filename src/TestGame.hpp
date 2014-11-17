@@ -1,7 +1,7 @@
 #ifndef TESTGAME_HEADER
 #define TESTGAME_HEADER
 
-#include "ParticlePlay/Game.hpp"
+#include "ParticlePlay/ParticlePlay.hpp"
 
 class TestGame : public ppGame{
 };

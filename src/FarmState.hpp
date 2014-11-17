@@ -1,16 +1,14 @@
-#ifndef TESTIMS_HEADER
-#define TESTIMS_HEADER
+#ifndef FARMSTATE_HEADER
+#define FARMSTATE_HEADER
 
 #include "ParticlePlay/ParticlePlay.hpp"
 
-class TestIMS : public ppState {
+class FarmState : public ppState {
 protected:
+	ppGraphics* graphics;
 	ppGUI* gui;
 	ppIMS* ims;
-	int test;
-	int playlist_track;
-	void DrawRect(int x, int y, int w, int h);
-	void DrawFillRect(int x, int y, int w, int h);
+	ppImage* image;
 public:
 	void OnInit();
 	void OnRender(SDL_Renderer* renderer, int delta);
