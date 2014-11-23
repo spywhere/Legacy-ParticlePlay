@@ -48,7 +48,10 @@ ParticlePlay/TestBed.cpp\
 
 # Game
 SOURCES=\
-FarmState.cpp\
+FarmGame/FarmState.cpp\
+FarmGame/Player.cpp\
+FarmGame/Spritesheet.cpp\
+FarmGame/Tile.cpp\
 TestGame.cpp\
 TestScene.cpp\
 TestIMS.cpp\
