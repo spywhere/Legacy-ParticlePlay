@@ -45,6 +45,11 @@ void ppState::OnRestore(){
 	// Will run after game has been restarted
 }
 
+void ppState::OnExit(){
+	// Pure virtual
+	// Will run when game going to change state
+}
+
 bool ppState::OnEvent(SDL_Event* event){
 	// Pure virtual
 	// Will run on important event only

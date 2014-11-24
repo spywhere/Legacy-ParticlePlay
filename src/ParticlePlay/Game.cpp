@@ -245,7 +245,7 @@ int ppGame::StartGame(){
 
 		Uint32 lastTimer = SDL_GetTicks(), timeNow;
 		Uint32 lastTime = lastTimer, avgRenderTime = 0, avgUpdateTime = 0;
-		int renderDelta = 0, updateDelta = 0;
+		int renderDelta = 0, updateDelta = 0, renderDeltaTime=0, updateDeltaTime=0;
 		int frames = 0, updates = 0;
 		Uint32 msPerRender = 1000.0f / this->targetFPS;
 		Uint32 msPerUpdate = 1000.0f / this->targetUPS;
@@ -263,7 +263,9 @@ int ppGame::StartGame(){
 		while(this->running) {
 			timeNow = SDL_GetTicks();
 			renderDelta += (timeNow - lastTime);
+			renderDeltaTime += (timeNow - lastTime);
 			updateDelta += (timeNow - lastTime);
+			updateDeltaTime += (timeNow - lastTime);
 			lastTime = timeNow;
 
 			while(SDL_PollEvent(event)) {
@@ -275,8 +277,9 @@ int ppGame::StartGame(){
 				updateDelta -= msPerUpdate;
 				updates++;
 				if(this->currentState && this->currentState->GetGame()){
-					this->currentState->OnUpdate(this->gameInput, updateDelta);
+					this->currentState->OnUpdate(this->gameInput, updateDeltaTime);
 				}
+				updateDeltaTime = 0;
 				this->ims->Update();
 				this->gameInput->OnUpdate();
 				avgUpdateTime += SDL_GetTicks()-speedTimer;
@@ -292,11 +295,10 @@ int ppGame::StartGame(){
 
 				glClearColor(this->backgroundColor->GetRf(), this->backgroundColor->GetGf(), this->backgroundColor->GetBf(), this->backgroundColor->GetAf());
 
-				// SDL_SetRenderDrawColor(this->renderer, this->backgroundColor->GetR(), this->backgroundColor->GetG(), this->backgroundColor->GetB(), this->backgroundColor->GetA());
-				// SDL_RenderClear(this->renderer);
 				if(this->currentState && this->currentState->GetGame()){
-					this->currentState->OnRender(this->renderer, renderDelta);
+					this->currentState->OnRender(this->renderer, renderDeltaTime);
 				}
+				renderDeltaTime = 0;
 
 				if(this->showFPS){
 					// BG
@@ -357,6 +359,9 @@ int ppGame::StartGame(){
 				avgRenderTime = 0;
 				avgUpdateTime = 0;
 			}
+		}
+		if(this->currentState){
+			this->currentState->OnExit();
 		}
 		#ifdef PPDEBUG
 			speedTimer = SDL_GetTicks();
@@ -435,6 +440,9 @@ void ppGame::EnterState(ppState* state){
 	}else if(state->IsNeedInit()){
 		state->OnInit();
 	}
+	if(this->currentState){
+		this->currentState->OnExit();
+	}
 	#ifdef PPDEBUG
 		std::cout << "Enter a state \"" << state->GetName() << "\"..." << std::endl;
 	#endif
@@ -449,6 +457,9 @@ void ppGame::EnterState(const char* name){
 			state->OnInit();
 		}else if(state->IsNeedInit()){
 			state->OnInit();
+		}
+		if(this->currentState){
+			this->currentState->OnExit();
 		}
 		#ifdef PPDEBUG
 			std::cout << "Enter a state \"" << state->GetName() << "\"..." << std::endl;

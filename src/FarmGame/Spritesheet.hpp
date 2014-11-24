@@ -16,6 +16,8 @@ public:
 	int GetTotalCells();
 	int GetTileWidth();
 	int GetTileHeight();
+	int GetWidth();
+	int GetHeight();
 	Tile* GetTile(int xTile, int yTile);
 	Tile* GetTile(int tileId);
 	ppImage* GetSheet();

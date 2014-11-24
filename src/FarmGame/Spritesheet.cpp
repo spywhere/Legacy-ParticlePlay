@@ -19,6 +19,14 @@ int Spritesheet::GetTileHeight(){
 	return this->tileHeight;
 }
 
+int Spritesheet::GetWidth(){
+	return this->tileWidth*this->scale;
+}
+
+int Spritesheet::GetHeight(){
+	return this->tileHeight*this->scale;
+}
+
 Tile* Spritesheet::GetTile(int xTile, int yTile){
 	return new Tile(this, xTile*this->tileWidth, yTile*this->tileHeight, this->scale);
 }
