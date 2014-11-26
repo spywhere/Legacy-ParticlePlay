@@ -43,10 +43,23 @@ void Player::Render(SDL_Renderer* renderer){
 	}
 
 	Tile *playerTile = this->spritesheet->GetTile(xTile, 15);
-	playerTile->Render(renderer, this->px-playerTile->GetWidth()/2, this->py-playerTile->GetHeight()/2, flip);
+	int offsetY = 0;
+	if(this->inWater){
+		playerTile->SetClip(1.0f, 0.5f);
+		offsetY += 20;
+	}
+	playerTile->Render(renderer, this->px-playerTile->GetWidth()/2, offsetY+this->py-playerTile->GetHeight()/2, flip);
+}
+
+bool Player::IsInside(int x, int y, int width, int height){
+	return this->px >= x && this->px <= x+width && this->py >= y && this->py <= y+height;
 }
 
 void Player::Update(){
 	this->px += this->vx;
 	this->py += this->vy;
+}
+
+void Player::SetInWater(bool inWater){
+	this->inWater = inWater;
 }

@@ -69,11 +69,15 @@ void ppImage::Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int
 	sourceOffset.y = sy;
 	sourceOffset.w = sw;
 	sourceOffset.h = sh;
+
 	if(!this->texture || this->renderer != renderer){
 		this->renderer = renderer;
 		this->texture = SDL_CreateTextureFromSurface(renderer, this->surface);
 	}
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 	SDL_RenderCopyEx(renderer, this->texture, &sourceOffset, &targetOffset, angle, center, flip);
+	glDisable(GL_BLEND);
 }
 
 void ppImage::Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle, SDL_RendererFlip flip){

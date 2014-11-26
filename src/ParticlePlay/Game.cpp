@@ -241,6 +241,9 @@ int ppGame::StartGame(){
 			std::cout << "Preparing... ";
 		#endif
 		this->running = true;
+		if(this->currentState && this->currentState->GetGame()){
+			this->currentState->OnInit();
+		}
 		SDL_Event* event = new SDL_Event();
 
 		Uint32 lastTimer = SDL_GetTicks(), timeNow;
@@ -436,8 +439,10 @@ void ppGame::AddState(const char* name, ppState* state){
 void ppGame::EnterState(ppState* state){
 	if(!state->GetGame()){
 		state->SetGame(this);
-		state->OnInit();
-	}else if(state->IsNeedInit()){
+		if(this->running){
+			state->OnInit();
+		}
+	}else if(state->IsNeedInit() && this->running){
 		state->OnInit();
 	}
 	if(this->currentState){
@@ -454,8 +459,10 @@ void ppGame::EnterState(const char* name){
 	if(state){
 		if(!state->GetGame()){
 			state->SetGame(this);
-			state->OnInit();
-		}else if(state->IsNeedInit()){
+			if(this->running){
+				state->OnInit();
+			}
+		}else if(state->IsNeedInit() && this->running){
 			state->OnInit();
 		}
 		if(this->currentState){
