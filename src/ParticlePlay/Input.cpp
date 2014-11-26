@@ -1,6 +1,7 @@
 #include "Input.hpp"
 
-ppInput::ppInput(){
+ppInput::ppInput(ppGame* game){
+	this->game = game;
 	this->keyCooldown = 0;
 	this->keyDown = false;
 	this->mouseCooldown = 0;
@@ -13,6 +14,10 @@ ppInput::ppInput(){
 	this->rmy = -1;
 	this->mmx = 0;
 	this->mmy = 0;
+}
+
+ppGame* ppInput::GetGame(){
+	return this->game;
 }
 
 int ppInput::GetMouseX(){

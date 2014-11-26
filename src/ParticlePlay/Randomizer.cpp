@@ -39,3 +39,7 @@ int ppRandomizer::NextInt(int min, int max){
 int ppRandomizer::NextInt(int max){
 	return this->NextInt(0, max);
 }
+
+bool ppRandomizer::NextBool(){
+	return this->NextFloat() < 0.5f;
+}

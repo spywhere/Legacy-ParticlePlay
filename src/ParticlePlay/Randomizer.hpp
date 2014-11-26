@@ -14,6 +14,7 @@ public:
 	float NextFloat(float max);
 	int NextInt(int min, int max);
 	int NextInt(int max);
+	bool NextBool();
 };
 
 #endif

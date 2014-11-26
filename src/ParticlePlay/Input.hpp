@@ -3,6 +3,7 @@
 
 #include "Includes.hpp"
 
+class ppGame;
 class ppInput{
 protected:
 	const Uint8 *keyState;
@@ -14,8 +15,10 @@ protected:
 	int mbtn;
 	int clicks;
 	int mx, my, rmx, rmy, mmx, mmy;
+	ppGame* game;
 public:
-	ppInput();
+	ppInput(ppGame* game);
+	ppGame* GetGame();
 	int GetMouseX();
 	int GetMouseY();
 	int GetRelativeMouseX();

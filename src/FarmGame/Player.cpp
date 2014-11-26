@@ -1,65 +1,49 @@
 #include "Player.hpp"
 
-Player::Player(Spritesheet* spritesheet, int startX, int startY){
+#include "Tile.hpp"
+
+Player::Player(Spritesheet* spritesheet, int startX, int startY) : Entity(spritesheet, startX, startY){
 	this->spritesheet = new Spritesheet(spritesheet->GetSheet(), 16, 16, 3.5f);
-	this->px = startX;
-	this->py = startY;
-	this->vx = 0;
-	this->vy = 0;
-	this->direction = 1;
-}
-
-void Player::MoveX(int vx){
-	this->vx = vx;
-	if(vx > 0){
-		this->direction = 2;
-	}else if(vx < 0){
-		this->direction = 3;
-	}
-}
-
-void Player::MoveY(int vy){
-	this->vy = vy;
-	if(vy > 0){
-		this->direction = 1;
-	}else if(vy < 0){
-		this->direction = 0;
-	}
 }
 
 void Player::Render(SDL_Renderer* renderer){
-	int xTile = this->direction & 1;
+	int xTile = this->GetDirection() & 1;
 	SDL_RendererFlip flip = ppImage::NO_FLIP;
-	if((this->direction >> 1) == 1){
+	if((this->GetDirection() >> 1) == 1){
 		xTile = 2;
-		if(direction == 3){
+		if(GetDirection() == 3){
 			flip = (SDL_RendererFlip)(flip | ppImage::FLIP_HORIZONTAL);
 		}
-		if(px%50 > 25){
+		if(this->GetPositionX()%50 > 25){
 			xTile += 1;
 		}
-	}else if(py%70 > 35){
+	}else if(this->GetPositionY()%70 > 35){
 		flip = (SDL_RendererFlip)(flip | ppImage::FLIP_HORIZONTAL);
 	}
 
-	Tile *playerTile = this->spritesheet->GetTile(xTile, 15);
+	Tile *entityTile = this->spritesheet->GetTile(xTile, 15);
 	int offsetY = 0;
 	if(this->inWater){
-		playerTile->SetClip(1.0f, 0.5f);
+		entityTile->SetClip(1.0f, 0.5f);
 		offsetY += 20;
 	}
-	playerTile->Render(renderer, this->px-playerTile->GetWidth()/2, offsetY+this->py-playerTile->GetHeight()/2, flip);
+	entityTile->Render(renderer, this->GetPositionX()-entityTile->GetWidth()/2, offsetY+this->GetPositionY()-entityTile->GetHeight()/2, flip);
 }
 
-bool Player::IsInside(int x, int y, int width, int height){
-	return this->px >= x && this->px <= x+width && this->py >= y && this->py <= y+height;
-}
-
-void Player::Update(){
-	this->px += this->vx;
-	this->py += this->vy;
-}
-
-void Player::SetInWater(bool inWater){
-	this->inWater = inWater;
+void Player::Update(ppInput* input, int delta){
+	Entity::Update(input, delta);
+	if(input->IsKeyDown(SDL_SCANCODE_W) || input->IsKeyDown(SDL_SCANCODE_UP)){
+		this->MoveY(-2);
+	}else if(input->IsKeyDown(SDL_SCANCODE_S) || input->IsKeyDown(SDL_SCANCODE_DOWN)){
+		this->MoveY(2);
+	}else{
+		this->MoveY(0);
+	}
+	if(input->IsKeyDown(SDL_SCANCODE_A) || input->IsKeyDown(SDL_SCANCODE_LEFT)){
+		this->MoveX(-2);
+	}else if(input->IsKeyDown(SDL_SCANCODE_D) || input->IsKeyDown(SDL_SCANCODE_RIGHT)){
+		this->MoveX(2);
+	}else{
+		this->MoveX(0);
+	}
 }

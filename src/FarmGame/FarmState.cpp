@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <sstream>
+#include "AnimateTile.hpp"
+#include "Chicken.hpp"
+#include "Player.hpp"
 
 void FarmState::OnInit(){
 	this->gui = new ppGUI();
@@ -10,6 +13,7 @@ void FarmState::OnInit(){
 	this->dirtTile = this->spritesheet->GetTile(11, 30);
 	this->waterTile = new AnimateTile(spritesheet, new int[3]{8, 9, 10}, new int[3]{30, 30, 30}, 3, 1000, 5.0f);
 	this->player = new Player(this->spritesheet, this->GetGame()->GetWidth()/2, this->GetGame()->GetHeight()/2);
+	this->chicken = new Chicken(this->spritesheet, this->GetGame()->GetWidth()/2, this->GetGame()->GetHeight()/8);
 	this->timeSec = 0;
 	this->gameTime = 360;
 	this->timeSpeed = 10;
@@ -71,6 +75,7 @@ void FarmState::OnRender(SDL_Renderer* renderer, int delta){
 		}
 	}
 
+	this->chicken->Render(renderer);
 	this->player->Render(renderer);
 
 	glEnable(GL_BLEND);
@@ -119,7 +124,10 @@ void FarmState::OnUpdate(ppInput* input, int delta){
 		this->gameTime = (this->gameTime+1)%1440;
 	}
 
+	this->chicken->SetInWater(this->chicken->IsInside(0, (int)(2.5f*this->spritesheet->GetHeight()), 4*this->spritesheet->GetWidth(), (int)(5.8f*this->spritesheet->GetHeight())));
 	this->player->SetInWater(this->player->IsInside(0, (int)(2.5f*this->spritesheet->GetHeight()), 4*this->spritesheet->GetWidth(), (int)(5.8f*this->spritesheet->GetHeight())));
+	this->chicken->Update(input, delta);
+	this->player->Update(input, delta);
 
 	this->ims = this->GetGame()->GetInteractiveMusicSystem();
 	if(this->ims){
@@ -141,6 +149,10 @@ void FarmState::OnUpdate(ppInput* input, int delta){
 				this->ims->GetSound("predawnTrack")->Play();
 			}
 		}else{
+			ppFormat* chickenFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/FarmGame/Chicken.wav");
+			this->ims->CreateSound("chickenSound", chickenFormat);
+			this->chicken->SetSound("chickenSound");
+
 			ppFormat* dawnFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/FarmGame/Dawn.wav");
 			ppFormat* nightFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/FarmGame/Night.wav");
 			ppFormat* predawnFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/FarmGame/PreDawn.wav");
@@ -196,19 +208,4 @@ void FarmState::OnUpdate(ppInput* input, int delta){
 	}else if(input->IsKeyDown(SDL_SCANCODE_E)){
 		this->timeSpeed++;
 	}
-	if(input->IsKeyDown(SDL_SCANCODE_W) || input->IsKeyDown(SDL_SCANCODE_UP)){
-		this->player->MoveY(-2);
-	}else if(input->IsKeyDown(SDL_SCANCODE_S) || input->IsKeyDown(SDL_SCANCODE_DOWN)){
-		this->player->MoveY(2);
-	}else{
-		this->player->MoveY(0);
-	}
-	if(input->IsKeyDown(SDL_SCANCODE_A) || input->IsKeyDown(SDL_SCANCODE_LEFT)){
-		this->player->MoveX(-2);
-	}else if(input->IsKeyDown(SDL_SCANCODE_D) || input->IsKeyDown(SDL_SCANCODE_RIGHT)){
-		this->player->MoveX(2);
-	}else{
-		this->player->MoveX(0);
-	}
-	this->player->Update();
 }

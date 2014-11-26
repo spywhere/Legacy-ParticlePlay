@@ -8,7 +8,7 @@ ppGame::ppGame(){
 	this->mainWindow = NULL;
 	this->renderer = NULL;
 	this->backgroundColor = new ppColor();
-	this->gameInput = new ppInput();
+	this->gameInput = new ppInput(this);
 	this->gameIO = new ppIO();
 	this->randomizer = new ppRandomizer();
 	this->ims = NULL;

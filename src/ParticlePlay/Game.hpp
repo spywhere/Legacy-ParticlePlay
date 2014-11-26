@@ -6,6 +6,7 @@
 #include "IMS/IMS.hpp"
 #include "Color.hpp"
 #include "IO.hpp"
+#include "Input.hpp"
 #include "Randomizer.hpp"
 #include "State.hpp"
 

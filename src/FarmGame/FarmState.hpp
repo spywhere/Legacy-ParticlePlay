@@ -4,9 +4,8 @@
 #include <string>
 #include "../ParticlePlay/ParticlePlay.hpp"
 #include "Spritesheet.hpp"
-#include "AnimateTile.hpp"
 #include "Tile.hpp"
-#include "Player.hpp"
+#include "Entity.hpp"
 
 class FarmState : public ppState {
 protected:
@@ -14,7 +13,7 @@ protected:
 	ppIMS* ims;
 	Spritesheet* spritesheet;
 	Tile* grassTile, *dirtTile, *waterTile;
-	Player* player;
+	Entity* player, *chicken;
 	int gameTime, timeSec, timeSpeed;
 	void RenderNumber(SDL_Renderer* renderer, int x, int y, int number);
 	void RenderText(SDL_Renderer* renderer, int x, int y, const char *time);
