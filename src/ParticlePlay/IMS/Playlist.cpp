@@ -221,6 +221,7 @@ void ppPlaylist::Update(){
 		if(this->queue.back() == this->soundOrder.back() && this->queue.back()->IsStop()){
 			if(!this->IsAutoLoop() || this->loop == 0){
 				this->Stop();
+				// this->SetPlayOrder(this->GetPlayOrder());
 			}
 		}
 		if(!this->IsAutoLoop() && this->current == this->soundOrder.back() && this->current->IsStop()){

@@ -4,7 +4,7 @@ ppState::ppState(){
 	this->game = NULL;
 	this->name = "";
 	this->customData = NULL;
-	this->needInit = false;
+	this->needInit = true;
 }
 
 bool ppState::IsNeedInit(){
