@@ -36,7 +36,7 @@ public:
 	//Playable
 	void Play();
 	void Pause();
-	void Stop();
+	void StopDecay(bool decay);
 	void Update();
 
 	//Clippable

@@ -1,4 +1,5 @@
 #include "Includes.hpp"
+#include "Easings/Easing.hpp"
 #include "Color.hpp"
 #include "Game.hpp"
 #include "IO.hpp"

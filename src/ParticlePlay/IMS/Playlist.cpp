@@ -37,17 +37,11 @@ void ppPlaylist::SetPlayOrder(ppPlaylistPlayOrder playOrder){
 			this->soundOrder.push_back(*numit);
 			this->queue.push_back(*numit);
 			sequencelist.erase(numit);
-			if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP){
-				break;
-			}
 		}
 	}else if(this->playOrder == ppPlaylistPlayOrder::SEQUENCE_CONTINUOUS || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
 		for(auto sound : this->sounds){
 			this->soundOrder.push_back(sound);
 			this->queue.push_back(sound);
-			if(this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
-				break;
-			}
 		}
 	}
 }
@@ -82,19 +76,31 @@ void ppPlaylist::Pause(){
 	}
 }
 
-void ppPlaylist::Stop(){
+void ppPlaylist::SoftStop(bool decay, bool reset){
 	if(this->IsStop()){
 		return;
 	}
-	ppGenericSound::Stop();
-	for(auto sound : this->sounds){
-		if(!sound->IsStop()){
-			sound->Stop();
+	ppGenericSound::StopDecay(decay);
+	if(!decay){
+		for(auto sound : this->sounds){
+			if(!sound->IsStop()){
+				sound->StopDecay(decay);
+			}
+		}
+	}
+	if(reset){
+		this->queue.clear();
+		for(auto sound : this->soundOrder){
+			this->queue.push_back(sound);
 		}
 	}
 	this->playDuration = 0;
 	this->current = NULL;
 	this->next = NULL;
+}
+
+void ppPlaylist::StopDecay(bool decay){
+	this->SoftStop(decay, true);
 }
 
 ppGenericSound *ppPlaylist::GetPlayingSound(){
@@ -109,6 +115,9 @@ ppGenericSound *ppPlaylist::GetSoundAtIndex(int index){
 }
 
 int ppPlaylist::GetTotalSound(){
+	if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+		return this->soundOrder.size() > 0 ? 1 : 0;
+	}
 	return this->sounds.size();
 }
 
@@ -124,9 +133,13 @@ Sint64 ppPlaylist::GetExitCue(){
 		return 0;
 	}
 
-	Sint64 exitCue = this->soundOrder.back()->GetExitCue();
+	ppGenericSound* sound = this->soundOrder.back();
+	if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+		sound = this->soundOrder.front();
+	}
+	Sint64 exitCue = sound->GetExitCue();
 	if(exitCue >= 0){
-		exitCue = this->GetPositionLength()-this->GetEntryCue()-(this->soundOrder.back()->GetPositionLength()-this->soundOrder.back()->GetExitCue()-this->soundOrder.back()->GetEntryCue());
+		exitCue = this->GetPositionLength()-this->GetEntryCue()-(sound->GetPositionLength()-sound->GetExitCue()-sound->GetEntryCue());
 	}
 	return exitCue;
 }
@@ -135,7 +148,7 @@ Sint64 ppPlaylist::GetCurrentPosition(){
 	if(!this->current){
 		return 0;
 	}
-	if(playDuration == 0){
+	if(playDuration == 0 || this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
 		return this->current->GetCurrentPosition();
 	}else{
 		return this->current->GetCurrentPosition()-this->current->GetEntryCue()+this->playDuration;
@@ -150,13 +163,20 @@ Sint64 ppPlaylist::GetPositionLength(){
 		}else{
 			totalLength += sound->GetExitCue();
 		}
+		if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+			break;
+		}
 	}
 	if(this->soundOrder.size()>0){
 		totalLength += this->soundOrder.front()->GetEntryCue();
-		if(this->soundOrder.back()->GetExitCue() < 0){
-			totalLength -= this->soundOrder.back()->GetExitCue();
+		ppGenericSound* sound = this->soundOrder.back();
+		if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+			sound = this->soundOrder.front();
+		}
+		if(sound->GetExitCue() < 0){
+			totalLength -= sound->GetExitCue();
 		}else{
-			totalLength += this->soundOrder.back()->GetPositionLength()-this->soundOrder.back()->GetExitCue()-this->soundOrder.back()->GetEntryCue();
+			totalLength += sound->GetPositionLength()-sound->GetExitCue()-sound->GetEntryCue();
 		}
 	}
 	return totalLength;
@@ -211,22 +231,27 @@ void ppPlaylist::Update(){
 				}
 			}
 			if(willPlay){
-				this->current = this->queue.front();
-				this->queue.pop_front();
-				this->queue.push_back(current);
-				this->next = this->queue.front();
-				this->current->Play();
+				if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_CONTINUOUS){
+					this->current = this->queue.front();
+					this->queue.pop_front();
+					this->queue.push_back(current);
+					this->next = this->queue.front();
+					this->current->Play();
+				}
 			}
 		}
-		if(this->queue.back() == this->soundOrder.back() && this->queue.back()->IsStop()){
-			if(!this->IsAutoLoop() || this->loop == 0){
-				this->Stop();
-				// this->SetPlayOrder(this->GetPlayOrder());
+		if(!this->IsAutoLoop() || this->loop == 0){
+			if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_CONTINUOUS){
+				if(this->queue.back() == this->soundOrder.back() && this->queue.back()->IsStop()){
+					this->Stop();
+				}
+			}else{
+				if(this->queue.back() == this->soundOrder.front() && this->queue.back()->IsStop()){
+					this->soundOrder.push_back(this->soundOrder.front());
+					this->soundOrder.pop_front();
+					this->SoftStop(true, false);
+				}
 			}
-		}
-		if(!this->IsAutoLoop() && this->current == this->soundOrder.back() && this->current->IsStop()){
-			this->playDuration = 0;
-			this->SetPlayOrder(this->GetPlayOrder());
 		}
 	}
 	for(auto sound : this->sounds){
@@ -240,7 +265,7 @@ void ppPlaylist::Render(SDL_Renderer* renderer){
 		return;
 	}
 	int index=0;
-	int height=this->height/(this->soundOrder.size()+1);
+	int height=this->height/(this->GetTotalSound()+1);
 	for(auto sound : this->soundOrder){
 		int width = sound->GetCurrentPosition()*(this->width-2)/sound->GetPositionLength();
 		int max_width = sound->GetPositionLength()*(this->width-2)/sound->GetPositionLength();
@@ -295,6 +320,9 @@ void ppPlaylist::Render(SDL_Renderer* renderer){
 		}
 
 		index++;
+		if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+			break;
+		}
 	}
 }
 

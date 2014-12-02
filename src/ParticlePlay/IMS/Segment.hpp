@@ -19,7 +19,7 @@ public:
 	void ClearSound();
 	void Play();
 	void Pause();
-	void Stop();
+	void StopDecay(bool decay);
 	void Update();
 	void SetLoop(int loop);
 	Sint64 GetCurrentPosition();

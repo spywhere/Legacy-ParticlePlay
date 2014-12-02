@@ -158,11 +158,11 @@ void ppSound::Update(){
 	delete[] bufferData;
 }
 
-void ppSound::Stop(){
+void ppSound::StopDecay(bool decay){
 	if(!this->isPlaying){
 		return;
 	}
-	ppGenericSound::Stop();
+	ppGenericSound::StopDecay(decay);
 	alSourceStop(this->sourceID);
 	alSourceUnqueueBuffers(this->sourceID, 2, this->bufferSet);
 

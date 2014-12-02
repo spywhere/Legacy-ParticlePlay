@@ -19,6 +19,7 @@ protected:
 	Sint64 playDuration;
 	ppPlaylistPlayOrder playOrder;
 	ppRandomizer* randomizer;
+	void SoftStop(bool decay, bool reset);
 public:
 	ppPlaylist(const char *name, ppRandomizer* randomizer);
 	void AddSound(ppGenericSound *sound);
@@ -32,7 +33,7 @@ public:
 
 	void Play();
 	void Pause();
-	void Stop();
+	void StopDecay(bool decay);
 
 	void Update();
 	Sint64 GetEntryCue();

@@ -1,5 +1,8 @@
 #include "Graphics.hpp"
 
+#include <cmath>
+const double PI = std::acos(-1);
+
 ppGraphics::ppGraphics(SDL_Renderer* renderer){
 	this->renderer = renderer;
 }
@@ -12,7 +15,7 @@ void ppGraphics::DrawArc(int x, int y, int w, int h, int start, int end, GLenum 
 	}
 	float cx = x+w/2.0f;
 	float cy = y+h/2.0f;
-	float doublePi = 6.28318f;
+	float doublePi = 2.0f*PI;
 	float maxSegment = ((w>h)?w:h) * doublePi;
 	glBegin(mode);
 	if(mode == GL_TRIANGLE_FAN){

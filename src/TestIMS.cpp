@@ -18,6 +18,15 @@ void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
 		glColor3f(1 ,1 ,1);
 		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
 	}
+	if(this->test==0){
+		ppEasing* easing = new ppLinearEasing();
+		glColor3f(1, 1, 1);
+		for(int i=0;i<=100;i++){
+			glBegin(GL_POINTS);
+				glVertex2f(50+i, 300-easing->GetValue(i, 100, 0, 100));
+			glEnd();
+		}
+	}
 	this->gui->Render(renderer);
 }
 
@@ -35,7 +44,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		msg << "3 = Playlist Test\n";
 		msg << "4 = Complex Playlist Test\n";
 		msg << "5 = Playlist Play Order Test\n";
-		msg << "6 = Demo Game";
+		msg << "6 = Music Notation\n";
+		msg << "7 = Demo Game";
 
 		if(input->IsKeyDown(SDL_SCANCODE_1, 10)){
 			this->test = 1;
@@ -48,6 +58,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_5, 10)){
 			this->test = 5;
 		}else if(input->IsKeyDown(SDL_SCANCODE_6, 10)){
+			this->test = 6;
+		}else if(input->IsKeyDown(SDL_SCANCODE_7, 10)){
 			this->GetGame()->EnterState("farmstate");
 		}
 	}else if(this->test == 1){
@@ -60,6 +72,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		msg << "Complex Playlist Test\n";
 	}else if(this->test == 5){
 		msg << "Playlist Play Order Test\n";
+	}else if(this->test == 6){
+		msg << "Music Notation\n";
 	}
 	if(this->test != 0){
 		msg << "Press 'R' to select a new test";
@@ -746,19 +760,19 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppPlaylist* seg1playlist = this->ims->CreatePlaylist("seg1playlist");
 			seg1playlist->AddSound(seg1a);
 			seg1playlist->AddSound(seg1b);
-			seg1playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
+			seg1playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
 			ppPlaylist* seg2playlist = this->ims->CreatePlaylist("seg2playlist");
 			seg2playlist->AddSound(seg2a);
 			seg2playlist->AddSound(seg2b);
-			seg2playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
+			seg2playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_STEP);
 			ppPlaylist* seg3playlist = this->ims->CreatePlaylist("seg3playlist");
 			seg3playlist->AddSound(seg3a);
 			seg3playlist->AddSound(seg3b);
-			seg3playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
+			seg3playlist->SetPlayOrder(ppPlaylistPlayOrder::SEQUENCE_STEP);
 			ppPlaylist* seg4playlist = this->ims->CreatePlaylist("seg4playlist");
 			seg4playlist->AddSound(seg4a);
 			seg4playlist->AddSound(seg4b);
-			seg4playlist->SetPlayOrder(ppPlaylistPlayOrder::SHUFFLE_CONTINUOUS);
+			seg4playlist->SetPlayOrder(ppPlaylistPlayOrder::SEQUENCE_STEP);
 			ppPlaylist* seg5playlist = this->ims->CreatePlaylist("seg5playlist");
 			seg5playlist->AddSound(seg5a);
 			seg5playlist->AddSound(seg5b);
@@ -867,6 +881,53 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 					if(input->IsKeyDown(SDL_SCANCODE_S, 10)){
 						playlist->Stop();
 					}
+				}
+			}
+		}
+	}else if(this->test == 6){
+		////////////////////
+		//     TEST 6     //
+		// MUSIC NOTATION //
+		////////////////////
+		if(!this->ims->GetSound("sound")){
+			ppFormat* soundFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/MusicGameplay/Music_Gameplay.wav");
+			ppSound* sound = this->ims->CreateSound("sound", soundFormat);
+			sound->SetLoop(-1);
+			sound->SetSize(300, 30);
+			sound->SetLocation(10, 200);
+			this->gui->AddControl(sound);
+		}else{
+			ppSound* sound = (ppSound*)this->ims->GetSound("sound");
+
+			msg << "\nTempo: " << sound->GetTempo() << " BPM";
+			msg << "\nTime Signature: " << sound->GetBeatPerBar() << "/" << sound->GetNoteValue();
+			msg << "\n\nPress 'P' to ";
+
+			if(sound){
+				if(sound->IsPlaying()){
+					msg << "pause";
+				}else{
+					msg << "play";
+				}
+				if(sound->IsStop()){
+					if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
+						sound->Play();
+					}
+				}else{
+					msg << "\nPress 'S' to stop\n\n";
+					if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
+						if(sound->IsPause()){
+							sound->Play();
+						}else{
+							sound->Pause();
+						}
+					}
+					if(input->IsKeyDown(SDL_SCANCODE_S, 10)){
+						sound->Stop();
+					}
+
+					msg << sound->GetAudioFormat()->GetFileName() << "\n";
+					msg << "Beat " << (sound->GetCurrentBar()+1) << "-" << (sound->GetCurrentBeat()+1) << " [" << sound->GetTotalBeat() << "]";
 				}
 			}
 		}

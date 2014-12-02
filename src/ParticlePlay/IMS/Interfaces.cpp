@@ -22,9 +22,13 @@ void ppPlayable::Pause(){
 	this->isPause = true;
 }
 
-void ppPlayable::Stop(){
+void ppPlayable::StopDecay(bool decay){
 	this->isPlaying = false;
 	this->isPause = false;
+}
+
+void ppPlayable::Stop(){
+	this->StopDecay(false);
 }
 
 Sint64 ppPlayable::GetEntryCue(){
@@ -88,7 +92,48 @@ Sint64 ppOffsetable::GetOffset(){
 	return this->offset;
 }
 
-ppGenericSound::ppGenericSound(const char *name) : ppControl(name, 0, 0) {
+ppRhythmic::ppRhythmic(){
+	this->rhythm = 0; //Tempo, Beat, NoteValue
+	this->SetTimeSignature(4, 4);
+	this->SetTempo(120);
+}
+
+void ppRhythmic::SetTimeSignature(int beats, int noteValue){
+	this->rhythm &= (~0xffff);
+	this->rhythm |= (beats & 0xff) << 8;
+	this->rhythm |= noteValue & 0xff;
+}
+
+void ppRhythmic::SetTempo(int bpm){
+	this->rhythm &= 0xffff;
+	this->rhythm |= bpm << 16;
+}
+
+int ppRhythmic::GetTotalBeat(float time){
+	return time*(this->GetTempo()/60.0f);
+}
+
+int ppRhythmic::GetCurrentBeat(float time){
+	return (this->GetTotalBeat(time) % this->GetBeatPerBar());
+}
+
+int ppRhythmic::GetCurrentBar(float time){
+	return (this->GetTotalBeat(time) / this->GetBeatPerBar());
+}
+
+int ppRhythmic::GetTempo(){
+	return this->rhythm >> 16;
+}
+
+int ppRhythmic::GetBeatPerBar(){
+	return (this->rhythm >> 8) & 0xf;
+}
+
+int ppRhythmic::GetNoteValue(){
+	return this->rhythm & 0xf;
+}
+
+ppGenericSound::ppGenericSound(const char *name) : ppRhythmic(), ppPlayable(), ppClippable(), ppOffsetable(), ppControl(name, 0, 0) {
 	this->preload = false;
 	this->volume = 1;
 	this->speed = 1;
@@ -98,6 +143,18 @@ ppGenericSound::ppGenericSound(const char *name) : ppControl(name, 0, 0) {
 }
 
 ppGenericSound::~ppGenericSound(){}
+
+int ppGenericSound::GetTotalBeat(){
+	return ppRhythmic::GetTotalBeat(this->GetCurrentTime());
+}
+
+int ppGenericSound::GetCurrentBeat(){
+	return ppRhythmic::GetCurrentBeat(this->GetCurrentTime());
+}
+
+int ppGenericSound::GetCurrentBar(){
+	return ppRhythmic::GetCurrentBar(this->GetCurrentTime());
+}
 
 void ppGenericSound::Seek(Sint64 position){}
 

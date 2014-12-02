@@ -21,6 +21,7 @@ public:
 	virtual ~ppPlayable();
 	virtual void Play();
 	virtual void Pause();
+	virtual void StopDecay(bool decay);
 	virtual void Stop();
 	virtual bool IsPause();
 	virtual bool IsStop();
@@ -56,7 +57,25 @@ public:
 	Sint64 GetOffset();
 };
 
-class ppGenericSound : public ppPlayable, public ppClippable, public ppOffsetable, public ppControl {
+class ppRhythmic {
+protected:
+	int rhythm;
+public:
+	ppRhythmic();
+	void SetTimeSignature(int beats, int noteValue);
+	void SetTempo(int bpm);
+	int GetTotalBeat(float time);
+	int GetCurrentBeat(float time);
+	int GetCurrentBar(float time);
+	virtual int GetTotalBeat()=0;
+	virtual int GetCurrentBeat()=0;
+	virtual int GetCurrentBar()=0;
+	int GetTempo();
+	int GetBeatPerBar();
+	int GetNoteValue();
+};
+
+class ppGenericSound : public ppRhythmic, public ppPlayable, public ppClippable, public ppOffsetable, public ppControl {
 protected:
 	bool preload;
 	bool autoloop;
@@ -67,6 +86,9 @@ protected:
 	ppGenericSound(const char *name);
 public:
 	virtual ~ppGenericSound();
+	int GetTotalBeat();
+	int GetCurrentBeat();
+	int GetCurrentBar();
 	virtual void Seek(Sint64 position);
 	virtual void Seek(float time);
 	virtual void SetLoop(int loop);

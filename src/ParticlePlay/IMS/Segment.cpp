@@ -93,11 +93,11 @@ void ppSegment::Pause(){
 	}
 }
 
-void ppSegment::Stop(){
-	ppGenericSound::Stop();
-	this->emptySound->Stop();
+void ppSegment::StopDecay(bool decay){
+	ppGenericSound::StopDecay(decay);
+	this->emptySound->StopDecay(decay);
 	for(auto sound : this->sounds){
-		sound->Stop();
+		sound->StopDecay(decay);
 	}
 }
 
