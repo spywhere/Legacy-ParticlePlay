@@ -67,6 +67,8 @@ ParticlePlay/IMS/IMS.cpp\
 ParticlePlay/IMS/Playlist.cpp\
 ParticlePlay/IMS/Segment.cpp\
 ParticlePlay/IMS/Sound.cpp\
+ParticlePlay/IMS/Switch.cpp\
+ParticlePlay/IMS/Transition.cpp\
 ParticlePlay/IMS/Utils.cpp\
 ParticlePlay/Color.cpp\
 ParticlePlay/Game.cpp\
@@ -115,7 +117,9 @@ FULLEXE=TestGame
 DEMOEXE=TestGameDemo
 
 all: preclean full-link demo-link
+re-demo: clean resources demo
 demo: preclean demo-link
+re-full: clean resources full
 full: preclean full-link
 
 $(OBJDIR_ENGINE)/%.o: $(SOURCEDIR)/%.cpp

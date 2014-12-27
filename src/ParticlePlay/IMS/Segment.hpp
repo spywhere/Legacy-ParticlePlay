@@ -21,6 +21,8 @@ public:
 	void Pause();
 	void StopDecay(bool decay);
 	void Update();
+	void SetVolume(float volume);
+	void SetSpeed(float speed);
 	void SetLoop(int loop);
 	Sint64 GetCurrentPosition();
 	Sint64 GetPositionLength();

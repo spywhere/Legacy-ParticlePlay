@@ -204,6 +204,20 @@ float ppPlaylist::GetTotalTime(){
 	return this->current->GetTotalTime();
 }
 
+void ppPlaylist::SetVolume(float volume){
+	ppGenericSound::SetVolume(volume);
+	for(auto sound : this->sounds){
+		sound->SetVolume(volume);
+	}
+}
+
+void ppPlaylist::SetSpeed(float speed){
+	ppGenericSound::SetSpeed(speed);
+	for(auto sound : this->sounds){
+		sound->SetSpeed(speed);
+	}
+}
+
 void ppPlaylist::Update(){
 	if(this->current!=NULL){
 		Sint64 length = this->current->GetExitCue();

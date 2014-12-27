@@ -65,6 +65,12 @@ ppSegment *ppIMS::CreateSegment(const char *name){
 	return segment;
 }
 
+ppSwitch *ppIMS::CreateSwitch(const char *name){
+	ppSwitch *sw = new ppSwitch(name, this);
+	this->switches[name] = sw;
+	return sw;
+}
+
 ppPlaylist* ppIMS::CreatePlaylist(const char *name){
 	ppPlaylist* playlist = new ppPlaylist(name, this->randomizer);
 	this->sounds[name] = playlist;
@@ -79,6 +85,14 @@ ppGenericSound* ppIMS::GetSound(const char *name){
 	return NULL;
 }
 
+ppSwitch* ppIMS::GetSwitch(const char *name){
+	auto it = this->switches.find(name);
+	if (it != this->switches.end()){
+		return it->second;
+	}
+	return NULL;
+}
+
 void ppIMS::RemoveSound(const char *name){
 	ppGenericSound* sound = this->GetSound(name);
 	if(sound){
@@ -88,11 +102,26 @@ void ppIMS::RemoveSound(const char *name){
 	}
 }
 
+void ppIMS::RemoveSwitch(const char *name){
+	ppSwitch* sw = this->GetSwitch(name);
+	if(sw){
+		this->switches.erase(name);
+		delete sw;
+	}
+}
+
 void ppIMS::ClearSound(){
 	for(auto sound : this->sounds){
 		delete sound.second;
 	}
 	this->sounds.clear();
+}
+
+void ppIMS::ClearSwitch(){
+	for(auto sw : this->switches){
+		delete sw.second;
+	}
+	this->switches.clear();
 }
 
 int ppIMS::Reinit(){
@@ -108,6 +137,7 @@ void ppIMS::Quit(){
 		return;
 	}
 	this->ClearSound();
+	this->ClearSwitch();
 	for(auto format : this->formats){
 		delete format;
 	}
@@ -121,5 +151,8 @@ void ppIMS::Update(){
 	}
 	for(auto sound : this->sounds){
 		sound.second->Update();
+	}
+	for(auto sw : this->switches){
+		sw.second->Update();
 	}
 }

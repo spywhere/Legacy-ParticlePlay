@@ -45,7 +45,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		msg << "4 = Complex Playlist Test\n";
 		msg << "5 = Playlist Play Order Test\n";
 		msg << "6 = Music Notation\n";
-		msg << "7 = Demo Game";
+		msg << "7 = Music Transition\n";
+		msg << "8 = Demo Game";
 
 		if(input->IsKeyDown(SDL_SCANCODE_1, 10)){
 			this->test = 1;
@@ -60,6 +61,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_6, 10)){
 			this->test = 6;
 		}else if(input->IsKeyDown(SDL_SCANCODE_7, 10)){
+			this->test = 7;
+		}else if(input->IsKeyDown(SDL_SCANCODE_8, 10)){
 			this->GetGame()->EnterState("farmstate");
 		}
 	}else if(this->test == 1){
@@ -74,6 +77,8 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		msg << "Playlist Play Order Test\n";
 	}else if(this->test == 6){
 		msg << "Music Notation\n";
+	}else if(this->test == 7){
+		msg << "Music Transition\n";
 	}
 	if(this->test != 0){
 		msg << "Press 'R' to select a new test";
@@ -930,6 +935,100 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 					msg << "Beat " << (sound->GetCurrentBar()+1) << "-" << (sound->GetCurrentBeat()+1) << " [" << sound->GetTotalBeat() << "]";
 				}
 			}
+		}
+	}else if(this->test == 7){
+		//////////////////////
+		//      TEST 7      //
+		// MUSIC TRANSITION //
+		//////////////////////
+		if(!this->ims->GetSwitch("level")){
+			this->playlist_track = 0;
+			ppFormat* musicFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/MusicGameplay/Music_Gameplay.wav");
+			ppSound* melody1 = this->ims->CreateSound("melody1", musicFormat, 1);
+			ppSound* melody2 = this->ims->CreateSound("melody2", musicFormat, 1);
+			ppSound* drum = this->ims->CreateSound("drum", musicFormat, 3);
+
+			ppSegment* idle = this->ims->CreateSegment("idle");
+			idle->AddSound(melody1);
+			idle->SetLoop(-1);
+
+			ppSegment* fight = this->ims->CreateSegment("fight");
+			fight->AddSound(melody2);
+			fight->AddSound(drum);
+			fight->SetLoop(-1);
+
+			ppSwitch* sw = this->ims->CreateSwitch("level");
+			ppTransition* idleToFight = sw->CreateTransition(0, idle, fight);
+			ppTransition* fightToIdle = sw->CreateTransition(0, fight, idle);
+			sw->SetSize(300, 30);
+			sw->SetLocation(10, 200);
+			this->gui->AddControl(sw);
+		}else{
+			ppSwitch* sw = this->ims->GetSwitch("level");
+
+			if(sw){
+				if(this->playlist_track == 0){
+					msg << "\nCurrent State: -Stop-";
+				}else{
+					msg << "\nCurrent State: " << sw->GetCurrentState();
+				}
+
+				if(input->IsKeyDown(SDL_SCANCODE_UP, 10)){
+					if(this->playlist_track == 0){
+						this->playlist_track = 2;
+						sw->SwitchState("fight");
+					}else if(this->playlist_track == 1){
+						this->playlist_track = 0;
+						sw->SwitchState("");
+					}else if(this->playlist_track == 2){
+						this->playlist_track = 1;
+						sw->SwitchState("idle");
+					}
+				}else if(input->IsKeyDown(SDL_SCANCODE_DOWN, 10)){
+					if(this->playlist_track == 0){
+						this->playlist_track = 1;
+						sw->SwitchState("idle");
+					}else if(this->playlist_track == 1){
+						this->playlist_track = 2;
+						sw->SwitchState("fight");
+					}else if(this->playlist_track == 2){
+						this->playlist_track = 0;
+						sw->SwitchState("");
+					}
+				}
+			}
+
+			// msg << "\nTempo: " << sound->GetTempo() << " BPM";
+			// msg << "\nTime Signature: " << sound->GetBeatPerBar() << "/" << sound->GetNoteValue();
+			// msg << "\n\nPress 'P' to ";
+
+			// if(sound){
+			// 	if(sound->IsPlaying()){
+			// 		msg << "pause";
+			// 	}else{
+			// 		msg << "play";
+			// 	}
+			// 	if(sound->IsStop()){
+			// 		if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
+			// 			sound->Play();
+			// 		}
+			// 	}else{
+			// 		msg << "\nPress 'S' to stop\n\n";
+			// 		if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
+			// 			if(sound->IsPause()){
+			// 				sound->Play();
+			// 			}else{
+			// 				sound->Pause();
+			// 			}
+			// 		}
+			// 		if(input->IsKeyDown(SDL_SCANCODE_S, 10)){
+			// 			sound->Stop();
+			// 		}
+
+			// 		msg << sound->GetAudioFormat()->GetFileName() << "\n";
+			// 		msg << "Beat " << (sound->GetCurrentBar()+1) << "-" << (sound->GetCurrentBeat()+1) << " [" << sound->GetTotalBeat() << "]";
+			// 	}
+			// }
 		}
 	}
 	label->SetText(msg.str());

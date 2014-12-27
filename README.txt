@@ -1,15 +1,15 @@
-Dependency
-================
- - SDL2
- - SDL2_image
- - SDL2_net
- - Box2D
- - OpenGL
- - OpenAL-Soft
- - YAML-CPP
+Dependencies
+============
+- SDL2
+- SDL2_image
+- SDL2_net
+- Box2D
+- OpenGL
+- OpenAL-Soft
+- LUA
 
 Configurations
-================
+==============
 Using C++11
 
 Windows

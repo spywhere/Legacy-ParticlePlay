@@ -5,7 +5,7 @@
 #include "Interfaces.hpp"
 #include "../Randomizer.hpp"
 
-enum class ppPlaylistPlayOrder {
+enum ppPlaylistPlayOrder {
 	SEQUENCE_CONTINUOUS, SHUFFLE_CONTINUOUS, SEQUENCE_STEP, SHUFFLE_STEP
 };
 
@@ -36,6 +36,8 @@ public:
 	void StopDecay(bool decay);
 
 	void Update();
+	void SetVolume(float volume);
+	void SetSpeed(float speed);
 	Sint64 GetEntryCue();
 	Sint64 GetExitCue();
 	Sint64 GetCurrentPosition();

@@ -101,6 +101,20 @@ void ppSegment::StopDecay(bool decay){
 	}
 }
 
+void ppSegment::SetVolume(float volume){
+	ppGenericSound::SetVolume(volume);
+	for(auto sound : this->sounds){
+		sound->SetVolume(volume);
+	}
+}
+
+void ppSegment::SetSpeed(float speed){
+	ppGenericSound::SetSpeed(speed);
+	for(auto sound : this->sounds){
+		sound->SetSpeed(speed);
+	}
+}
+
 void ppSegment::Update(){
 	this->emptySound->Update();
 	for(auto sound : this->sounds){
