@@ -21,6 +21,7 @@ public:
 	void Pause();
 	void StopDecay(bool decay);
 	void Update();
+	void Seek(float time);
 	void SetVolume(float volume);
 	void SetSpeed(float speed);
 	void SetLoop(int loop);

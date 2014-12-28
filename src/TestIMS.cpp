@@ -102,8 +102,13 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			//Clear Test 3 & 4
 			this->gui->RemoveControl("playlist");
 			this->gui->RemoveControl("playlist2");
+			//Clear Test 7
+			this->gui->RemoveControl("level");
+			this->gui->RemoveControl("idle");
+			this->gui->RemoveControl("fight");
 			//Clear all sounds
 			this->ims->ClearSound();
+			this->ims->ClearSwitch();
 		}
 	}
 
@@ -951,18 +956,37 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			ppSegment* idle = this->ims->CreateSegment("idle");
 			idle->AddSound(melody1);
 			idle->SetLoop(-1);
+			idle->SetSize(300, 30);
+			idle->SetLocation(10, 300);
 
 			ppSegment* fight = this->ims->CreateSegment("fight");
 			fight->AddSound(melody2);
 			fight->AddSound(drum);
 			fight->SetLoop(-1);
+			fight->SetSize(300, 30);
+			fight->SetLocation(10, 400);
 
 			ppSwitch* sw = this->ims->CreateSwitch("level");
-			ppTransition* idleToFight = sw->CreateTransition(0, idle, fight);
-			ppTransition* fightToIdle = sw->CreateTransition(0, fight, idle);
 			sw->SetSize(300, 30);
 			sw->SetLocation(10, 200);
+
+			ppTransition* defaultTransition = sw->GetDefaultTransition();
+			// defaultTransition->SetSourceOffset(-2.5f);
+			// defaultTransition->SetDestinationOffset(-2.5f);
+
+			ppTransition* idleToFight = sw->CreateTransition(0, idle, fight);
+			// idleToFight->SetSourceOffset(-2.5f);
+			// idleToFight->SetDestinationOffset(-2.5f);
+			idleToFight->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
+
+			ppTransition* fightToIdle = sw->CreateTransition(0, fight, idle);
+			// idleToFight->SetSourceOffset(-2.5f);
+			// idleToFight->SetDestinationOffset(-2.5f);
+			fightToIdle->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
+
 			this->gui->AddControl(sw);
+			this->gui->AddControl(idle);
+			this->gui->AddControl(fight);
 		}else{
 			ppSwitch* sw = this->ims->GetSwitch("level");
 
@@ -997,38 +1021,6 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 					}
 				}
 			}
-
-			// msg << "\nTempo: " << sound->GetTempo() << " BPM";
-			// msg << "\nTime Signature: " << sound->GetBeatPerBar() << "/" << sound->GetNoteValue();
-			// msg << "\n\nPress 'P' to ";
-
-			// if(sound){
-			// 	if(sound->IsPlaying()){
-			// 		msg << "pause";
-			// 	}else{
-			// 		msg << "play";
-			// 	}
-			// 	if(sound->IsStop()){
-			// 		if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
-			// 			sound->Play();
-			// 		}
-			// 	}else{
-			// 		msg << "\nPress 'S' to stop\n\n";
-			// 		if(input->IsKeyDown(SDL_SCANCODE_P, 10)){
-			// 			if(sound->IsPause()){
-			// 				sound->Play();
-			// 			}else{
-			// 				sound->Pause();
-			// 			}
-			// 		}
-			// 		if(input->IsKeyDown(SDL_SCANCODE_S, 10)){
-			// 			sound->Stop();
-			// 		}
-
-			// 		msg << sound->GetAudioFormat()->GetFileName() << "\n";
-			// 		msg << "Beat " << (sound->GetCurrentBar()+1) << "-" << (sound->GetCurrentBeat()+1) << " [" << sound->GetTotalBeat() << "]";
-			// 	}
-			// }
 		}
 	}
 	label->SetText(msg.str());

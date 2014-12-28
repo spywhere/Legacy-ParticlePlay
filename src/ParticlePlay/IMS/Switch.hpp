@@ -15,6 +15,7 @@ protected:
 	ppTransition* currentTransition;
 	ppTransition* defaultTransition;
 	ppGenericSound* lastPlay;
+	Uint32 switchTime;
 	bool readyForTransition;
 	static bool ppTransitionOrdering(ppTransition* a, ppTransition* b);
 	ppTransition* FindTransition(const char *sourceName, const char *destName);
