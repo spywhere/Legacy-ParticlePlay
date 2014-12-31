@@ -1,6 +1,6 @@
 SET( OPENAL_SOFT_SEARCH_PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
+  /usr/local
+  /usr
   /sw
   /opt/local
   /opt/csw
