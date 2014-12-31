@@ -356,9 +356,11 @@ int ppGame::StartGame(){
 				frames = 0;
 				updates = 0;
 				lastTimer = SDL_GetTicks();
-				if(this->showFPS){
-					std::cout << "FPS: " << fps << " [" << art <<"ms]   UPS: " << ups << " [" << aut << "ms]" << std::endl;
-				}
+				#ifdef PPDEBUG
+					if(this->showFPS){
+						std::cout << "FPS: " << fps << " [" << art <<"ms]   UPS: " << ups << " [" << aut << "ms]" << std::endl;
+					}
+				#endif
 				avgRenderTime = 0;
 				avgUpdateTime = 0;
 			}
