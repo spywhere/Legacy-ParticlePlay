@@ -21,12 +21,14 @@ protected:
 	ppTransition* FindTransition(const char *sourceName, const char *destName);
 public:
 	ppSwitch(const char *name, ppIMS* ims);
+	~ppSwitch();
 	const char *GetCurrentState();
 	ppTransition* GetDefaultTransition();
 	ppTransition* CreateTransition(int priority, ppGenericSound* sourceSound, ppGenericSound* destSound);
 	void SwitchState(const char *stateName);
 	void Render(SDL_Renderer* renderer);
 	void Update();
+	void Update(ppInput* input);
 	ppControlType GetType();
 };
 

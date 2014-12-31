@@ -12,6 +12,9 @@ ppControl::ppControl(const char *name, int x, int y, int width, int height){
 	this->gui = NULL;
 }
 
+ppControl::~ppControl(){
+}
+
 ppGUI* ppControl::GetGUI(){
 	return this->gui;
 }

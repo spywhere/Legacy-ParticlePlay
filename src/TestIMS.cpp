@@ -970,7 +970,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			sw->SetSize(300, 30);
 			sw->SetLocation(10, 200);
 
-			ppTransition* defaultTransition = sw->GetDefaultTransition();
+			// ppTransition* defaultTransition = sw->GetDefaultTransition();
 			// defaultTransition->SetSourceOffset(-2.5f);
 			// defaultTransition->SetDestinationOffset(-2.5f);
 

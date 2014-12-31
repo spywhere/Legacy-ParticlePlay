@@ -3,13 +3,14 @@ all: full
 run:
 	@./build/ParticlePlay
 
-demo:
-	@rm build/ParticlePlay
-	@./target/BuildDemo.sh
+demo: preclean
+	@./UnixBuild.sh debug demo
 
-full:
+full: preclean
+	@./UnixBuild.sh debug full
+
+preclean:
 	@rm -rf build/ParticlePlay
-	@./target/BuildFull.sh
 
 clean:
 	@rm -rf build/*

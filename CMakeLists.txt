@@ -14,21 +14,21 @@ option(PPVERSION "Build version" "full")
 if(PPVERSION STREQUAL "demo")
 	set( PPEXECUTABLE "TestGameDemo" )
 	add_definitions( -DDEMO )
-else(PPVERSION STREQUAL "demo")
+else()
 	set( PPEXECUTABLE "TestGame" )
 	add_definitions( -DFULL )
-endif(PPVERSION STREQUAL "demo")
+endif()
 
 # Build Target
 if(PPTARGET STREQUAL "")
 	set( PPTARGET "debug" )
-endif(PPTARGET STREQUAL "")
+endif()
 
 if(PPTARGET STREQUAL "release")
 	add_definitions( -O2 )
-else(PPTARGET STREQUAL "release")
+else()
 	add_definitions( -DPPDEBUG )
-endif(PPTARGET STREQUAL "release")
+endif()
 
 file(GLOB_RECURSE HEADERS
 	${ParticlePlay_SOURCE_DIR}/src/*.hpp
@@ -48,10 +48,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ParticlePlay_SOURCE_DIR}/cmake")
 find_package(OpenGL REQUIRED)
 
 # OpenAL-Soft
-set(CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
-set(CMAKE_FIND_FRAMEWORK "LAST" CACHE STRING "" FORCE)
+if(APPLE)
+	set(CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
+	set(CMAKE_FIND_FRAMEWORK "LAST" CACHE STRING "" FORCE)
+endif()
+
 find_package(OpenALSoft REQUIRED)
-set(CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
+
+if(APPLE)
+	set(CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
+endif()
 
 # SDL2
 find_package(SDL2 REQUIRED)

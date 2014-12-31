@@ -106,7 +106,6 @@ void ppTestBed::OnRender(SDL_Renderer* renderer, int delta){
 	}
 
 	for(b2Body* bd=this->physics->GetWorld()->GetBodyList();bd!=NULL;bd=bd->GetNext()){
-		b2Vec2 bdPos = bd->GetPosition();
 		b2Transform bdTransform = bd->GetTransform();
 		glPushMatrix();
 		glTranslatef(bdTransform.p.x/this->ptm+this->px, bdTransform.p.y/this->ptm+this->py, 0);

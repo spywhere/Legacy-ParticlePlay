@@ -4,7 +4,7 @@
 	#include <iostream>
 #endif
 
-static SDL_Point* MakePoint(int x, int y){
+SDL_Point* ppImage::MakePoint(int x, int y){
 	SDL_Point* point = new SDL_Point();
 	point->x = x;
 	point->y = y;
