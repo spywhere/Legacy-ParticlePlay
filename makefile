@@ -1,16 +1,32 @@
+# TODO:
+# Windows not tested
+
+ifeq ($(OS), Windows_NT)
+	BUILDFILE = ./WinBuild.bat
+	REMOVECMD = rem
+else
+	BUILDFILE = ./UnixBuild.sh
+	REMOVECMD = rm -rf
+endif
+
 all: full
+
+run-demo: demo run
+run-full: full run
+re-demo: clean demo
+re-full: clean full
 
 run:
 	@./build/ParticlePlay
 
 demo: preclean
-	@./UnixBuild.sh debug demo
+	@${BUILDFILE} debug demo
 
 full: preclean
-	@./UnixBuild.sh debug full
+	@${BUILDFILE} debug full
 
 preclean:
-	@rm -rf build/ParticlePlay
+	@${REMOVECMD} ./build/ParticlePlay
 
 clean:
-	@rm -rf build/*
+	@${REMOVECMD} ./build/*

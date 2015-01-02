@@ -12,10 +12,10 @@ add_definitions(
 option(PPVERSION "Build version" "full")
 
 if(PPVERSION STREQUAL "demo")
-	set( PPEXECUTABLE "TestGameDemo" )
+	# set( PPEXECUTABLE "TestGameDemo" CACHE STRING "" FORCE )
 	add_definitions( -DDEMO )
 else()
-	set( PPEXECUTABLE "TestGame" )
+	# set( PPEXECUTABLE "TestGame" CACHE STRING "" FORCE )
 	add_definitions( -DFULL )
 endif()
 
@@ -38,6 +38,10 @@ file(GLOB_RECURSE SOURCES
 )
 
 add_executable(ParticlePlay ${HEADERS} ${SOURCES})
+# set_target_properties(ParticlePlay
+# 	PROPERTIES OUTPUT_NAME ${PPEXECUTABLE}
+# 	PREFIX ""
+# )
 
 ################
 # Dependencies #

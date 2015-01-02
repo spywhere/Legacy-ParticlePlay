@@ -11,6 +11,7 @@ if [ "$#" -ne 0 ]; then
 fi
 
 # All remaining parameters are used as parameters to CMake
-cd build/
-cmake -DPPTARGET="$BUILD_TARGET" -DPPVERSION="full" "${@:2}" ../
+
+cd ./build/
+cmake -DPPTARGET="$BUILD_TARGET" -DPPVERSION="$BUILD_VERSION" "${@:3}" ../
 make
