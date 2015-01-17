@@ -23,6 +23,7 @@ protected:
 	float destDuration;
 	bool transitioning;
 	Uint32 triggerTime;
+	Uint32 syncPoint;
 	ppEasing* sourceEasing;
 	ppEasing* destEasing;
 	ppGenericSound* actualSource;
@@ -44,6 +45,7 @@ public:
 	ppGenericSound* GetActualSource();
 	ppGenericSound* GetActualDestination();
 	Uint32 GetTransitionPosition();
+	Uint32 GetSyncPoint();
 	void SetSourcePosition(ppTransitionSourcePosition sourcePosition);
 	void SetDestinationPosition(ppTransitionDestinationPosition destPosition);
 
