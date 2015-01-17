@@ -14,37 +14,36 @@ enum ppTransitionDestinationPosition {
 };
 
 class ppSwitch;
-class ppTransition {
+class ppTransition : public ppUpdatable {
 protected:
 	int priority;
 	float sourceOffset;
 	float sourceDuration;
 	float destOffset;
 	float destDuration;
-	Uint32 sourceStartTime, sourceEndTime;
-	Uint32 destStartTime, destEndTime;
+	bool transitioning;
+	Uint32 triggerTime;
 	ppEasing* sourceEasing;
 	ppEasing* destEasing;
+	ppGenericSound* actualSource;
 	ppGenericSound* sourceSound;
 	ppGenericSound* destSound;
+	ppGenericSound* actualDest;
 	ppTransitionSourcePosition sourcePosition;
 	ppTransitionDestinationPosition destPosition;
 public:
 	ppTransition(ppSwitch* sw, int priority, ppGenericSound* sourceSound, ppGenericSound* destSound);
-	void SetSourceStartTime(ppSwitch* sw, Uint32 sourceStartTime);
-	void SetDestinationStartTime(ppSwitch* sw, Uint32 destStartTime);
-	void SetSourceEndTime(ppSwitch* sw, Uint32 sourceEndTime);
-	void SetDestinationEndTime(ppSwitch* sw, Uint32 destEndTime);
-	Uint32 GetSourceStartTime(ppSwitch* sw);
-	Uint32 GetDestinationStartTime(ppSwitch* sw);
-	Uint32 GetSourceEndTime(ppSwitch* sw);
-	Uint32 GetDestinationEndTime(ppSwitch* sw);
-
+	virtual ~ppTransition();
+	void Trigger(ppGenericSound* actualSource, ppGenericSound* actualDest);
 	int GetPriority();
+	bool IsTransitioning();
 	bool IsSourceName(const char *name);
 	bool IsDestinationName(const char *name);
 	ppGenericSound* GetSource();
 	ppGenericSound* GetDestination();
+	ppGenericSound* GetActualSource();
+	ppGenericSound* GetActualDestination();
+	Uint32 GetTransitionPosition();
 	void SetSourcePosition(ppTransitionSourcePosition sourcePosition);
 	void SetDestinationPosition(ppTransitionDestinationPosition destPosition);
 
@@ -63,6 +62,8 @@ public:
 	float GetDestinationOffset();
 	float GetDestinationDuration();
 	ppEasing* GetDestinationCurve();
+
+	void Update();
 };
 
 #endif

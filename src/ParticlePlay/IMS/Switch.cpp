@@ -11,7 +11,6 @@ ppSwitch::ppSwitch(const char *name, ppIMS* ims) : ppControl(name, 0, 0) {
 	this->defaultTransition = new ppTransition(this, 0, NULL, NULL);
 	this->currentTransition = NULL;
 	this->readyForTransition = true;
-	this->switchTime = 0;
 }
 
 ppSwitch::~ppSwitch(){
@@ -50,12 +49,9 @@ void ppSwitch::SwitchState(const char *stateName){
 	}
 
 	this->currentTransition = this->FindTransition(this->stateName, stateName);
-	this->switchTime = SDL_GetTicks();
-	this->currentTransition->SetSourceStartTime(this, this->switchTime+(Uint32)(this->currentTransition->GetSourceOffset()*1000));
-	this->currentTransition->SetSourceEndTime(this, this->switchTime+(Uint32)(this->currentTransition->GetSourceOffset()*1000)+(Uint32)(this->currentTransition->GetSourceDuration()*1000));
-	this->currentTransition->SetDestinationStartTime(this, this->switchTime+(Uint32)(this->currentTransition->GetDestinationOffset()*1000));
-	this->currentTransition->SetDestinationEndTime(this, this->switchTime+(Uint32)(this->currentTransition->GetDestinationOffset()*1000)+(Uint32)(this->currentTransition->GetDestinationDuration()*1000));
+	this->currentTransition->Trigger(this->lastPlay, this->ims->GetSound(stateName));
 	this->stateName = stateName;
+
 	this->readyForTransition = false;
 }
 
@@ -66,43 +62,10 @@ void ppSwitch::Update(ppInput* input){
 void ppSwitch::Update(){
 	ppUpdatable::Update();
 	if(this->currentTransition){
-		ppGenericSound* source = this->currentTransition->GetSource();
-		ppEasing* sourceEasing = this->currentTransition->GetSourceCurve();
-		ppGenericSound* dest = this->currentTransition->GetDestination();
-		ppEasing* destEasing = this->currentTransition->GetDestinationCurve();
-		if(!source && this->lastPlay){
-			source = this->lastPlay;
-		}
-		// If it's to any track, search it
-		if(!dest){
-			dest = this->ims->GetSound(this->stateName);
-		}
-		Uint32 currentTime = SDL_GetTicks();
-		if(source && currentTime >= this->currentTransition->GetSourceStartTime(this) && currentTime < this->currentTransition->GetSourceEndTime(this)){
-			if(!source->IsPlaying()){
-				source->Play();
-			}
-			float v = sourceEasing->GetValue(this->currentTransition->GetSourceEndTime(this)-currentTime, this->currentTransition->GetSourceDuration()*1000, 0, 1);
-			source->SetVolume(v);
-		}
-		if(dest && currentTime >= this->currentTransition->GetDestinationStartTime(this) && currentTime < this->currentTransition->GetDestinationEndTime(this)){
-			if(!dest->IsPlaying()){
-				if(this->currentTransition->GetDestinationPosition() == ppTransitionDestinationPosition::SAME_TIME){
-					dest->Seek(source->GetCurrentTime());
-				}
-				dest->Play();
-			}
-			float v = 1-destEasing->GetValue(this->currentTransition->GetDestinationEndTime(this)-currentTime, this->currentTransition->GetDestinationDuration()*1000, 0, 1);
-			dest->SetVolume(v);
-		}
-		if(source && currentTime > this->currentTransition->GetSourceEndTime(this)){
-			source->StopDecay(true);
-		}
-		if(dest && currentTime > this->currentTransition->GetDestinationEndTime(this)){
-			dest->SetVolume(1);
-		}
-		if(currentTime > this->currentTransition->GetSourceEndTime(this) && currentTime > this->currentTransition->GetDestinationEndTime(this)){
-			this->lastPlay = dest;
+		this->currentTransition->Update();
+
+		if(!this->currentTransition->IsTransitioning()){
+			this->lastPlay = this->currentTransition->GetActualDestination();
 			this->currentTransition = NULL;
 			this->readyForTransition = true;
 		}
@@ -115,7 +78,6 @@ void ppSwitch::Render(SDL_Renderer* renderer){
 		return;
 	}
 
-
 	if(this->currentTransition){
 		float maxOffset = this->currentTransition->GetSourceOffset();
 		if(this->currentTransition->GetDestinationOffset() > maxOffset){
@@ -126,15 +88,8 @@ void ppSwitch::Render(SDL_Renderer* renderer){
 			maxDuration = this->currentTransition->GetDestinationDuration();
 		}
 		float maxWidth = maxOffset+maxDuration;
-		ppGenericSound* source = this->currentTransition->GetSource();
-		ppGenericSound* dest = this->currentTransition->GetDestination();
-		Uint32 currentTime = SDL_GetTicks();
-		if(!source && this->lastPlay){
-			source = this->lastPlay;
-		}
-		if(!dest){
-			dest = this->ims->GetSound(this->stateName);
-		}
+		ppGenericSound* source = this->currentTransition->GetActualSource();
+		ppGenericSound* dest = this->currentTransition->GetActualDestination();
 
 		//Border
 		glBegin(GL_LINE_LOOP);
@@ -211,7 +166,7 @@ void ppSwitch::Render(SDL_Renderer* renderer){
 		glBegin(GL_LINES);
 		{
 			glColor3f(0.5f, 0.5f, 1);
-			int offset = (currentTime-this->switchTime)*(this->width-2)/maxDuration/1000;
+			int offset = this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxDuration / 1000;
 			glVertex3f(this->x+offset, this->y+1, 0);
 			glVertex3f(this->x+offset, this->y+this->height, 0);
 		}

@@ -6,6 +6,7 @@ ppTransition::ppTransition(ppSwitch* sw, int priority, ppGenericSound* sourceSou
 	this->priority = priority;
 	this->sourceSound = sourceSound;
 	this->destSound = destSound;
+	this->transitioning = false;
 	this->SetSourcePosition(ppTransitionSourcePosition::IMMEDIATE);
 	this->SetSourceOffset(0);
 	this->SetSourceDuration(5);
@@ -16,36 +17,74 @@ ppTransition::ppTransition(ppSwitch* sw, int priority, ppGenericSound* sourceSou
 	this->SetDestinationCurve(new ppLinearEasing());
 }
 
-void ppTransition::SetSourceStartTime(ppSwitch* sw, Uint32 sourceStartTime){
-	this->sourceStartTime = sourceStartTime;
+ppTransition::~ppTransition(){}
+
+void ppTransition::Trigger(ppGenericSound* actualSource, ppGenericSound* actualDest){
+	if(this->transitioning){
+		return;
+	}
+	this->actualSource = actualSource;
+	this->actualDest = actualDest;
+
+	this->triggerTime = SDL_GetTicks();
+
+	this->transitioning = true;
 }
 
-Uint32 ppTransition::GetSourceStartTime(ppSwitch* sw){
-	return this->sourceStartTime;
+void ppTransition::Update(){
+	if(!this->transitioning){
+		return;
+	}
+	ppGenericSound* source = this->sourceSound;
+	ppEasing* sourceEasing = this->sourceEasing;
+	ppGenericSound* dest = this->destSound;
+	ppEasing* destEasing = this->destEasing;
+	if(!source && this->actualSource){
+		source = this->actualSource;
+	}else if(source){
+		this->actualSource = source;
+	}
+	// If its destination is to "any" track, use the target
+	if(dest){
+		this->actualDest = dest;
+	}else{
+		dest = this->actualDest;
+	}
+	Uint32 currentTime = this->GetTransitionPosition();
+	Uint32 sourceStartTime = (Uint32)(this->GetSourceOffset()*1000);
+	Uint32 sourceEndTime = sourceStartTime+(Uint32)(this->GetSourceDuration()*1000);
+	Uint32 destStartTime = (Uint32)(this->GetDestinationOffset()*1000);
+	Uint32 destEndTime = (Uint32)(this->GetDestinationDuration()*1000);
+	if(source && currentTime >= sourceStartTime && currentTime < sourceEndTime){
+		if(!source->IsPlaying()){
+			source->Play();
+		}
+		float v = sourceEasing->GetValue(sourceEndTime-currentTime, this->sourceDuration*1000, 0, 1);
+		source->SetVolume(v);
+	}
+	if(dest && currentTime >= destStartTime && currentTime < destEndTime){
+		if(!dest->IsPlaying()){
+			if(this->destPosition == ppTransitionDestinationPosition::SAME_TIME){
+				dest->Seek(source->GetCurrentTime());
+			}
+			dest->Play();
+		}
+		float v = 1-destEasing->GetValue(destEndTime-currentTime, this->destDuration*1000, 0, 1);
+		dest->SetVolume(v);
+	}
+	if(source && currentTime > sourceEndTime){
+		source->StopDecay(true);
+	}
+	if(dest && currentTime > destEndTime){
+		dest->SetVolume(1);
+	}
+	if(currentTime > sourceEndTime && currentTime > destEndTime){
+		this->transitioning = false;
+	}
 }
 
-void ppTransition::SetDestinationStartTime(ppSwitch* sw, Uint32 destStartTime){
-	this->destStartTime = destStartTime;
-}
-
-Uint32 ppTransition::GetDestinationStartTime(ppSwitch* sw){
-	return this->destStartTime;
-}
-
-void ppTransition::SetSourceEndTime(ppSwitch* sw, Uint32 sourceEndTime){
-	this->sourceEndTime = sourceEndTime;
-}
-
-Uint32 ppTransition::GetSourceEndTime(ppSwitch* sw){
-	return this->sourceEndTime;
-}
-
-void ppTransition::SetDestinationEndTime(ppSwitch* sw, Uint32 destEndTime){
-	this->destEndTime = destEndTime;
-}
-
-Uint32 ppTransition::GetDestinationEndTime(ppSwitch* sw){
-	return this->destEndTime;
+bool ppTransition::IsTransitioning(){
+	return this->transitioning;
 }
 
 bool ppTransition::IsSourceName(const char *name){
@@ -62,6 +101,18 @@ ppGenericSound* ppTransition::GetSource(){
 
 ppGenericSound* ppTransition::GetDestination(){
 	return this->destSound;
+}
+
+ppGenericSound* ppTransition::GetActualSource(){
+	return this->actualSource;
+}
+
+ppGenericSound* ppTransition::GetActualDestination(){
+	return this->actualDest;
+}
+
+Uint32 ppTransition::GetTransitionPosition(){
+	return SDL_GetTicks()-this->triggerTime;
 }
 
 void ppTransition::SetSourcePosition(ppTransitionSourcePosition sourcePosition){
