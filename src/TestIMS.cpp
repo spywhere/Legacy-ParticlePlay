@@ -975,13 +975,13 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			// defaultTransition->SetDestinationOffset(-2.5f);
 
 			ppTransition* idleToFight = sw->CreateTransition(0, idle, fight);
-			// idleToFight->SetSourceOffset(-2.5f);
-			// idleToFight->SetDestinationOffset(-2.5f);
+			idleToFight->SetSourceOffset(2.5f);
+			idleToFight->SetDestinationOffset(2.5f);
 			idleToFight->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
 
 			ppTransition* fightToIdle = sw->CreateTransition(0, fight, idle);
-			// idleToFight->SetSourceOffset(-2.5f);
-			// idleToFight->SetDestinationOffset(-2.5f);
+			idleToFight->SetSourceOffset(2.5f);
+			idleToFight->SetDestinationOffset(2.5f);
 			fightToIdle->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
 
 			this->gui->AddControl(sw);

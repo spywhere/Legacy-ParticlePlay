@@ -4,6 +4,7 @@
 #include "../Easings/Easing.hpp"
 #include "Interfaces.hpp"
 #include "Switch.hpp"
+#include "TimeListener.hpp"
 
 enum ppTransitionSourcePosition {
 	IMMEDIATE, NEXT_BEAT, NEXT_BAR
@@ -14,7 +15,7 @@ enum ppTransitionDestinationPosition {
 };
 
 class ppSwitch;
-class ppTransition : public ppUpdatable {
+class ppTransition : public ppTimeListenerCallback, public ppUpdatable {
 protected:
 	int priority;
 	float sourceOffset;
@@ -22,6 +23,7 @@ protected:
 	float destOffset;
 	float destDuration;
 	bool transitioning;
+	bool triggerSync;
 	Uint32 triggerTime;
 	Uint32 syncPoint;
 	ppEasing* sourceEasing;

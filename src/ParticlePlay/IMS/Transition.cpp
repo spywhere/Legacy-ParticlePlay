@@ -28,7 +28,18 @@ void ppTransition::Trigger(ppGenericSound* actualSource, ppGenericSound* actualD
 
 	this->triggerTime = SDL_GetTicks();
 
+	this->triggerSync = false;
 	this->transitioning = true;
+
+	if(this->sourceSound){
+		this->actualSource = this->sourceSound;
+	}
+	if(this->destSound){
+		this->actualDest = this->destSound;
+	}
+
+	new ppTimeListener(this->actualSource, this);
+	new ppTimeListener(this->actualDest, this);
 }
 
 void ppTransition::Update(){
@@ -39,15 +50,11 @@ void ppTransition::Update(){
 	ppEasing* sourceEasing = this->sourceEasing;
 	ppGenericSound* dest = this->destSound;
 	ppEasing* destEasing = this->destEasing;
-	if(!source && this->actualSource){
+	if(!source){
 		source = this->actualSource;
-	}else if(source){
-		this->actualSource = source;
 	}
 	// If its destination is to "any" track, use the target
-	if(dest){
-		this->actualDest = dest;
-	}else{
+	if(!dest){
 		dest = this->actualDest;
 	}
 	Uint32 currentTime = this->GetTransitionPosition();
@@ -92,7 +99,11 @@ void ppTransition::Update(){
 	if(dest && currentTime > destEndTime){
 		dest->SetVolume(1);
 	}
-	if(currentTime > sourceEndTime && currentTime > destEndTime){
+	if(currentTime > this->syncPoint && !this->triggerSync){
+		// TODO: Trigger seeking here
+		this->triggerSync = true;
+	}
+	if(currentTime > sourceEndTime && currentTime > destEndTime && this->triggerSync){
 		this->transitioning = false;
 	}
 }
