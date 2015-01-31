@@ -7,6 +7,7 @@ ppTransition::ppTransition(ppSwitch* sw, int priority, ppGenericSound* sourceSou
 	this->sourceSound = sourceSound;
 	this->destSound = destSound;
 	this->transitioning = false;
+	this->transitionTrack = NULL;
 	this->SetSourcePosition(ppTransitionSourcePosition::IMMEDIATE);
 	this->SetSourceOffset(0);
 	this->SetSourceDuration(5);
@@ -50,6 +51,7 @@ void ppTransition::Update(){
 	ppEasing* sourceEasing = this->sourceEasing;
 	ppGenericSound* dest = this->destSound;
 	ppEasing* destEasing = this->destEasing;
+	ppGenericSound* transition = this->transitionTrack;
 	if(!source){
 		source = this->actualSource;
 	}
@@ -60,10 +62,10 @@ void ppTransition::Update(){
 	Uint32 currentTime = this->GetTransitionPosition();
 	this->syncPoint = (Uint32)(this->GetSourceDuration()*1000);
 
-	int sourceStartTime = this->GetSourceOffset()*1000;
-	int destStartTime = this->GetDestinationOffset()*1000;
+	long sourceStartTime = this->GetSourceOffset()*1000;
+	long destStartTime = this->GetDestinationOffset()*1000;
 
-	int minStartTime = sourceStartTime;
+	long minStartTime = sourceStartTime;
 	if(destStartTime < minStartTime){
 		minStartTime = destStartTime;
 	}
@@ -73,15 +75,45 @@ void ppTransition::Update(){
 		this->syncPoint -= minStartTime;
 	}
 
-	int sourceEndTime = sourceStartTime+this->GetSourceDuration()*1000;
-	int destEndTime = destStartTime+this->GetDestinationDuration()*1000;
+	// Source time calculation
+	long sourceEndTime = sourceStartTime+this->GetSourceDuration()*1000;
 
-	if(source && currentTime >= sourceStartTime && currentTime < sourceEndTime){
+	// Transition time calculation
+	long transitionEntryCue = 0;
+	long transitionExitCue = 0;
+	long transitionStartTime = 0;
+	long transitionDuration = 0;
+	long transitionEndTime = 0;
+	if(transition){
+		transitionEntryCue = transition->GetAudioFormat()->PositionToTime(transition->GetEntryCue())*1000;
+		transitionExitCue = transition->GetAudioFormat()->PositionToTime(transition->GetNormalExitCue())*1000;
+		transitionStartTime = this->syncPoint-transitionEntryCue;
+		transitionDuration = transitionExitCue-transitionEntryCue;
+		transitionEndTime = this->syncPoint+transitionDuration+((transition->GetTotalTime()*1000)-transitionExitCue);
+		long destEntryCue = 0;
+		if(dest){
+			destEntryCue = dest->GetAudioFormat()->PositionToTime(dest->GetEntryCue())*1000;
+		}
+		destStartTime = this->syncPoint+transitionDuration-destEntryCue;
+	}
+
+	// Destination time calculation
+	long destEndTime = destStartTime+this->GetDestinationDuration()*1000;
+
+	if(transition && currentTime >= transitionStartTime && currentTime < transitionEndTime && !transition->IsPlaying()){
+		transition->Play();
+	}else if(transition && currentTime >= transitionEndTime && transition->IsPlaying()){
+		transition->StopDecay(true);
+	}
+
+	if(source && currentTime >= sourceStartTime && currentTime < sourceEndTime && sourceEasing){
 		if(!source->IsPlaying()){
 			source->Play();
 		}
 		float v = sourceEasing->GetValue(sourceEndTime-currentTime, this->sourceDuration*1000, 0, 1);
 		source->SetVolume(v);
+	}else if(source && currentTime >= sourceEndTime && !sourceEasing){
+		source->SetVolume(0);
 	}
 	if(dest && currentTime >= destStartTime && currentTime < destEndTime){
 		if(!dest->IsPlaying()){
@@ -90,7 +122,10 @@ void ppTransition::Update(){
 			}
 			dest->Play();
 		}
-		float v = 1-destEasing->GetValue(destEndTime-currentTime, this->destDuration*1000, 0, 1);
+		float v = 1;
+		if(destEasing){
+			v -= destEasing->GetValue(destEndTime-currentTime, this->destDuration*1000, 0, 1);
+		}
 		dest->SetVolume(v);
 	}
 	if(source && currentTime > sourceEndTime){
@@ -132,6 +167,10 @@ ppGenericSound* ppTransition::GetActualSource(){
 	return this->actualSource;
 }
 
+ppGenericSound* ppTransition::GetTransitionTrack(){
+	return this->transitionTrack;
+}
+
 ppGenericSound* ppTransition::GetActualDestination(){
 	return this->actualDest;
 }
@@ -150,6 +189,10 @@ void ppTransition::SetSourcePosition(ppTransitionSourcePosition sourcePosition){
 
 void ppTransition::SetDestinationPosition(ppTransitionDestinationPosition destPosition){
 	this->destPosition = destPosition;
+}
+
+void ppTransition::SetTransitionTrack(ppGenericSound* transitionTrack){
+	this->transitionTrack = transitionTrack;
 }
 
 int ppTransition::GetPriority(){

@@ -28,6 +28,7 @@ public:
 	virtual bool IsPlaying();
 	virtual void SetEntryCue(Sint64 entryCue);
 	virtual void SetExitCue(Sint64 exitCue);
+	virtual Sint64 GetNormalExitCue();
 	virtual Sint64 GetEntryCue();
 	virtual Sint64 GetExitCue();
 	virtual Sint64 GetCurrentPosition()=0;

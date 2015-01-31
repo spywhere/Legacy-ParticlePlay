@@ -47,7 +47,9 @@ void ppSwitch::SwitchState(const char *stateName){
 	if(!this->readyForTransition){
 		return;
 	}
-
+	if(this->currentTransition && this->currentTransition->IsTransitioning()){
+		return;
+	}
 	this->currentTransition = this->FindTransition(this->stateName, stateName);
 	this->currentTransition->Trigger(this->lastPlay, this->ims->GetSound(stateName));
 	this->stateName = stateName;
@@ -141,9 +143,13 @@ void ppSwitch::Render(SDL_Renderer* renderer){
 			glColor3f(0.7f, 0, 0);
 			glVertex3f(this->x, this->y+1, 0);
 			glVertex3f(this->x+sourceOffset, this->y+1, 0);
-			int transitionEnd = this->currentTransition->GetSourceDuration() * this->width / maxWidth;
-			for(int x=sourceOffset;x<sourceOffset+transitionEnd;x++){
-				glVertex3f(this->x+x, this->y+1+this->currentTransition->GetSourceCurve()->GetValue(x-sourceOffset, transitionEnd, 0, this->height/2), 0);
+			if(this->currentTransition->GetSourceCurve()){
+				int transitionEnd = this->currentTransition->GetSourceDuration() * this->width / maxWidth;
+				for(int x=sourceOffset;x<sourceOffset+transitionEnd;x++){
+					glVertex3f(this->x+x, this->y+1+this->currentTransition->GetSourceCurve()->GetValue(x-sourceOffset, transitionEnd, 0, this->height/2), 0);
+				}
+			}else{
+				glVertex3f(this->x+x, this->y+1, 0);
 			}
 		}
 		glEnd();
@@ -179,8 +185,12 @@ void ppSwitch::Render(SDL_Renderer* renderer){
 			glVertex3f(this->x, this->y+this->height/2+1, 0);
 			glVertex3f(this->x+destOffset, this->y+this->height/2+1, 0);
 			int transitionEnd = this->currentTransition->GetDestinationDuration() * this->width / maxWidth;
-			for(int x=destOffset;x<destOffset+transitionEnd;x++){
-				glVertex3f(this->x+x, this->y+this->height+1-this->currentTransition->GetDestinationCurve()->GetValue(x-destOffset, transitionEnd, 0, this->height/2), 0);
+			if(this->currentTransition->GetDestinationCurve()){
+				for(int x=destOffset;x<destOffset+transitionEnd;x++){
+					glVertex3f(this->x+x, this->y+this->height+1-this->currentTransition->GetDestinationCurve()->GetValue(x-destOffset, transitionEnd, 0, this->height/2), 0);
+				}
+			}else{
+				glVertex3f(this->x+x, this->y+this->height/2+1, 0);
 			}
 		}
 		glEnd();

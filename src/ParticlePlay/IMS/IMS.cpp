@@ -1,5 +1,9 @@
 #include "IMS.hpp"
 
+#ifdef PPDEBUG
+	#include <iostream>
+#endif
+
 ppIMS::ppIMS(ppGame* game, ppRandomizer* randomizer) {
 	this->randomizer = randomizer;
 	this->preload = false;
@@ -12,12 +16,16 @@ ppRandomizer* ppIMS::GetRandomizer(){
 int ppIMS::Init(){
 	this->device = alcOpenDevice(NULL);
 	if(!this->device){
-		// std::cout << "Cannot open sound card" << std::endl;
+		#ifdef PPDEBUG
+			std::cout << "Cannot open sound card" << std::endl;
+		#endif
 		return 1;
 	}
 	this->context = alcCreateContext(this->device, NULL);
 	if(!this->context){
-		// std::cout << "Cannot create context" << std::endl;
+		#ifdef PPDEBUG
+			std::cout << "Cannot create context" << std::endl;
+		#endif
 		return 2;
 	}
 	alcMakeContextCurrent(this->context);

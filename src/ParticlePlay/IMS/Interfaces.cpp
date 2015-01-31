@@ -31,6 +31,13 @@ void ppPlayable::Stop(){
 	this->StopDecay(false);
 }
 
+Sint64 ppPlayable::GetNormalExitCue(){
+	if(this->exitCue < 0){
+		return this->GetPositionLength()+this->exitCue;
+	}
+	return this->exitCue;
+}
+
 Sint64 ppPlayable::GetEntryCue(){
 	return this->entryCue;
 }

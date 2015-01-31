@@ -32,6 +32,7 @@ protected:
 	ppGenericSound* sourceSound;
 	ppGenericSound* destSound;
 	ppGenericSound* actualDest;
+	ppGenericSound* transitionTrack;
 	ppTransitionSourcePosition sourcePosition;
 	ppTransitionDestinationPosition destPosition;
 public:
@@ -46,10 +47,12 @@ public:
 	ppGenericSound* GetDestination();
 	ppGenericSound* GetActualSource();
 	ppGenericSound* GetActualDestination();
+	ppGenericSound* GetTransitionTrack();
 	Uint32 GetTransitionPosition();
 	Uint32 GetSyncPoint();
 	void SetSourcePosition(ppTransitionSourcePosition sourcePosition);
 	void SetDestinationPosition(ppTransitionDestinationPosition destPosition);
+	void SetTransitionTrack(ppGenericSound* transitionTrack);
 
 	void SetSourceOffset(float offset);
 	void SetSourceDuration(float duration);

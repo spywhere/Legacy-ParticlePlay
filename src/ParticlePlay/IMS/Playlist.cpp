@@ -44,6 +44,9 @@ void ppPlaylist::SetPlayOrder(ppPlaylistPlayOrder playOrder){
 			this->queue.push_back(sound);
 		}
 	}
+	if(this->soundOrder.size() > 0){
+		this->audioFormat = this->soundOrder.front()->GetAudioFormat();
+	}
 }
 
 ppPlaylistPlayOrder ppPlaylist::GetPlayOrder(){
