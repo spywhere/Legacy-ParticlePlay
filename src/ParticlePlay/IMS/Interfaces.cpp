@@ -128,6 +128,14 @@ int ppRhythmic::GetCurrentBar(float time){
 	return (this->GetTotalBeat(time) / this->GetBeatPerBar());
 }
 
+float ppRhythmic::GetTimeForBeat(int beat){
+	return beat*this->GetTimePerBeat();
+}
+
+float ppRhythmic::GetTimeForBar(int bar){
+	return this->GetTimeForBeat(bar*this->GetBeatPerBar());
+}
+
 float ppRhythmic::GetTimePerBeat(){
 	return 60.0f/this->GetTempo();
 }
@@ -154,6 +162,18 @@ ppGenericSound::ppGenericSound(const char *name) : ppRhythmic(), ppPlayable(), p
 }
 
 ppGenericSound::~ppGenericSound(){}
+
+int ppGenericSound::GetTotalBeat(float time){
+	return ppRhythmic::GetTotalBeat(time);
+}
+
+int ppGenericSound::GetCurrentBeat(float time){
+	return ppRhythmic::GetCurrentBeat(time);
+}
+
+int ppGenericSound::GetCurrentBar(float time){
+	return ppRhythmic::GetCurrentBar(time);
+}
 
 int ppGenericSound::GetTotalBeat(){
 	return ppRhythmic::GetTotalBeat(this->GetCurrentTime());

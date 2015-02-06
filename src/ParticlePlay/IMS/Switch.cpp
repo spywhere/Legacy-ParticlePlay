@@ -51,15 +51,7 @@ void ppSwitch::SwitchState(const char *stateName){
 		return;
 	}
 	this->currentTransition = this->FindTransition(this->stateName, stateName);
-	if(this->currentTransition->GetSourcePosition() == ppTransitionSourcePosition::IMMEDIATE){
-		this->triggerTime = SDL_GetTicks();
-	}else if(this->currentTransition->GetSourcePosition() == ppTransitionSourcePosition::NEXT_BEAT){
-		// TODO
-		this->triggerTime = SDL_GetTicks();
-	}else if(this->currentTransition->GetSourcePosition() == ppTransitionSourcePosition::NEXT_BAR){
-		// TODO
-		this->triggerTime = SDL_GetTicks();
-	}
+	this->currentTransition->Trigger(this->lastPlay, this->ims->GetSound(stateName));
 	this->stateName = stateName;
 
 	this->readyForTransition = false;
@@ -72,11 +64,8 @@ void ppSwitch::Update(ppInput* input){
 void ppSwitch::Update(){
 	ppUpdatable::Update();
 	if(this->currentTransition){
-		if(this->triggerTime < SDL_GetTicks() && !this->currentTransition->IsTransitioning()){
-			this->currentTransition->Trigger(this->lastPlay, this->ims->GetSound(this->stateName));
-		}
 		this->currentTransition->Update();
-		if(this->triggerTime < SDL_GetTicks() && !this->currentTransition->IsTransitioning()){
+		if(!this->currentTransition->IsTransitioning()){
 			this->lastPlay = this->currentTransition->GetActualDestination();
 			this->currentTransition = NULL;
 			this->readyForTransition = true;
@@ -209,7 +198,7 @@ void ppSwitch::Render(SDL_Renderer* renderer){
 		glBegin(GL_LINES);
 		{
 			glColor3f(1, 1, 1);
-			int offset = this->currentTransition->GetSyncPoint() * (this->width - 2) / maxWidth / 1000;
+			int offset = this->currentTransition->GetSyncPoint() * (this->width - 2) / maxWidth;
 			glVertex3f(this->x+offset, this->y+1, 0);
 			glVertex3f(this->x+offset, this->y+this->height, 0);
 		}
@@ -219,7 +208,10 @@ void ppSwitch::Render(SDL_Renderer* renderer){
 		glBegin(GL_LINES);
 		{
 			glColor3f(0.5f, 0.5f, 1);
-			int offset = this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxWidth / 1000;
+			int offset = this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxWidth;
+			if(this->currentTransition->GetTransitionPosition() < 0){
+				offset = -this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxWidth;
+			}
 			glVertex3f(this->x+offset, this->y+1, 0);
 			glVertex3f(this->x+offset, this->y+this->height, 0);
 		}

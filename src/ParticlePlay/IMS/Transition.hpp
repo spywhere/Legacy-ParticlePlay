@@ -48,8 +48,8 @@ public:
 	ppGenericSound* GetActualSource();
 	ppGenericSound* GetActualDestination();
 	ppGenericSound* GetTransitionTrack();
-	Uint32 GetTransitionPosition();
-	Uint32 GetSyncPoint();
+	float GetTransitionPosition();
+	float GetSyncPoint();
 	void SetSourcePosition(ppTransitionSourcePosition sourcePosition);
 	void SetDestinationPosition(ppTransitionDestinationPosition destPosition);
 	void SetTransitionTrack(ppGenericSound* transitionTrack);

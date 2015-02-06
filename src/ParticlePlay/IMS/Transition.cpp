@@ -27,8 +27,6 @@ void ppTransition::Trigger(ppGenericSound* actualSource, ppGenericSound* actualD
 	this->actualSource = actualSource;
 	this->actualDest = actualDest;
 
-	this->triggerTime = SDL_GetTicks();
-
 	this->triggerSync = false;
 	this->transitioning = true;
 
@@ -39,12 +37,33 @@ void ppTransition::Trigger(ppGenericSound* actualSource, ppGenericSound* actualD
 		this->actualDest = this->destSound;
 	}
 
+	this->syncPoint = (Uint32)(this->GetSourceDuration()*1000);
+
+	long minStartTime = this->GetSourceOffset()*1000;
+	long destStartTime = this->GetDestinationOffset()*1000;
+	if(destStartTime < minStartTime){
+		minStartTime = destStartTime;
+	}
+	if(minStartTime < 0){
+		this->syncPoint -= minStartTime;
+	}
+	this->triggerTime = SDL_GetTicks();
+	if(this->sourcePosition == ppTransitionSourcePosition::NEXT_BAR){
+		int bar = this->actualSource->GetCurrentBar(this->actualSource->GetCurrentTime()+this->GetSyncPoint());
+		float difTime = this->actualSource->GetTimeForBar(bar+1) - this->GetSyncPoint() - this->actualSource->GetCurrentTime();
+		this->triggerTime += (Uint32)(difTime*1000);
+	}else if(this->sourcePosition == ppTransitionSourcePosition::NEXT_BEAT){
+		int beat = this->actualSource->GetTotalBeat(this->actualSource->GetCurrentTime()+this->GetSyncPoint());
+		float difTime = this->actualSource->GetTimeForBeat(beat+1) - this->GetSyncPoint() - this->actualSource->GetCurrentTime();
+		this->triggerTime += (Uint32)(difTime*1000);
+	}
+
 	new ppTimeListener(this->actualSource, this);
 	new ppTimeListener(this->actualDest, this);
 }
 
 void ppTransition::Update(){
-	if(!this->transitioning){
+	if(!this->transitioning || this->GetTransitionPosition() < 0){
 		return;
 	}
 	ppGenericSound* source = this->sourceSound;
@@ -59,8 +78,7 @@ void ppTransition::Update(){
 	if(!dest){
 		dest = this->actualDest;
 	}
-	Uint32 currentTime = this->GetTransitionPosition();
-	this->syncPoint = (Uint32)(this->GetSourceDuration()*1000);
+	long currentTime = this->GetTransitionPosition()*1000;
 
 	long sourceStartTime = this->GetSourceOffset()*1000;
 	long destStartTime = this->GetDestinationOffset()*1000;
@@ -72,7 +90,6 @@ void ppTransition::Update(){
 	if(minStartTime < 0){
 		sourceStartTime -= minStartTime;
 		destStartTime -= minStartTime;
-		this->syncPoint -= minStartTime;
 	}
 
 	// Source time calculation
@@ -175,12 +192,13 @@ ppGenericSound* ppTransition::GetActualDestination(){
 	return this->actualDest;
 }
 
-Uint32 ppTransition::GetTransitionPosition(){
-	return SDL_GetTicks()-this->triggerTime;
+float ppTransition::GetTransitionPosition(){
+	// Convert unsigned to float then subtract it
+	return (SDL_GetTicks()/1000.0f)-(this->triggerTime/1000.0f);
 }
 
-Uint32 ppTransition::GetSyncPoint(){
-	return this->syncPoint;
+float ppTransition::GetSyncPoint(){
+	return this->syncPoint/1000.0f;
 }
 
 void ppTransition::SetSourcePosition(ppTransitionSourcePosition sourcePosition){

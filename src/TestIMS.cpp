@@ -1212,6 +1212,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			fightToStress->SetSourceCurve(NULL); // No Fade
 			fightToStress->SetDestinationCurve(NULL); // No Fade
 			fightToStress->SetTransitionTrack(transitionSeg);
+			fightToStress->SetSourcePosition(ppTransitionSourcePosition::NEXT_BAR);
 
 			ppTransition* stressToFight = sw->CreateTransition(0, stressPlaylist, fightPlaylist);
 			stressToFight->SetSourceOffset(2.5f);

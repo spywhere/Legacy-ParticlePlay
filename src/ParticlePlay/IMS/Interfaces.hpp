@@ -65,9 +65,11 @@ public:
 	ppRhythmic();
 	void SetTimeSignature(int beats, int noteValue);
 	void SetTempo(int bpm);
-	int GetTotalBeat(float time);
-	int GetCurrentBeat(float time);
-	int GetCurrentBar(float time);
+	virtual int GetTotalBeat(float time);
+	virtual int GetCurrentBeat(float time);
+	virtual int GetCurrentBar(float time);
+	float GetTimeForBeat(int beat);
+	float GetTimeForBar(int bar);
 	float GetTimePerBeat();
 	virtual int GetTotalBeat()=0;
 	virtual int GetCurrentBeat()=0;
@@ -88,9 +90,12 @@ protected:
 	ppGenericSound(const char *name);
 public:
 	virtual ~ppGenericSound();
-	int GetTotalBeat();
-	int GetCurrentBeat();
-	int GetCurrentBar();
+	virtual int GetTotalBeat(float time);
+	virtual int GetCurrentBeat(float time);
+	virtual int GetCurrentBar(float time);
+	virtual int GetTotalBeat();
+	virtual int GetCurrentBeat();
+	virtual int GetCurrentBar();
 	virtual void Seek(Sint64 position);
 	virtual void Seek(float time);
 	virtual void SetLoop(int loop);
