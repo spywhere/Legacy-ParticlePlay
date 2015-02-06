@@ -51,7 +51,15 @@ void ppSwitch::SwitchState(const char *stateName){
 		return;
 	}
 	this->currentTransition = this->FindTransition(this->stateName, stateName);
-	this->currentTransition->Trigger(this->lastPlay, this->ims->GetSound(stateName));
+	if(this->currentTransition->GetSourcePosition() == ppTransitionSourcePosition::IMMEDIATE){
+		this->triggerTime = SDL_GetTicks();
+	}else if(this->currentTransition->GetSourcePosition() == ppTransitionSourcePosition::NEXT_BEAT){
+		// TODO
+		this->triggerTime = SDL_GetTicks();
+	}else if(this->currentTransition->GetSourcePosition() == ppTransitionSourcePosition::NEXT_BAR){
+		// TODO
+		this->triggerTime = SDL_GetTicks();
+	}
 	this->stateName = stateName;
 
 	this->readyForTransition = false;
@@ -64,9 +72,11 @@ void ppSwitch::Update(ppInput* input){
 void ppSwitch::Update(){
 	ppUpdatable::Update();
 	if(this->currentTransition){
+		if(this->triggerTime < SDL_GetTicks() && !this->currentTransition->IsTransitioning()){
+			this->currentTransition->Trigger(this->lastPlay, this->ims->GetSound(this->stateName));
+		}
 		this->currentTransition->Update();
-
-		if(!this->currentTransition->IsTransitioning()){
+		if(this->triggerTime < SDL_GetTicks() && !this->currentTransition->IsTransitioning()){
 			this->lastPlay = this->currentTransition->GetActualDestination();
 			this->currentTransition = NULL;
 			this->readyForTransition = true;

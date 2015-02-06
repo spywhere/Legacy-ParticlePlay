@@ -1190,6 +1190,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			stressPlaylist->SetLoop(-1);
 			stressPlaylist->SetLocation(310, 150);
 			stressPlaylist->SetSize(300, 300);
+			stressPlaylist->SetTempo(180);
 
 			//////////////////////
 			// Transition Music //

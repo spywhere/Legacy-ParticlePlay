@@ -140,11 +140,7 @@ Sint64 ppPlaylist::GetExitCue(){
 	if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
 		sound = this->soundOrder.front();
 	}
-	Sint64 exitCue = sound->GetExitCue();
-	if(exitCue >= 0){
-		exitCue = this->GetPositionLength()-this->GetEntryCue()-(sound->GetPositionLength()-sound->GetExitCue()-sound->GetEntryCue());
-	}
-	return exitCue;
+	return this->GetPositionLength()-this->GetEntryCue()-(sound->GetPositionLength()-sound->GetNormalExitCue()-sound->GetEntryCue());
 }
 
 Sint64 ppPlaylist::GetCurrentPosition(){
@@ -161,11 +157,7 @@ Sint64 ppPlaylist::GetCurrentPosition(){
 Sint64 ppPlaylist::GetPositionLength(){
 	Sint64 totalLength = 0;
 	for(auto sound : this->soundOrder){
-		if(sound->GetExitCue() < 0){
-			totalLength += sound->GetPositionLength()-sound->GetEntryCue()+sound->GetExitCue();
-		}else{
-			totalLength += sound->GetExitCue();
-		}
+		totalLength += sound->GetExitCue();
 		if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
 			break;
 		}
@@ -176,11 +168,7 @@ Sint64 ppPlaylist::GetPositionLength(){
 		if(this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
 			sound = this->soundOrder.front();
 		}
-		if(sound->GetExitCue() < 0){
-			totalLength -= sound->GetExitCue();
-		}else{
-			totalLength += sound->GetPositionLength()-sound->GetExitCue()-sound->GetEntryCue();
-		}
+		totalLength += sound->GetPositionLength()-sound->GetExitCue()-sound->GetEntryCue();
 	}
 	return totalLength;
 }
@@ -221,14 +209,17 @@ void ppPlaylist::SetSpeed(float speed){
 	}
 }
 
+void ppPlaylist::SetTempo(int bpm){
+	ppRhythmic::SetTempo(bpm);
+	for(auto sound : this->sounds){
+		sound->SetTempo(bpm);
+	}
+}
+
 void ppPlaylist::Update(){
 	if(this->current!=NULL){
-		Sint64 length = this->current->GetExitCue();
-		Sint64 triggerLength = this->current->GetEntryCue() + this->current->GetExitCue() - this->next->GetEntryCue();
-		if(this->current->GetExitCue() < 0){
-			length = this->current->GetPositionLength() + this->current->GetExitCue() - this->current->GetEntryCue();
-			triggerLength = this->current->GetPositionLength() + this->current->GetExitCue() - this->next->GetEntryCue();
-		}
+		Sint64 length = this->current->GetNormalExitCue();
+		Sint64 triggerLength = this->current->GetEntryCue() + this->current->GetNormalExitCue() - this->next->GetEntryCue();
 		if(this->current->GetCurrentPosition() >= triggerLength){
 			if(this->playDuration == 0){
 				this->playDuration += this->current->GetEntryCue();
@@ -285,7 +276,7 @@ void ppPlaylist::Render(SDL_Renderer* renderer){
 	int height=this->height/(this->GetTotalSound()+1);
 	for(auto sound : this->soundOrder){
 		int width = sound->GetCurrentPosition()*(this->width-2)/sound->GetPositionLength();
-		int max_width = sound->GetPositionLength()*(this->width-2)/sound->GetPositionLength();
+		int max_width = this->width-2;
 		//Total playing time
 		glBegin(GL_QUADS);
 		{
@@ -318,14 +309,36 @@ void ppPlaylist::Render(SDL_Renderer* renderer){
 		//Exit Cue
 		glBegin(GL_LINES);
 		{
-			Sint64 exitCue = sound->GetEntryCue() + sound->GetExitCue();
-			if(sound->GetExitCue() < 0){
-				exitCue = sound->GetPositionLength() + sound->GetExitCue();
-			}
+			Sint64 exitCue = sound->GetEntryCue()+sound->GetNormalExitCue();
 			glColor3f(1, 1, 1);
 			int offset = exitCue*(this->width-2)/sound->GetPositionLength();
 			glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
 			glVertex3f(this->x+offset, this->y+(index*height)+height, 0);
+		}
+		glEnd();
+		//Beat line
+		glBegin(GL_LINES);
+		{
+			glColor4f(1, 1, 1, 0.25f);
+			float beatTime = sound->GetTimePerBeat();
+			while(sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(beatTime) < sound->GetPositionLength()){
+				int offset = (int)((sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(beatTime))*(this->width-2)/sound->GetPositionLength());
+				glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
+				glVertex3f(this->x+offset, this->y+(index*height)+(height/8), 0);
+				beatTime += sound->GetTimePerBeat();
+			}
+		}
+		//Bar line
+		glBegin(GL_LINES);
+		{
+			glColor4f(1, 1, 1, 0.5f);
+			float barTime = sound->GetTimePerBeat()*sound->GetBeatPerBar();
+			while(sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(barTime) < sound->GetPositionLength()){
+				int offset = (int)((sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(barTime))*(this->width-2)/sound->GetPositionLength());
+				glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
+				glVertex3f(this->x+offset, this->y+(index*height)+(height/4), 0);
+				barTime += sound->GetTimePerBeat()*sound->GetBeatPerBar();
+			}
 		}
 		glEnd();
 

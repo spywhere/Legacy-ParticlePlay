@@ -68,6 +68,7 @@ public:
 	int GetTotalBeat(float time);
 	int GetCurrentBeat(float time);
 	int GetCurrentBar(float time);
+	float GetTimePerBeat();
 	virtual int GetTotalBeat()=0;
 	virtual int GetCurrentBeat()=0;
 	virtual int GetCurrentBar()=0;

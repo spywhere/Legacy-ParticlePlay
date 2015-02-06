@@ -38,6 +38,7 @@ public:
 	void Update();
 	void SetVolume(float volume);
 	void SetSpeed(float speed);
+	void SetTempo(int bpm);
 	Sint64 GetEntryCue();
 	Sint64 GetExitCue();
 	Sint64 GetCurrentPosition();

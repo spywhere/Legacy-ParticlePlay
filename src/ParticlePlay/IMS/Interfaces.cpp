@@ -32,10 +32,10 @@ void ppPlayable::Stop(){
 }
 
 Sint64 ppPlayable::GetNormalExitCue(){
-	if(this->exitCue < 0){
-		return this->GetPositionLength()+this->exitCue;
+	if(this->GetExitCue() < 0){
+		return this->GetPositionLength()+this->GetExitCue()-this->GetEntryCue();
 	}
-	return this->exitCue;
+	return this->GetExitCue();
 }
 
 Sint64 ppPlayable::GetEntryCue(){
@@ -117,7 +117,7 @@ void ppRhythmic::SetTempo(int bpm){
 }
 
 int ppRhythmic::GetTotalBeat(float time){
-	return time*(this->GetTempo()/60.0f);
+	return time/this->GetTimePerBeat();
 }
 
 int ppRhythmic::GetCurrentBeat(float time){
@@ -126,6 +126,10 @@ int ppRhythmic::GetCurrentBeat(float time){
 
 int ppRhythmic::GetCurrentBar(float time){
 	return (this->GetTotalBeat(time) / this->GetBeatPerBar());
+}
+
+float ppRhythmic::GetTimePerBeat(){
+	return 60.0f/this->GetTempo();
 }
 
 int ppRhythmic::GetTempo(){
