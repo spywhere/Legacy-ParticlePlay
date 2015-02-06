@@ -37,7 +37,10 @@ void ppTransition::Trigger(ppGenericSound* actualSource, ppGenericSound* actualD
 		this->actualDest = this->destSound;
 	}
 
-	this->syncPoint = (Uint32)(this->GetSourceDuration()*1000);
+	this->syncPoint = 0;
+	if(this->sourceEasing){
+		this->syncPoint = (Uint32)(this->GetSourceDuration()*1000);
+	}
 
 	long minStartTime = this->GetSourceOffset()*1000;
 	long destStartTime = this->GetDestinationOffset()*1000;
@@ -93,7 +96,10 @@ void ppTransition::Update(){
 	}
 
 	// Source time calculation
-	long sourceEndTime = sourceStartTime+this->GetSourceDuration()*1000;
+	long sourceEndTime = sourceStartTime;
+	if(this->sourceEasing){
+		sourceEndTime += this->GetSourceDuration()*1000;
+	}
 
 	// Transition time calculation
 	long transitionEntryCue = 0;
@@ -123,16 +129,16 @@ void ppTransition::Update(){
 		transition->StopDecay(true);
 	}
 
-	if(source && currentTime >= sourceStartTime && currentTime < sourceEndTime && sourceEasing){
+	if(source && currentTime >= sourceStartTime && currentTime <= sourceEndTime && sourceEasing){
 		if(!source->IsPlaying()){
 			source->Play();
 		}
 		float v = sourceEasing->GetValue(sourceEndTime-currentTime, this->sourceDuration*1000, 0, 1);
 		source->SetVolume(v);
-	}else if(source && currentTime >= sourceEndTime && !sourceEasing){
+	}else if(source && currentTime > sourceEndTime && !sourceEasing){
 		source->SetVolume(0);
 	}
-	if(dest && currentTime >= destStartTime && currentTime < destEndTime){
+	if(dest && currentTime >= destStartTime && currentTime <= destEndTime){
 		if(!dest->IsPlaying()){
 			if(this->destPosition == ppTransitionDestinationPosition::SAME_TIME){
 				dest->Seek(source->GetCurrentTime());
