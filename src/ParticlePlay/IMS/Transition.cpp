@@ -135,8 +135,8 @@ void ppTransition::Update(){
 		}
 		float v = sourceEasing->GetValue(sourceEndTime-currentTime, this->sourceDuration*1000, 0, 1);
 		source->SetVolume(v);
-	}else if(source && currentTime > sourceEndTime && !sourceEasing){
-		source->SetVolume(0);
+	}else if(source && currentTime > sourceEndTime){
+		source->StopDecay(false);
 	}
 	if(dest && currentTime >= destStartTime && currentTime <= destEndTime){
 		if(!dest->IsPlaying()){
@@ -150,11 +150,7 @@ void ppTransition::Update(){
 			v -= destEasing->GetValue(destEndTime-currentTime, this->destDuration*1000, 0, 1);
 		}
 		dest->SetVolume(v);
-	}
-	if(source && currentTime > sourceEndTime){
-		source->StopDecay(true);
-	}
-	if(dest && currentTime > destEndTime){
+	}else if(dest && currentTime > destEndTime){
 		dest->SetVolume(1);
 	}
 	if(currentTime > this->syncPoint && !this->triggerSync){
