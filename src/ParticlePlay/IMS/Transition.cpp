@@ -60,9 +60,6 @@ void ppTransition::Trigger(ppGenericSound* actualSource, ppGenericSound* actualD
 		float difTime = this->actualSource->GetTimeForBeat(beat+1) - this->GetSyncPoint() - this->actualSource->GetCurrentTime();
 		this->triggerTime += (Uint32)(difTime*1000);
 	}
-
-	new ppTimeListener(this->actualSource, this);
-	new ppTimeListener(this->actualDest, this);
 }
 
 void ppTransition::Update(){

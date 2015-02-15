@@ -5,7 +5,7 @@
 #include "Interfaces.hpp"
 #include "../Randomizer.hpp"
 
-enum ppPlaylistPlayOrder {
+enum class ppPlaylistPlayOrder {
 	SEQUENCE_CONTINUOUS, SHUFFLE_CONTINUOUS, SEQUENCE_STEP, SHUFFLE_STEP
 };
 

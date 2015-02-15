@@ -1,5 +1,7 @@
 #include "Switch.hpp"
 
+#include <iostream>
+
 bool ppSwitch::ppTransitionOrdering(ppTransition* a, ppTransition* b){
 	return a->GetPriority()<b->GetPriority();
 }
@@ -11,6 +13,9 @@ ppSwitch::ppSwitch(const char *name, ppIMS* ims) : ppControl(name, 0, 0) {
 	this->defaultTransition = new ppTransition(this, 0, NULL, NULL);
 	this->currentTransition = NULL;
 	this->readyForTransition = true;
+	this->isPause = false;
+	this->isPlaying = false;
+	this->timeListener = NULL;
 }
 
 ppSwitch::~ppSwitch(){
@@ -34,6 +39,12 @@ ppTransition* ppSwitch::CreateTransition(int priority, ppGenericSound* sourceSou
 	return transition;
 }
 
+ppStinger* ppSwitch::CreateStinger(const char *stingerName, ppGenericSound* sound, ppStingerTriggerPosition position){
+	ppStinger* stinger = new ppStinger(sound, position);
+	this->stingers[stingerName] = stinger;
+	return stinger;
+}
+
 ppTransition* ppSwitch::FindTransition(const char *sourceName, const char *destName){
 	for(auto transition : this->transitions){
 		if(transition->IsSourceName(sourceName) && transition->IsDestinationName(destName)){
@@ -51,10 +62,90 @@ void ppSwitch::SwitchState(const char *stateName){
 		return;
 	}
 	this->currentTransition = this->FindTransition(this->stateName, stateName);
-	this->currentTransition->Trigger(this->lastPlay, this->ims->GetSound(stateName));
+	ppGenericSound* target = this->ims->GetSound(stateName);
+	this->timeListener = new ppTimeListener(target, this);
+	this->currentTransition->Trigger(this->lastPlay, target);
 	this->stateName = stateName;
 
 	this->readyForTransition = false;
+}
+
+void ppSwitch::TriggerStinger(const char *stingerName){
+	if(!this->readyForTransition){
+		return;
+	}
+	if(this->currentTransition && this->currentTransition->IsTransitioning()){
+		return;
+	}
+	ppStinger* stinger=this->GetStinger(stingerName);
+	if(stinger && !stinger->IsPreparing()){
+		stinger->PrepareTrigger();
+		if(!stinger->IsTriggering() && stinger->GetTriggerPosition() == ppStingerTriggerPosition::IMMEDIATE){
+			stinger->Trigger();
+		}
+	}
+}
+
+ppStinger* ppSwitch::GetStinger(const char *stingerName){
+	auto it = this->stingers.find(stingerName);
+	if (it != this->stingers.end()){
+		return it->second;
+	}
+	return NULL;
+}
+
+void ppSwitch::OnBar(ppGenericSound* source){
+	for(auto stingerKey : this->stingers){
+		ppStinger* stinger = stingerKey.second;
+		if(!stinger->IsTriggering() && stinger->GetTriggerPosition() == ppStingerTriggerPosition::NEXT_BAR){
+			stinger->Trigger();
+		}
+	}
+}
+
+void ppSwitch::OnBeat(ppGenericSound* source){
+	for(auto stingerKey : this->stingers){
+		ppStinger* stinger = stingerKey.second;
+		if(!stinger->IsTriggering() && stinger->GetTriggerPosition() == ppStingerTriggerPosition::NEXT_BEAT){
+			stinger->Trigger();
+		}
+	}
+}
+
+void ppSwitch::Play(){
+	if(!this->IsStop() || this->IsPlaying()){
+		return;
+	}
+	// TODO
+	// Play/Resume sound and transition
+}
+
+void ppSwitch::Pause(){
+	if(this->IsStop() || this->IsPause()){
+		return;
+	}
+	// TODO
+	// Pause sound and transition
+}
+
+void ppSwitch::Stop(){
+	if(this->IsStop()){
+		return;
+	}
+	// TODO
+	// Stop sound and transition
+}
+
+bool ppSwitch::IsPlaying(){
+	return this->isPlaying && !this->isPause;
+}
+
+bool ppSwitch::IsPause(){
+	return this->isPlaying && this->isPause;
+}
+
+bool ppSwitch::IsStop(){
+	return !this->isPlaying;
 }
 
 void ppSwitch::Update(ppInput* input){
@@ -63,6 +154,12 @@ void ppSwitch::Update(ppInput* input){
 
 void ppSwitch::Update(){
 	ppUpdatable::Update();
+	if(this->timeListener){
+		this->timeListener->Update();
+	}
+	for(auto stinger : this->stingers){
+		stinger.second->Update();
+	}
 	if(this->currentTransition){
 		this->currentTransition->Update();
 		if(!this->currentTransition->IsTransitioning()){

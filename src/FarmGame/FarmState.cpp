@@ -202,6 +202,8 @@ void FarmState::OnUpdate(ppInput* input, int delta){
 	this->gui->Update(input);
 
 	if(input->IsKeyDown(SDL_SCANCODE_R)){
+		this->ims->ClearSound();
+		this->ims->ClearSwitch();
 		this->GetGame()->EnterState("ims");
 	}
 

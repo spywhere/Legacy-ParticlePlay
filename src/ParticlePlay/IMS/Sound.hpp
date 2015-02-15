@@ -5,7 +5,7 @@
 #include "Interfaces.hpp"
 #include "../Randomizer.hpp"
 
-enum ppSoundPlayOrder {
+enum class ppSoundPlayOrder {
 	LOOP, SEQUENCE, RANDOM, SHUFFLE
 };
 

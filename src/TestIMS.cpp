@@ -104,8 +104,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			this->gui->RemoveControl("playlist2");
 			//Clear Test 7
 			this->gui->RemoveControl("level");
-			this->gui->RemoveControl("idle");
+			this->gui->RemoveControl("stress");
 			this->gui->RemoveControl("fight");
+			this->gui->RemoveControl("bonus");
 			//Clear all sounds
 			this->ims->ClearSound();
 			this->ims->ClearSwitch();
@@ -1190,7 +1191,7 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			stressPlaylist->SetLoop(-1);
 			stressPlaylist->SetLocation(310, 150);
 			stressPlaylist->SetSize(300, 300);
-			stressPlaylist->SetTempo(180);
+			stressPlaylist->SetTempo(90);
 
 			//////////////////////
 			// Transition Music //
@@ -1201,6 +1202,16 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			transitionSeg->AddSound(transitionSound);
 			// transitionSeg->SetEntryCue(transitionFormat->TimeToPosition(0.0f));
 			transitionSeg->SetExitCue(transitionFormat->TimeToPosition(14.15f));
+
+			///////////////////
+			// Stinger Music //
+			///////////////////
+			ppFormat* stingerFormat = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/SampleProject/Interlude_Theme_01.wav");
+			ppSound* stingerSound = this->ims->CreateSound("stingerSound", stingerFormat);
+			ppSegment* stingerSeg = this->ims->CreateSegment("stingerTrack");
+			stingerSeg->AddSound(stingerSound);
+			stingerSeg->SetLocation(100, 420);
+			stingerSeg->SetSize(300, 30);
 
 			//////////////////////
 
@@ -1215,23 +1226,33 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 			fightToStress->SetSourcePosition(ppTransitionSourcePosition::NEXT_BAR);
 
 			ppTransition* stressToFight = sw->CreateTransition(0, stressPlaylist, fightPlaylist);
-			stressToFight->SetSourceOffset(2.5f);
-			stressToFight->SetDestinationOffset(2.5f);
+			// stressToFight->SetSourceOffset(2.5f);
+			// stressToFight->SetDestinationOffset(2.5f);
 			stressToFight->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
+
+			sw->CreateStinger("bonus", stingerSeg, ppStingerTriggerPosition::NEXT_BAR);
 
 			this->gui->AddControl(sw);
 			this->gui->AddControl(stressPlaylist);
 			this->gui->AddControl(fightPlaylist);
+			this->gui->AddControl(stingerSeg);
 		}else{
 			ppSwitch* sw = this->ims->GetSwitch("level");
 
 			if(sw){
+				ppStinger* stinger = sw->GetStinger("bonus");
+				ppGenericSound* stingerSeg = this->ims->GetSound("stingerTrack");
+				if(stinger && stingerSeg){
+					stingerSeg->SetVisible(stinger->IsPreparing() || stinger->IsTriggering());
+				}
 				if(this->playlist_track == 0){
 					msg << "\nCurrent State: -Stop-";
 				}else{
 					msg << "\nCurrent State: " << sw->GetCurrentState();
 				}
-
+				if(input->IsKeyDown(SDL_SCANCODE_SPACE, 10)){
+					sw->TriggerStinger("bonus");
+				}
 				if(input->IsKeyDown(SDL_SCANCODE_UP, 10)){
 					if(this->playlist_track == 0){
 						this->playlist_track = 2;
