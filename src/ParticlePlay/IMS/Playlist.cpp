@@ -217,6 +217,7 @@ void ppPlaylist::SetTempo(int bpm){
 }
 
 void ppPlaylist::Update(){
+	ppGenericSound::Update();
 	if(this->current!=NULL){
 		Sint64 length = this->current->GetNormalExitCue();
 		Sint64 triggerLength = this->current->GetEntryCue() + this->current->GetNormalExitCue() - this->next->GetEntryCue();

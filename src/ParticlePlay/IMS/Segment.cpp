@@ -125,6 +125,7 @@ void ppSegment::SetSpeed(float speed){
 }
 
 void ppSegment::Update(){
+	ppGenericSound::Update();
 	this->emptySound->Update();
 	for(auto sound : this->sounds){
 		if(sound->GetOffset()<this->GetCurrentPosition() && sound->IsStop() && this->GetCurrentPosition() < sound->GetPositionLength()){

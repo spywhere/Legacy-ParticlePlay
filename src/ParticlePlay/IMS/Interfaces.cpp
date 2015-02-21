@@ -163,6 +163,24 @@ ppGenericSound::ppGenericSound(const char *name) : ppRhythmic(), ppPlayable(), p
 
 ppGenericSound::~ppGenericSound(){}
 
+void ppGenericSound::AddRTPC(ppRTPC* rtpc){
+	for(auto it : this->rtpcs){
+		if(it == rtpc){
+			return;
+		}
+	}
+	this->rtpcs.push_back(rtpc);
+}
+
+void ppGenericSound::RemoveRTPC(ppRTPC* rtpc){
+	for (auto it = this->rtpcs.begin(); it != this->rtpcs.end(); ++it){
+		if(*it == rtpc){
+			this->rtpcs.erase(it);
+			return;
+		}
+	}
+}
+
 int ppGenericSound::GetTotalBeat(float time){
 	return ppRhythmic::GetTotalBeat(time);
 }
@@ -237,6 +255,9 @@ bool ppGenericSound::IsReady(){
 
 void ppGenericSound::Update(){
 	ppUpdatable::Update();
+	for(auto it : this->rtpcs){
+		it->GetEffectInfo(this);
+	}
 }
 
 void ppGenericSound::Render(SDL_Renderer* renderer){

@@ -119,6 +119,7 @@ void ppSound::Preload(){
 }
 
 void ppSound::Update(){
+	ppGenericSound::Update();
 	ALint processedBuffer;
 	alGetSourcei(this->sourceID, AL_BUFFERS_PROCESSED, &processedBuffer);
 	char *bufferData = new char[this->bufferSize];

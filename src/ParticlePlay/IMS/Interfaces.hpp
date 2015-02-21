@@ -1,10 +1,13 @@
 #ifndef INTERFACES_HEADER
 #define INTERFACES_HEADER
 
+#include <list>
 #include "../Includes.hpp"
 #include "../GUI/Control.hpp"
 #include "Format/Format.hpp"
+#include "RTPC.hpp"
 
+class ppRTPC;
 class ppUpdatable {
 public:
 	virtual void Update();
@@ -87,9 +90,12 @@ protected:
 	float volume;
 	float speed;
 	ppFormat* audioFormat;
+	std::list<ppRTPC*> rtpcs;
 	ppGenericSound(const char *name);
 public:
 	virtual ~ppGenericSound();
+	void AddRTPC(ppRTPC* rtpc);
+	void RemoveRTPC(ppRTPC* rtpc);
 	virtual int GetTotalBeat(float time);
 	virtual int GetCurrentBeat(float time);
 	virtual int GetCurrentBar(float time);
