@@ -25,6 +25,7 @@ public:
 #include "ExpoInEasing.hpp"
 #include "ExpoOutEasing.hpp"
 #include "LinearEasing.hpp"
+#include "MultiEasing.hpp"
 #include "QuadEasing.hpp"
 #include "QuadInEasing.hpp"
 #include "QuadOutEasing.hpp"

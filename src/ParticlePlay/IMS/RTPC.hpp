@@ -7,40 +7,27 @@
 #include "Interfaces.hpp"
 
 class ppGenericSound;
-class ppGraphCurve {
-protected:
-	ppEasing* easing;
-	float offset;
-public:
-	ppGraphCurve(float offset, ppEasing* easing);
-	ppEasing* GetCurve();
-	float GetOffset();
-};
-
 enum class ppRTPCEffect {
 	PANNING, VOLUME, PITCH
 };
 
 class ppEffectInfo {
 protected:
-	float value;
+	ppEasing* easing;
 	ppRTPCEffect effect;
 public:
-	ppEffectInfo(float value, ppRTPCEffect effect);
-	float GetValue();
+	ppEffectInfo(ppRTPCEffect effect, ppEasing* easing);
+	ppEasing* GetCurve();
 	ppRTPCEffect GetEffect();
 };
 
 class ppRTPC {
 protected:
 	float offset;
-	std::map<ppGenericSound*, ppRTPCEffect> effects;
-	std::list<ppGraphCurve*> curves;
-	static bool GraphCurveSorter(ppGraphCurve* curve1, ppGraphCurve* curve2);
+	std::map<ppGenericSound*, ppEffectInfo*> effects;
 public:
 	ppRTPC();
-	void AddMidPoint(float offset, ppEasing* easing);
-	void AddSound(ppGenericSound* sound, ppRTPCEffect effect);
+	void AddSound(ppGenericSound* sound, ppRTPCEffect effect, ppEasing* easing);
 	void RemoveSound(ppGenericSound* sound);
 	void SetOffset(float offset);
 	ppEffectInfo* GetEffectInfo(ppGenericSound* sound);

@@ -38,6 +38,9 @@ public:
 	void Render(SDL_Renderer* renderer);
 	void Update(ppInput* input);
 	ppControlType GetType();
+	ALuint GetSourceID();
+	void AddRTPC(ppRTPC* rtpc);
+	void RemoveRTPC(ppRTPC* rtpc);
 };
 
 #endif

@@ -238,6 +238,10 @@ int ppSound::GetTrack(){
 	return this->track+1;
 }
 
+ALuint ppSound::GetSourceID(){
+	return this->sourceID;
+}
+
 void ppSound::Render(SDL_Renderer* renderer){
 	ppControl::Render(renderer);
 	if(!this->visible){

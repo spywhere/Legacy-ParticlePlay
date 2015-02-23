@@ -18,7 +18,6 @@ protected:
 	int totalBufferProcessed;
 	Sint64 nextReadPosition;
 	Sint64 startReadPosition;
-	ALuint sourceID;
 	ALuint bufferSet[2];
 	ppSoundPlayOrder playOrder;
 	ppRandomizer* randomizer;
@@ -52,6 +51,7 @@ public:
 	Sint64 GetPositionLength();
 	float GetCurrentTime();
 	float GetTotalTime();
+	ALuint GetSourceID();
 
 	//Control
 	void Render(SDL_Renderer* renderer);

@@ -55,6 +55,22 @@ float ppSegment::GetTotalTime(){
 	return this->emptySound->GetTotalTime();
 }
 
+ALuint ppSegment::GetSourceID(){
+	return 0; // Override Add/Remove RTPCs instead
+}
+
+void ppSegment::AddRTPC(ppRTPC* rtpc){
+	for(auto sound : this->sounds){
+		sound->AddRTPC(rtpc);
+	}
+}
+
+void ppSegment::RemoveRTPC(ppRTPC* rtpc){
+	for(auto sound : this->sounds){
+		sound->RemoveRTPC(rtpc);
+	}
+}
+
 void ppSegment::SetLoop(int loop){
 	this->emptySound->SetLoop(loop);
 }

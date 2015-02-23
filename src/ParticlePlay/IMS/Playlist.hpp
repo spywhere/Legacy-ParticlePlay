@@ -45,6 +45,9 @@ public:
 	Sint64 GetPositionLength();
 	float GetCurrentTime();
 	float GetTotalTime();
+	ALuint GetSourceID();
+	void AddRTPC(ppRTPC* rtpc);
+	void RemoveRTPC(ppRTPC* rtpc);
 
 	//Control
 	void Render(SDL_Renderer* renderer);

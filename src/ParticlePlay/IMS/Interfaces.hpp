@@ -89,13 +89,14 @@ protected:
 	int loop;
 	float volume;
 	float speed;
+	ALuint sourceID;
 	ppFormat* audioFormat;
 	std::list<ppRTPC*> rtpcs;
 	ppGenericSound(const char *name);
 public:
 	virtual ~ppGenericSound();
-	void AddRTPC(ppRTPC* rtpc);
-	void RemoveRTPC(ppRTPC* rtpc);
+	virtual void AddRTPC(ppRTPC* rtpc);
+	virtual void RemoveRTPC(ppRTPC* rtpc);
 	virtual int GetTotalBeat(float time);
 	virtual int GetCurrentBeat(float time);
 	virtual int GetCurrentBar(float time);
@@ -119,6 +120,7 @@ public:
 	virtual void Render(SDL_Renderer* renderer);
 	virtual void Update(ppInput* input);
 	virtual ppControlType GetType();
+	virtual ALuint GetSourceID()=0;
 };
 
 #endif

@@ -255,8 +255,20 @@ bool ppGenericSound::IsReady(){
 
 void ppGenericSound::Update(){
 	ppUpdatable::Update();
-	for(auto it : this->rtpcs){
-		it->GetEffectInfo(this);
+	for(auto rtpc : this->rtpcs){
+		ppEffectInfo* effect = rtpc->GetEffectInfo(this);
+		if(!effect){
+			continue;
+		}
+		float value = effect->GetCurve()->GetValue(rtpc->GetOffset(), 1, 0, 1);
+		ALuint sourceID = this->GetSourceID();
+		if(effect->GetEffect() == ppRTPCEffect::VOLUME){
+			alSourcef(sourceID, AL_GAIN, value);
+		}else if(effect->GetEffect() == ppRTPCEffect::PITCH){
+			alSourcef(sourceID, AL_PITCH, value);
+		}else if(effect->GetEffect() == ppRTPCEffect::PANNING){
+			alSource3f(sourceID, AL_POSITION, (value-0.5f)*2.0f, 0, 0);
+		}
 	}
 }
 

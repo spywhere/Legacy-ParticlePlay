@@ -195,6 +195,22 @@ float ppPlaylist::GetTotalTime(){
 	return this->current->GetTotalTime();
 }
 
+ALuint ppPlaylist::GetSourceID(){
+	return 0; // Override Add/Remove RTPCs instead
+}
+
+void ppPlaylist::AddRTPC(ppRTPC* rtpc){
+	for(auto sound : this->sounds){
+		sound->AddRTPC(rtpc);
+	}
+}
+
+void ppPlaylist::RemoveRTPC(ppRTPC* rtpc){
+	for(auto sound : this->sounds){
+		sound->RemoveRTPC(rtpc);
+	}
+}
+
 void ppPlaylist::SetVolume(float volume){
 	ppGenericSound::SetVolume(volume);
 	for(auto sound : this->sounds){
