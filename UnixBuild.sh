@@ -13,5 +13,5 @@ fi
 # All remaining parameters are used as parameters to CMake
 
 cd ./build/
-cmake -DPPTARGET="$BUILD_TARGET" -DPPVERSION="$BUILD_VERSION" "${@:3}" ../
+cmake -DPP_TARGET="$BUILD_TARGET" -DPP_VERSION="$BUILD_VERSION" -DPP_BUILD_DEMO=ON "${@:3}" ../
 make

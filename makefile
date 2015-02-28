@@ -17,7 +17,7 @@ re-demo: clean demo
 re-full: clean full
 
 run:
-	@./build/ParticlePlay
+	@./build/DemoProject/DemoProject
 
 demo: preclean
 	@${BUILDFILE} debug demo
@@ -26,7 +26,7 @@ full: preclean
 	@${BUILDFILE} debug full
 
 preclean:
-	@${REMOVECMD} ./build/ParticlePlay
+	@${REMOVECMD} ./build/DemoProject/DemoProject
 
 clean:
 	@${REMOVECMD} ./build/*

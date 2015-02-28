@@ -2,6 +2,15 @@ cmake_minimum_required(VERSION 2.6)
 
 project(ParticlePlay)
 
+# Build options
+option(PP_INSTALL "Install ParticlePlay libs and includes" OFF)
+option(PP_BUILD_SHARED "Build ParticlePlay shared libraries" OFF)
+option(PP_BUILD_STATIC "Build ParticlePlay static libraries" ON)
+option(PP_BUILD_DEMO "Build ParticlePlay demo project" OFF)
+
+# Library constants
+set(PARTICLEPLAY_VERSION 0.1.0)
+
 add_definitions(
 	-Wall
 	-std=c++11
@@ -9,9 +18,9 @@ add_definitions(
 )
 
 # Build Version
-option(PPVERSION "Build version" "full")
+option(PP_VERSION "Build version" "full")
 
-if(PPVERSION STREQUAL "demo")
+if(PP_VERSION STREQUAL "demo")
 	# set( PPEXECUTABLE "TestGameDemo" CACHE STRING "" FORCE )
 	add_definitions( -DDEMO )
 else()
@@ -20,74 +29,33 @@ else()
 endif()
 
 # Build Target
-if(PPTARGET STREQUAL "")
-	set( PPTARGET "debug" )
+if(PP_TARGET STREQUAL "")
+	set( PP_TARGET "debug" )
 endif()
 
-if(PPTARGET STREQUAL "release")
+if(PP_TARGET STREQUAL "release")
 	add_definitions( -O2 )
 else()
 	add_definitions( -DPPDEBUG )
 endif()
 
-file(GLOB_RECURSE HEADERS
-	${ParticlePlay_SOURCE_DIR}/src/*.hpp
-)
-file(GLOB_RECURSE SOURCES
-	${ParticlePlay_SOURCE_DIR}/src/*.cpp
-)
-
-add_executable(ParticlePlay ${HEADERS} ${SOURCES})
-# set_target_properties(ParticlePlay
-# 	PROPERTIES OUTPUT_NAME ${PPEXECUTABLE}
-# 	PREFIX ""
-# )
-
-################
-# Dependencies #
-################
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ParticlePlay_SOURCE_DIR}/cmake")
-
-# OpenGL
-find_package(OpenGL REQUIRED)
-
-# OpenAL-Soft
+# CMP0042 Fix
 if(APPLE)
-	set(CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
-	set(CMAKE_FIND_FRAMEWORK "LAST" CACHE STRING "" FORCE)
+	set(CMAKE_MACOSX_RPATH ON)
+	set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+	list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+	if("${isSystemDir}" STREQUAL "-1")
+		set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	endif("${isSystemDir}" STREQUAL "-1")
 endif()
 
-find_package(OpenALSoft REQUIRED)
+# Main library
+add_subdirectory(ParticlePlay)
 
-if(APPLE)
-	set(CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
+# Build Example
+if(PP_BUILD_DEMO)
+	add_subdirectory(DemoProject)
 endif()
-
-# SDL2
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_net REQUIRED)
-
-# Box2D
-find_package(Box2D REQUIRED)
-
-include_directories(
-	${ParticlePlay_SOURCE_DIR}/headers
-	${ParticlePlay_SOURCE_DIR}/sources
-	${OPENGL_INCLUDE_DIRS}
-	${OPENAL_SOFT_INCLUDE_DIRS}
-	${SDL2_INCLUDE_DIRS}
-	${SDL2_IMAGE_INCLUDE_DIRS}
-	${SDL2_NET_INCLUDE_DIRS}
-	${BOX2D_INCLUDE_DIRS}
-)
-
-target_link_libraries(
-	ParticlePlay
-	${OPENGL_LIBRARIES}
-	${OPENAL_SOFT_LIBRARIES}
-	${SDL2_LIBRARIES}
-	${SDL2_IMAGE_LIBRARIES}
-	${SDL2_NET_LIBRARIES}
-	${BOX2D_LIBRARIES}
-)
