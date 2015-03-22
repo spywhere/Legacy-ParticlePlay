@@ -20,9 +20,8 @@ int ppWaveFormat::Init(const char *filename, bool stereo){
 	this->filePointer = SDL_RWFromFile(this->filename.c_str(), "rb");
 	while(!SDL_RWread(this->filePointer, buffer, 0, 1)&&valid<3){
 		this->GetWaveChunkInfo(this->filePointer, buffer, chunkSize);
-		// std::cout << "Reading... " << buffer << std::endl;
 		if(strncmp(buffer, "RIFF", 4)==0){
-			//chunkSize = Total chunk in this wave file
+			// chunkSize = Total chunk in this wave file
 			chunkSize=0;
 			SDL_RWread(filePointer, buffer, 4, 1);
 			if(strncmp(buffer, "WAVE", 4)==0){
@@ -31,7 +30,7 @@ int ppWaveFormat::Init(const char *filename, bool stereo){
 				break;
 			}
 		}else if(strncmp(buffer, "fmt ", 4)==0){
-			SDL_RWread(filePointer, buffer, 2, 1); //AudioFormat 1 = PCM, other = compression
+			SDL_RWread(filePointer, buffer, 2, 1); // AudioFormat 1 = PCM, other = compression
 			chunkSize-=2;
 			SDL_RWread(filePointer, buffer, 2, 1);
 			this->audioChannels=ConvertToInt(buffer, 2);
@@ -39,9 +38,9 @@ int ppWaveFormat::Init(const char *filename, bool stereo){
 			SDL_RWread(filePointer, buffer, 4, 1);
 			this->sampleRate=ConvertToInt(buffer, 4);
 			chunkSize-=4;
-			SDL_RWread(filePointer, buffer, 4, 1); //ByteRate
+			SDL_RWread(filePointer, buffer, 4, 1); // ByteRate
 			chunkSize-=4;
-			SDL_RWread(filePointer, buffer, 2, 1); //BlockAlign
+			SDL_RWread(filePointer, buffer, 2, 1); // BlockAlign
 			chunkSize-=2;
 			SDL_RWread(filePointer, buffer, 2, 1);
 			this->bitPerSample=ConvertToInt(buffer, 2);
@@ -54,17 +53,28 @@ int ppWaveFormat::Init(const char *filename, bool stereo){
 			valid++;
 		}
 		if(chunkSize>0){
-			// std::cout << "Skip " << buffer << " [" << chunkSize << "b]" << std::endl;
-			//Skip any unread data
+			// Skip any unread data
 			SDL_RWseek(this->filePointer, chunkSize, RW_SEEK_CUR);
 		}
 	}
 	SDL_RWclose(this->filePointer);
 	if(valid<3){
-		// std::cout << "Invalid Wave file" << std::endl;
+		#ifdef PPDEBUG
+			throw std::runtime_error("Invalid Wave file. (" + this->GetFileName() + ")");
+		#else
+			std::cout << "Invalid Wave file. (" << this->GetFileName() << ")" << std::endl;
+		#endif
 		return 2;
 	}
 	this->audioTracks = this->audioChannels / (stereo?2:1);
+	if(this->audioTracks<1){
+		#ifdef PPDEBUG
+			throw std::runtime_error("Format must have at least 1 track. (" + this->GetFileName() + ")");
+		#else
+			std::cout << "Format must have at least 1 track. (" << this->GetFileName() << ")" << std::endl;
+		#endif
+		return 3;
+	}
 	if(stereo){
 		if(this->bitPerSample==8){
 			this->audioFormat = AL_FORMAT_STEREO8;

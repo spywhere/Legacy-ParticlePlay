@@ -34,7 +34,9 @@ int ppIMS::Init(){
 
 ppFormat* ppIMS::CreateEmptyFormat(Sint64 length, ppFormat* audioFormat, bool stereo){
 	ppEmptyFormat *format = new ppEmptyFormat(this, length, audioFormat);
-	format->Init("", stereo);
+	if(format->Init("", stereo)){
+		return NULL;
+	}
 	this->formats.push_back(format);
 	return format;
 }
@@ -44,9 +46,11 @@ ppFormat* ppIMS::CreateEmptyFormat(Sint64 length, ppFormat* audioFormat){
 }
 
 ppFormat* ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename, bool stereo){
-	if(audioFormat == ppAudioFormat::WAVE){
+	if(filename && audioFormat == ppAudioFormat::WAVE){
 		ppWaveFormat *format = new ppWaveFormat(this);
-		format->Init(filename, stereo);
+		if(format->Init(filename, stereo)){
+			return NULL;
+		}
 		this->formats.push_back(format);
 		return format;
 	}
@@ -58,6 +62,9 @@ ppFormat* ppIMS::CreateFormat(ppAudioFormat audioFormat, const char *filename){
 }
 
 ppSound *ppIMS::CreateSound(const char *name, ppFormat* audioFormat, int track){
+	if(!name || !audioFormat){
+		return NULL;
+	}
 	ppSound* sound = new ppSound(name, audioFormat, track, this->randomizer);
 	this->sounds[name] = sound;
 	return sound;
@@ -68,24 +75,36 @@ ppSound *ppIMS::CreateSound(const char *name, ppFormat* audioFormat){
 }
 
 ppSegment *ppIMS::CreateSegment(const char *name){
+	if(!name){
+		return NULL;
+	}
 	ppSegment *segment = new ppSegment(name, this);
 	this->sounds[name] = segment;
 	return segment;
 }
 
 ppSwitch *ppIMS::CreateSwitch(const char *name){
+	if(!name){
+		return NULL;
+	}
 	ppSwitch *sw = new ppSwitch(name, this);
 	this->switches[name] = sw;
 	return sw;
 }
 
 ppPlaylist* ppIMS::CreatePlaylist(const char *name){
+	if(!name){
+		return NULL;
+	}
 	ppPlaylist* playlist = new ppPlaylist(name, this->randomizer);
 	this->sounds[name] = playlist;
 	return playlist;
 }
 
 ppGenericSound* ppIMS::GetSound(const char *name){
+	if(!name){
+		return NULL;
+	}
 	auto it = this->sounds.find(name);
 	if (it != this->sounds.end()){
 		return it->second;
@@ -94,6 +113,9 @@ ppGenericSound* ppIMS::GetSound(const char *name){
 }
 
 ppSwitch* ppIMS::GetSwitch(const char *name){
+	if(!name){
+		return NULL;
+	}
 	auto it = this->switches.find(name);
 	if (it != this->switches.end()){
 		return it->second;

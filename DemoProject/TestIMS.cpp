@@ -303,18 +303,18 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		if(!this->ims->GetSound("playlist")){
 			this->playlist_track = 0;
 
-			ppFormat* seg1format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-01.wav");
-			ppFormat* seg2format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-02.wav");
-			ppFormat* seg3format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-03.wav");
-			ppFormat* seg4format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-04.wav");
-			ppFormat* seg5format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-05.wav");
-			ppFormat* seg6format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-06.wav");
-			ppFormat* seg7format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-07.wav");
-			ppFormat* seg8format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-08.wav");
-			ppFormat* seg9format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-09.wav");
-			ppFormat* seg10format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-10.wav");
-			ppFormat* seg11format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-11.wav");
-			ppFormat* seg12format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/kameleon/l4_a1-12.wav");
+			ppFormat* seg1format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-01.wav");
+			ppFormat* seg2format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-02.wav");
+			ppFormat* seg3format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-03.wav");
+			ppFormat* seg4format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-04.wav");
+			ppFormat* seg5format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-05.wav");
+			ppFormat* seg6format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-06.wav");
+			ppFormat* seg7format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-07.wav");
+			ppFormat* seg8format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-08.wav");
+			ppFormat* seg9format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-09.wav");
+			ppFormat* seg10format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-10.wav");
+			ppFormat* seg11format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-11.wav");
+			ppFormat* seg12format = this->ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a1-12.wav");
 
 			ppSound* seg1sound = this->ims->CreateSound("seg1sound", seg1format);
 			ppSound* seg2sound = this->ims->CreateSound("seg2sound", seg2format);

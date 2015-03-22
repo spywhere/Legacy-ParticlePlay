@@ -23,7 +23,12 @@ ppSound::~ppSound(){
 
 void ppSound::SetTrack(int track){
 	if(track<1){
-		throw std::runtime_error("Track number must be 1 or greater. (" + audioFormat->GetFileName() + ")");
+		#ifdef PPDEBUG
+			throw std::runtime_error("Track number must be 1 or greater. (" + audioFormat->GetFileName() + ")");
+		#else
+			std::cout << "Track number must be 1 or greater. (" << audioFormat->GetFileName() << ")" << std::endl;
+		#endif
+		return;
 	}
 	this->track = track-1;
 	this->loadingTrack = this->track;
