@@ -3,7 +3,7 @@
 
 #include <ParticlePlay/ParticlePlay.hpp>
 
-class TestGame : public ppGame{
+class TestGame : public ppGame {
 };
 
 #endif
