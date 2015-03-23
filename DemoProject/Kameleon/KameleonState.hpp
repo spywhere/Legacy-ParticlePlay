@@ -8,6 +8,7 @@ protected:
 	ppGUI* gui;
 	ppIMS* ims;
 public:
+	bool debugView;
 	void OnInit();
 	void OnRender(SDL_Renderer* renderer, int delta);
 	void OnUpdate(ppInput* input, int delta);

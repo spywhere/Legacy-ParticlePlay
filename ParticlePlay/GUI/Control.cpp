@@ -57,6 +57,10 @@ int ppControl::GetHeight(){
 	return this->height;
 }
 
+bool ppControl::IsInside(int x, int y){
+	return this->x <= x && this->x+this->width >= x && this->y <= y && this->y+this->height >= y;
+}
+
 void ppControl::SetLocation(int x, int y){
 	this->x = x;
 	this->y = y;
@@ -109,5 +113,10 @@ void ppControl::Render(SDL_Renderer* renderer){
 }
 
 void ppControl::Update(ppInput* input){
-
+	if(this->parent){
+		this->parent->Update(input);
+	}
+	if(!this->visible){
+		return;
+	}
 }

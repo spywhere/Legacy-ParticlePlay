@@ -15,6 +15,7 @@ protected:
 	ppControl* parent;
 	ppGUI* gui;
 	std::string name;
+	bool IsInside(int x, int y);
 public:
 	ppControl(const char *name, int x, int y, int w, int h);
 	ppControl(const char *name, int x, int y) : ppControl(name, x, y, 0 ,0) {};

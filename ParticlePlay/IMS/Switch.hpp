@@ -16,7 +16,7 @@ protected:
 	bool isPlaying;
 	bool isPause;
 	ppIMS* ims;
-	const char *stateName;
+	std::string stateName;
 	std::vector<ppTransition*> transitions;
 	std::map<std::string, ppStinger*> stingers;
 	ppTransition* currentTransition;
@@ -29,7 +29,7 @@ protected:
 public:
 	ppSwitch(const char *name, ppIMS* ims);
 	~ppSwitch();
-	const char *GetCurrentState();
+	std::string GetCurrentState();
 	ppTransition* GetDefaultTransition();
 	ppTransition* CreateTransition(int priority, ppGenericSound* sourceSound, ppGenericSound* destSound);
 	ppStinger* CreateStinger(const char *stingerName, ppGenericSound* sound, ppStingerTriggerPosition position);

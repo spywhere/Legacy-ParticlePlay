@@ -9,7 +9,7 @@ bool ppSwitch::ppTransitionOrdering(ppTransition* a, ppTransition* b){
 ppSwitch::ppSwitch(const char *name, ppIMS* ims) : ppControl(name, 0, 0) {
 	this->ims = ims;
 	this->lastPlay = NULL;
-	this->stateName = "";
+	this->stateName = std::string("");
 	this->defaultTransition = new ppTransition(this, 0, NULL, NULL);
 	this->currentTransition = NULL;
 	this->readyForTransition = true;
@@ -24,7 +24,7 @@ ppSwitch::~ppSwitch(){
 	}
 }
 
-const char *ppSwitch::GetCurrentState(){
+std::string ppSwitch::GetCurrentState(){
 	return this->stateName;
 }
 
@@ -61,11 +61,11 @@ void ppSwitch::SwitchState(const char *stateName){
 	if(this->currentTransition && this->currentTransition->IsTransitioning()){
 		return;
 	}
-	this->currentTransition = this->FindTransition(this->stateName, stateName);
+	this->currentTransition = this->FindTransition(this->stateName.c_str(), stateName);
 	ppGenericSound* target = this->ims->GetSound(stateName);
 	this->timeListener = new ppTimeListener(target, this);
 	this->currentTransition->Trigger(this->lastPlay, target);
-	this->stateName = stateName;
+	this->stateName = std::string(stateName);
 
 	this->readyForTransition = false;
 }

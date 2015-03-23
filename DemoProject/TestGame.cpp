@@ -25,7 +25,8 @@ int main(int argc, char* argv[]) {
 	game->AddState("ims", new TestIMS());
 	game->AddState("testbed", new TestTestbed());
 	// game->EnterState("main");
-	game->EnterState("ims");
+	// game->EnterState("ims");
+	game->EnterState("kameleon");
 	// game->EnterState("testbed");
 	return game->StartGame();
 }
