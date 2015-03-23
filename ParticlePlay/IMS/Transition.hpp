@@ -6,7 +6,7 @@
 #include <ParticlePlay/IMS/Switch.hpp>
 
 enum class ppTransitionSourcePosition {
-	IMMEDIATE, NEXT_BEAT, NEXT_BAR
+	IMMEDIATE, NEXT_BEAT, NEXT_BAR, EXIT_CUE
 };
 
 enum class ppTransitionDestinationPosition {
@@ -21,6 +21,7 @@ protected:
 	float sourceDuration;
 	float destOffset;
 	float destDuration;
+	float sourceLastTime;
 	bool transitioning;
 	bool triggerSync;
 	Uint32 triggerTime;

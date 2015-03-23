@@ -33,6 +33,10 @@ bool ppStinger::IsTriggering(){
 	return this->trigger;
 }
 
+float ppStinger::GetEntryCue(){
+	return this->sound->GetAudioFormat()->PositionToTime(this->sound->GetEntryCue());
+}
+
 ppStingerTriggerPosition ppStinger::GetTriggerPosition(){
 	return this->position;
 }

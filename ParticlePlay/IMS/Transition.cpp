@@ -1,6 +1,8 @@
 #include "Transition.hpp"
 
 #include <string>
+#include <ParticlePlay/GUI/ControlType.hpp>
+#include <ParticlePlay/IMS/Playlist.hpp>
 
 ppTransition::ppTransition(ppSwitch* sw, int priority, ppGenericSound* sourceSound, ppGenericSound* destSound){
 	this->priority = priority;
@@ -59,6 +61,13 @@ void ppTransition::Trigger(ppGenericSound* actualSource, ppGenericSound* actualD
 		int beat = this->actualSource->GetTotalBeat(this->actualSource->GetCurrentTime()+this->GetSyncPoint());
 		float difTime = this->actualSource->GetTimeForBeat(beat+1) - this->GetSyncPoint() - this->actualSource->GetCurrentTime();
 		this->triggerTime += (Uint32)(difTime*1000);
+	}else if(this->sourcePosition == ppTransitionSourcePosition::EXIT_CUE){
+		float difTime = this->actualSource->GetAudioFormat()->PositionToTime(this->actualSource->GetNormalExitCue()) - this->GetSyncPoint() - this->actualSource->GetCurrentTime();
+		if(this->actualSource->GetType() == ppControlType::PLAYLIST_CONTROL){
+			ppPlaylist* playlist = (ppPlaylist*)this->actualSource;
+			difTime = playlist->GetPlayingSound()->GetAudioFormat()->PositionToTime(playlist->GetPlayingSound()->GetNormalExitCue()+playlist->GetPlayingSound()->GetEntryCue()) - this->GetSyncPoint() - playlist->GetPlayingSound()->GetCurrentTime();
+		}
+		this->triggerTime += (Uint32)(difTime*1000);
 	}
 }
 
@@ -102,25 +111,26 @@ void ppTransition::Update(){
 	long transitionEntryCue = 0;
 	long transitionExitCue = 0;
 	long transitionStartTime = 0;
-	long transitionDuration = 0;
 	long transitionEndTime = 0;
 	if(transition){
 		transitionEntryCue = transition->GetAudioFormat()->PositionToTime(transition->GetEntryCue())*1000;
 		transitionExitCue = transition->GetAudioFormat()->PositionToTime(transition->GetNormalExitCue())*1000;
 		transitionStartTime = this->syncPoint-transitionEntryCue;
-		transitionDuration = transitionExitCue-transitionEntryCue;
-		transitionEndTime = this->syncPoint+transitionDuration+((transition->GetTotalTime()*1000)-transitionExitCue);
+		transitionEndTime = this->syncPoint+transitionExitCue+((transition->GetTotalTime()*1000)-transitionExitCue);
 		long destEntryCue = 0;
 		if(dest){
 			destEntryCue = dest->GetAudioFormat()->PositionToTime(dest->GetEntryCue())*1000;
 		}
-		destStartTime = this->syncPoint+transitionDuration-destEntryCue;
+		destStartTime = this->syncPoint+transitionExitCue-destEntryCue;
 	}
 
 	// Destination time calculation
 	long destEndTime = destStartTime+this->GetDestinationDuration()*1000;
 
 	if(transition && currentTime >= transitionStartTime && currentTime < transitionEndTime && !transition->IsPlaying()){
+		if(transitionStartTime < 0){
+			transition->Seek(-transitionStartTime/1000.0f);
+		}
 		transition->Play();
 	}else if(transition && currentTime >= transitionEndTime && transition->IsPlaying()){
 		transition->StopDecay(true);
@@ -132,13 +142,19 @@ void ppTransition::Update(){
 		}
 		float v = sourceEasing->GetValue(sourceEndTime-currentTime, this->sourceDuration*1000, 0, 1);
 		source->SetVolume(v);
+		this->sourceLastTime = source->GetCurrentTime();
 	}else if(source && currentTime > sourceEndTime){
+		this->sourceLastTime = source->GetCurrentTime();
 		source->StopDecay(false);
 	}
 	if(dest && currentTime >= destStartTime && currentTime <= destEndTime){
 		if(!dest->IsPlaying()){
 			if(this->destPosition == ppTransitionDestinationPosition::SAME_TIME){
-				dest->Seek(source->GetCurrentTime());
+				if(source->IsStop()){
+					dest->Seek(this->sourceLastTime);
+				}else{
+					dest->Seek(source->GetCurrentTime());
+				}
 			}
 			dest->Play();
 		}

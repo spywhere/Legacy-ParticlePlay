@@ -82,6 +82,8 @@ void ppSwitch::TriggerStinger(const char *stingerName){
 		stinger->PrepareTrigger();
 		if(!stinger->IsTriggering() && stinger->GetTriggerPosition() == ppStingerTriggerPosition::IMMEDIATE){
 			stinger->Trigger();
+		}else{
+			this->timeListener->SetOffset(stinger->GetEntryCue());
 		}
 	}
 }
@@ -107,6 +109,24 @@ void ppSwitch::OnBeat(ppGenericSound* source){
 	for(auto stingerKey : this->stingers){
 		ppStinger* stinger = stingerKey.second;
 		if(!stinger->IsTriggering() && stinger->GetTriggerPosition() == ppStingerTriggerPosition::NEXT_BEAT){
+			stinger->Trigger();
+		}
+	}
+}
+
+void ppSwitch::OnEntryCue(ppGenericSound* source){
+	for(auto stingerKey : this->stingers){
+		ppStinger* stinger = stingerKey.second;
+		if(!stinger->IsTriggering() && stinger->GetTriggerPosition() == ppStingerTriggerPosition::ENTRY_CUE){
+			stinger->Trigger();
+		}
+	}
+}
+
+void ppSwitch::OnExitCue(ppGenericSound* source){
+	for(auto stingerKey : this->stingers){
+		ppStinger* stinger = stingerKey.second;
+		if(!stinger->IsTriggering() && stinger->GetTriggerPosition() == ppStingerTriggerPosition::EXIT_CUE){
 			stinger->Trigger();
 		}
 	}
@@ -146,6 +166,11 @@ bool ppSwitch::IsPause(){
 
 bool ppSwitch::IsStop(){
 	return !this->isPlaying;
+}
+
+bool ppSwitch::IsStingerTrigger(const char *stingerName){
+	ppStinger* stinger = this->GetStinger(stingerName);
+	return stinger && stinger->IsPreparing();
 }
 
 void ppSwitch::Update(ppInput* input){

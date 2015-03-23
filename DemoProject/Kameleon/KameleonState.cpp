@@ -23,8 +23,16 @@ class DebugButtonListener : public ppButtonListener {
 					sound->SetVolume(1);
 					sound->Play();
 				}
-			}else if(button->GetName() == "mainbtn"){
-				ppGenericSound* sound = ims->GetSound("main");
+			}else if(button->GetName() == "mainnormalbtn"){
+				ppGenericSound* sound = ims->GetSound("main_normal");
+				if(sound->IsPlaying()){
+					sound->Stop();
+				}else{
+					sound->SetVolume(1);
+					sound->Play();
+				}
+			}else if(button->GetName() == "mainlowbtn"){
+				ppGenericSound* sound = ims->GetSound("main_low");
 				if(sound->IsPlaying()){
 					sound->Stop();
 				}else{
@@ -49,14 +57,21 @@ class DebugButtonListener : public ppButtonListener {
 				if(sw->GetCurrentState() != "bridge"){
 					sw->SwitchState("bridge");
 				}
-			}else if(button->GetName() == "mainsw"){
+			}else if(button->GetName() == "mainnormalsw"){
 				ppSwitch* sw = ims->GetSwitch("level");
-				if(sw->GetCurrentState() != "main"){
-					sw->SwitchState("main");
+				if(sw->GetCurrentState() != "main_normal"){
+					sw->SwitchState("main_normal");
 				}
-			}else if(button->GetName() == "heroicbtn"){
+			}else if(button->GetName() == "mainlowsw"){
 				ppSwitch* sw = ims->GetSwitch("level");
-				sw->TriggerStinger("heroic");
+				if(sw->GetCurrentState() != "main_low"){
+					sw->SwitchState("main_low");
+				}
+			}else if(button->GetName() == "heroicsw"){
+				ppSwitch* sw = ims->GetSwitch("level");
+				if(sw->GetCurrentState() != ""){
+					sw->TriggerStinger("heroic");
+				}
 			}
 		}
 };
@@ -87,10 +102,14 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			ppButton* bridgeButton = (ppButton*)this->gui->GetControl("bridgebtn");
 			bridgeButton->SetText((ims->GetSound("bridge")->IsPlaying())?"Stop":"Play");
 			bridgeButton->SetVisible(this->debugView);
-			this->gui->GetControl("main")->SetVisible(this->debugView);
-			ppButton* mainButton = (ppButton*)this->gui->GetControl("mainbtn");
-			mainButton->SetText((ims->GetSound("main")->IsPlaying())?"Stop":"Play");
-			mainButton->SetVisible(this->debugView);
+			this->gui->GetControl("main_normal")->SetVisible(this->debugView);
+			ppButton* mainNormalButton = (ppButton*)this->gui->GetControl("mainnormalbtn");
+			mainNormalButton->SetText((ims->GetSound("main_normal")->IsPlaying())?"Stop":"Play");
+			mainNormalButton->SetVisible(this->debugView);
+			this->gui->GetControl("main_low")->SetVisible(this->debugView);
+			ppButton* mainLowButton = (ppButton*)this->gui->GetControl("mainlowbtn");
+			mainLowButton->SetText((ims->GetSound("main_low")->IsPlaying())?"Stop":"Play");
+			mainLowButton->SetVisible(this->debugView);
 			this->gui->GetControl("heroic")->SetVisible(this->debugView);
 			ppButton* heroicButton = (ppButton*)this->gui->GetControl("heroicbtn");
 			heroicButton->SetText((ims->GetSound("heroic")->IsPlaying())?"Stop":"Play");
@@ -99,8 +118,9 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 
 			this->gui->GetControl("stopsw")->SetVisible(this->debugView);
 			this->gui->GetControl("bridgesw")->SetVisible(this->debugView);
-			this->gui->GetControl("mainsw")->SetVisible(this->debugView);
-			this->gui->GetControl("heroicsw")->SetVisible(this->debugView);
+			this->gui->GetControl("mainnormalsw")->SetVisible(this->debugView);
+			this->gui->GetControl("mainlowsw")->SetVisible(this->debugView);
+			this->gui->GetControl("heroicsw")->SetVisible(this->debugView && !ims->GetSwitch("level")->IsStingerTrigger("heroic"));
 		}else{
 			DebugButtonListener* btnListener = new DebugButtonListener(this);
 			///////////////////
@@ -119,74 +139,74 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			ppSound* b1s = ims->CreateSound("bridge_sound1", b1f);
 			ppSegment* b1seg = ims->CreateSegment("bridge_seg1");
 			b1seg->AddSound(b1s);
-			// b1seg->SetEntryCue(b1f->TimeToPosition(0.0f));
-			// b1seg->SetExitCue(b1f->TimeToPosition(0.0f));
+			b1seg->SetEntryCue(b1f->TimeToPosition(1.125f));
+			b1seg->SetExitCue(b1f->TimeToPosition(2.25f));
 			ppFormat* b2f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-02.wav");
 			ppSound* b2s = ims->CreateSound("bridge_sound2", b2f);
 			ppSegment* b2seg = ims->CreateSegment("bridge_seg2");
 			b2seg->AddSound(b2s);
-			// b2seg->SetEntryCue(b2f->TimeToPosition(0.0f));
-			// b2seg->SetExitCue(b2f->TimeToPosition(0.0f));
+			b2seg->SetEntryCue(b2f->TimeToPosition(1.125f));
+			b2seg->SetExitCue(b2f->TimeToPosition(2.25f));
 			ppFormat* b3f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-03.wav");
 			ppSound* b3s = ims->CreateSound("bridge_sound3", b3f);
 			ppSegment* b3seg = ims->CreateSegment("bridge_seg3");
 			b3seg->AddSound(b3s);
-			// b3seg->SetEntryCue(b3f->TimeToPosition(0.0f));
-			// b3seg->SetExitCue(b3f->TimeToPosition(0.0f));
+			b3seg->SetEntryCue(b3f->TimeToPosition(1.125f));
+			b3seg->SetExitCue(b3f->TimeToPosition(2.25f));
 			ppFormat* b4f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-04.wav");
 			ppSound* b4s = ims->CreateSound("bridge_sound4", b4f);
 			ppSegment* b4seg = ims->CreateSegment("bridge_seg4");
 			b4seg->AddSound(b4s);
-			// b4seg->SetEntryCue(b4f->TimeToPosition(0.0f));
-			// b4seg->SetExitCue(b4f->TimeToPosition(0.0f));
+			b4seg->SetEntryCue(b4f->TimeToPosition(1.125f));
+			b4seg->SetExitCue(b4f->TimeToPosition(2.25f));
 			ppFormat* b5f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-05.wav");
 			ppSound* b5s = ims->CreateSound("bridge_sound5", b5f);
 			ppSegment* b5seg = ims->CreateSegment("bridge_seg5");
 			b5seg->AddSound(b5s);
-			// b5seg->SetEntryCue(b5f->TimeToPosition(0.0f));
-			// b5seg->SetExitCue(b5f->TimeToPosition(0.0f));
+			b5seg->SetEntryCue(b5f->TimeToPosition(1.125f));
+			b5seg->SetExitCue(b5f->TimeToPosition(2.25f));
 			ppFormat* b6f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-06.wav");
 			ppSound* b6s = ims->CreateSound("bridge_sound6", b6f);
 			ppSegment* b6seg = ims->CreateSegment("bridge_seg6");
 			b6seg->AddSound(b6s);
-			// b6seg->SetEntryCue(b6f->TimeToPosition(0.0f));
-			// b6seg->SetExitCue(b6f->TimeToPosition(0.0f));
+			b6seg->SetEntryCue(b6f->TimeToPosition(1.125f));
+			b6seg->SetExitCue(b6f->TimeToPosition(2.25f));
 			ppFormat* b7f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-07.wav");
 			ppSound* b7s = ims->CreateSound("bridge_sound7", b7f);
 			ppSegment* b7seg = ims->CreateSegment("bridge_seg7");
 			b7seg->AddSound(b7s);
-			// b7seg->SetEntryCue(b7f->TimeToPosition(0.0f));
-			// b7seg->SetExitCue(b7f->TimeToPosition(0.0f));
+			b7seg->SetEntryCue(b7f->TimeToPosition(1.125f));
+			b7seg->SetExitCue(b7f->TimeToPosition(2.25f));
 			ppFormat* b8f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-08.wav");
 			ppSound* b8s = ims->CreateSound("bridge_sound8", b8f);
 			ppSegment* b8seg = ims->CreateSegment("bridge_seg8");
 			b8seg->AddSound(b8s);
-			// b8seg->SetEntryCue(b8f->TimeToPosition(0.0f));
-			// b8seg->SetExitCue(b8f->TimeToPosition(0.0f));
+			b8seg->SetEntryCue(b8f->TimeToPosition(1.125f));
+			b8seg->SetExitCue(b8f->TimeToPosition(2.25f));
 			ppFormat* b9f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-09.wav");
 			ppSound* b9s = ims->CreateSound("bridge_sound9", b9f);
 			ppSegment* b9seg = ims->CreateSegment("bridge_seg9");
 			b9seg->AddSound(b9s);
-			// b9seg->SetEntryCue(b9f->TimeToPosition(0.0f));
-			// b9seg->SetExitCue(b9f->TimeToPosition(0.0f));
+			b9seg->SetEntryCue(b9f->TimeToPosition(1.125f));
+			b9seg->SetExitCue(b9f->TimeToPosition(2.25f));
 			ppFormat* b10f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-10.wav");
 			ppSound* b10s = ims->CreateSound("bridge_sound10", b10f);
 			ppSegment* b10seg = ims->CreateSegment("bridge_seg10");
 			b10seg->AddSound(b10s);
-			// b10seg->SetEntryCue(b10f->TimeToPosition(0.0f));
-			// b10seg->SetExitCue(b10f->TimeToPosition(0.0f));
+			b10seg->SetEntryCue(b10f->TimeToPosition(1.125f));
+			b10seg->SetExitCue(b10f->TimeToPosition(2.25f));
 			ppFormat* b11f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-11.wav");
 			ppSound* b11s = ims->CreateSound("bridge_sound11", b11f);
 			ppSegment* b11seg = ims->CreateSegment("bridge_seg11");
 			b11seg->AddSound(b11s);
-			// b11seg->SetEntryCue(b11f->TimeToPosition(0.0f));
-			// b11seg->SetExitCue(b11f->TimeToPosition(0.0f));
+			b11seg->SetEntryCue(b11f->TimeToPosition(1.125f));
+			b11seg->SetExitCue(b11f->TimeToPosition(2.25f));
 			ppFormat* b12f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_s3-12.wav");
 			ppSound* b12s = ims->CreateSound("bridge_sound12", b12f);
 			ppSegment* b12seg = ims->CreateSegment("bridge_seg12");
 			b12seg->AddSound(b12s);
-			// b12seg->SetEntryCue(b12f->TimeToPosition(0.0f));
-			// b12seg->SetExitCue(b12f->TimeToPosition(0.0f));
+			b12seg->SetEntryCue(b12f->TimeToPosition(1.125f));
+			b12seg->SetExitCue(b12f->TimeToPosition(2.25f));
 
 			ppPlaylist* bridgePlaylist = ims->CreatePlaylist("bridge");
 			bridgePlaylist->AddSound(b1seg);
@@ -202,6 +222,7 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			bridgePlaylist->AddSound(b11seg);
 			bridgePlaylist->AddSound(b12seg);
 
+			bridgePlaylist->SetTempo(80);
 			bridgePlaylist->SetLoop(-1);
 			bridgePlaylist->SetLocation(20, 50);
 			bridgePlaylist->SetSize(100, 250);
@@ -220,199 +241,250 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			ppSound* b2m_s = ims->CreateSound("bridge2main_sound", b2m_f);
 			ppSegment* b2m_seg = ims->CreateSegment("bridge2main_seg");
 			b2m_seg->AddSound(b2m_s);
-			// b2m_seg->SetExitCue();
+			b2m_seg->SetEntryCue(b2m_f->TimeToPosition(1.125f));
+			b2m_seg->SetExitCue(b2m_f->TimeToPosition(2.25f));
 
 			////////////////////////////////
 			// Main Track Sounds (normal) //
 			////////////////////////////////
 			ppFormat* mn1f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-01.wav");
 			ppSound* mn1s = ims->CreateSound("main_normal_sound1", mn1f);
+			ppSegment* mn1seg = ims->CreateSegment("main_normal_seg1");
+			mn1seg->AddSound(mn1s);
+			mn1seg->SetEntryCue(mn1f->TimeToPosition(1.125f));
+			mn1seg->SetExitCue(mn1f->TimeToPosition(7.5f));
 
 			ppFormat* mn2f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-02.wav");
 			ppSound* mn2s = ims->CreateSound("main_normal_sound2", mn2f);
+			ppSegment* mn2seg = ims->CreateSegment("main_normal_seg2");
+			mn2seg->AddSound(mn2s);
+			mn2seg->SetEntryCue(mn2f->TimeToPosition(0.375f));
+			mn2seg->SetExitCue(mn2f->TimeToPosition(7.5f));
 
 			ppFormat* mn3f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-03.wav");
 			ppSound* mn3s = ims->CreateSound("main_normal_sound3", mn3f);
+			ppSegment* mn3seg = ims->CreateSegment("main_normal_seg3");
+			mn3seg->AddSound(mn3s);
+			mn3seg->SetEntryCue(mn3f->TimeToPosition(0.375f));
+			mn3seg->SetExitCue(mn3f->TimeToPosition(7.5f));
 
 			ppFormat* mn4f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-04.wav");
 			ppSound* mn4s = ims->CreateSound("main_normal_sound4", mn4f);
+			ppSegment* mn4seg = ims->CreateSegment("main_normal_seg4");
+			mn4seg->AddSound(mn4s);
+			mn4seg->SetEntryCue(mn4f->TimeToPosition(0.375f));
+			mn4seg->SetExitCue(mn4f->TimeToPosition(7.5f));
 
 			ppFormat* mn5f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-05.wav");
 			ppSound* mn5s = ims->CreateSound("main_normal_sound5", mn5f);
+			ppSegment* mn5seg = ims->CreateSegment("main_normal_seg5");
+			mn5seg->AddSound(mn5s);
+			mn5seg->SetEntryCue(mn5f->TimeToPosition(1.875f));
+			mn5seg->SetExitCue(mn5f->TimeToPosition(7.5f));
 
 			ppFormat* mn6f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-06.wav");
 			ppSound* mn6s = ims->CreateSound("main_normal_sound6", mn6f);
+			ppSegment* mn6seg = ims->CreateSegment("main_normal_seg6");
+			mn6seg->AddSound(mn6s);
+			mn6seg->SetEntryCue(mn6f->TimeToPosition(1.125f));
+			mn6seg->SetExitCue(mn6f->TimeToPosition(6.0f));
 
 			ppFormat* mn7f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-07.wav");
 			ppSound* mn7s = ims->CreateSound("main_normal_sound7", mn7f);
+			ppSegment* mn7seg = ims->CreateSegment("main_normal_seg7");
+			mn7seg->AddSound(mn7s);
+			mn7seg->SetEntryCue(mn7f->TimeToPosition(1.125f));
+			mn7seg->SetExitCue(mn7f->TimeToPosition(6.0f));
 
 			ppFormat* mn8f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-08.wav");
 			ppSound* mn8s = ims->CreateSound("main_normal_sound8", mn8f);
+			ppSegment* mn8seg = ims->CreateSegment("main_normal_seg8");
+			mn8seg->AddSound(mn8s);
+			mn8seg->SetEntryCue(mn8f->TimeToPosition(0.375f));
+			mn8seg->SetExitCue(mn8f->TimeToPosition(6.0f));
 
 			ppFormat* mn9f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-09.wav");
 			ppSound* mn9s = ims->CreateSound("main_normal_sound9", mn9f);
+			ppSegment* mn9seg = ims->CreateSegment("main_normal_seg9");
+			mn9seg->AddSound(mn9s);
+			mn9seg->SetEntryCue(mn9f->TimeToPosition(1.125f));
+			mn9seg->SetExitCue(mn9f->TimeToPosition(6.0f));
 
 			ppFormat* mn10f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-10.wav");
 			ppSound* mn10s = ims->CreateSound("main_normal_sound10", mn10f);
+			ppSegment* mn10seg = ims->CreateSegment("main_normal_seg10");
+			mn10seg->AddSound(mn10s);
+			mn10seg->SetEntryCue(mn10f->TimeToPosition(1.125f));
+			mn10seg->SetExitCue(mn10f->TimeToPosition(7.5f));
 
 			ppFormat* mn11f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-11.wav");
 			ppSound* mn11s = ims->CreateSound("main_normal_sound11", mn11f);
+			ppSegment* mn11seg = ims->CreateSegment("main_normal_seg11");
+			mn11seg->AddSound(mn11s);
+			mn11seg->SetEntryCue(mn11f->TimeToPosition(1.125f));
+			mn11seg->SetExitCue(mn11f->TimeToPosition(7.5f));
 
 			ppFormat* mn12f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-12.wav");
 			ppSound* mn12s = ims->CreateSound("main_normal_sound12", mn12f);
+			ppSegment* mn12seg = ims->CreateSegment("main_normal_seg12");
+			mn12seg->AddSound(mn12s);
+			mn12seg->SetEntryCue(mn12f->TimeToPosition(0.375f));
+			mn12seg->SetExitCue(mn12f->TimeToPosition(6.0f));
 
 			ppFormat* mn13f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a2-13.wav");
 			ppSound* mn13s = ims->CreateSound("main_normal_sound13", mn13f);
+			ppSegment* mn13seg = ims->CreateSegment("main_normal_seg13");
+			mn13seg->AddSound(mn13s);
+			mn13seg->SetEntryCue(mn13f->TimeToPosition(1.125f));
+			mn13seg->SetExitCue(mn13f->TimeToPosition(6.0f));
+
+			ppPlaylist* mainNormalPlaylist = ims->CreatePlaylist("main_normal");
+			mainNormalPlaylist->AddSound(mn1seg);
+			mainNormalPlaylist->AddSound(mn2seg);
+			mainNormalPlaylist->AddSound(mn3seg);
+			mainNormalPlaylist->AddSound(mn4seg);
+			mainNormalPlaylist->AddSound(mn5seg);
+			mainNormalPlaylist->AddSound(mn6seg);
+			mainNormalPlaylist->AddSound(mn7seg);
+			mainNormalPlaylist->AddSound(mn8seg);
+			mainNormalPlaylist->AddSound(mn9seg);
+			mainNormalPlaylist->AddSound(mn10seg);
+			mainNormalPlaylist->AddSound(mn11seg);
+			mainNormalPlaylist->AddSound(mn12seg);
+			mainNormalPlaylist->AddSound(mn13seg);
+
+			mainNormalPlaylist->SetTempo(80);
+			mainNormalPlaylist->SetLoop(-1);
+			mainNormalPlaylist->SetLocation(130, 50);
+			mainNormalPlaylist->SetSize(100, 250);
+			mainNormalPlaylist->SetVisible(false);
+			this->gui->AddControl(mainNormalPlaylist);
+			ppButton* mainNormalButton = new ppButton("mainnormalbtn", 142, 300, 75, 20);
+			mainNormalButton->SetText("Play");
+			mainNormalButton->SetListener(btnListener);
+			mainNormalButton->SetVisible(false);
+			this->gui->AddControl(mainNormalButton);
 
 			////////////////////////////////////
 			// Main Track Sounds (low health) //
 			////////////////////////////////////
 			ppFormat* ml1f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-01.wav");
 			ppSound* ml1s = ims->CreateSound("main_low_sound1", ml1f);
+			ppSegment* ml1seg = ims->CreateSegment("main_low_seg1");
+			ml1seg->AddSound(ml1s);
+			ml1seg->SetEntryCue(ml1f->TimeToPosition(1.125f));
+			ml1seg->SetExitCue(ml1f->TimeToPosition(7.5f));
 
 			ppFormat* ml2f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-02.wav");
 			ppSound* ml2s = ims->CreateSound("main_low_sound2", ml2f);
+			ppSegment* ml2seg = ims->CreateSegment("main_low_seg2");
+			ml2seg->AddSound(ml2s);
+			ml2seg->SetEntryCue(ml2f->TimeToPosition(0.375f));
+			ml2seg->SetExitCue(ml2f->TimeToPosition(7.5f));
 
 			ppFormat* ml3f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-03.wav");
 			ppSound* ml3s = ims->CreateSound("main_low_sound3", ml3f);
+			ppSegment* ml3seg = ims->CreateSegment("main_low_seg3");
+			ml3seg->AddSound(ml3s);
+			ml3seg->SetEntryCue(ml3f->TimeToPosition(0.375f));
+			ml3seg->SetExitCue(ml3f->TimeToPosition(7.5f));
 
 			ppFormat* ml4f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-04.wav");
 			ppSound* ml4s = ims->CreateSound("main_low_sound4", ml4f);
+			ppSegment* ml4seg = ims->CreateSegment("main_low_seg4");
+			ml4seg->AddSound(ml4s);
+			ml4seg->SetEntryCue(ml4f->TimeToPosition(0.375f));
+			ml4seg->SetExitCue(ml4f->TimeToPosition(7.5f));
 
 			ppFormat* ml5f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-05.wav");
 			ppSound* ml5s = ims->CreateSound("main_low_sound5", ml5f);
+			ppSegment* ml5seg = ims->CreateSegment("main_low_seg5");
+			ml5seg->AddSound(ml5s);
+			ml5seg->SetEntryCue(ml5f->TimeToPosition(1.875f));
+			ml5seg->SetExitCue(ml5f->TimeToPosition(7.5f));
 
 			ppFormat* ml6f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-06.wav");
 			ppSound* ml6s = ims->CreateSound("main_low_sound6", ml6f);
+			ppSegment* ml6seg = ims->CreateSegment("main_low_seg6");
+			ml6seg->AddSound(ml6s);
+			ml6seg->SetEntryCue(ml6f->TimeToPosition(0.75f));
+			ml6seg->SetExitCue(ml6f->TimeToPosition(6.0f));
 
 			ppFormat* ml7f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-07.wav");
 			ppSound* ml7s = ims->CreateSound("main_low_sound7", ml7f);
+			ppSegment* ml7seg = ims->CreateSegment("main_low_seg7");
+			ml7seg->AddSound(ml7s);
+			ml7seg->SetEntryCue(ml7f->TimeToPosition(1.125f));
+			ml7seg->SetExitCue(ml7f->TimeToPosition(6.0f));
 
 			ppFormat* ml8f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-08.wav");
 			ppSound* ml8s = ims->CreateSound("main_low_sound8", ml8f);
+			ppSegment* ml8seg = ims->CreateSegment("main_low_seg8");
+			ml8seg->AddSound(ml8s);
+			ml8seg->SetEntryCue(ml8f->TimeToPosition(0.375f));
+			ml8seg->SetExitCue(ml8f->TimeToPosition(6.0f));
 
 			ppFormat* ml9f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-09.wav");
 			ppSound* ml9s = ims->CreateSound("main_low_sound9", ml9f);
+			ppSegment* ml9seg = ims->CreateSegment("main_low_seg9");
+			ml9seg->AddSound(ml9s);
+			ml9seg->SetEntryCue(ml9f->TimeToPosition(1.5f));
+			ml9seg->SetExitCue(ml9f->TimeToPosition(6.0f));
 
 			ppFormat* ml10f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-10.wav");
 			ppSound* ml10s = ims->CreateSound("main_low_sound10", ml10f);
+			ppSegment* ml10seg = ims->CreateSegment("main_low_seg10");
+			ml10seg->AddSound(ml10s);
+			ml10seg->SetEntryCue(ml10f->TimeToPosition(1.125f));
+			ml10seg->SetExitCue(ml10f->TimeToPosition(7.5f));
 
 			ppFormat* ml11f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-11.wav");
 			ppSound* ml11s = ims->CreateSound("main_low_sound11", ml11f);
+			ppSegment* ml11seg = ims->CreateSegment("main_low_seg11");
+			ml11seg->AddSound(ml11s);
+			ml11seg->SetEntryCue(ml11f->TimeToPosition(1.125f));
+			ml11seg->SetExitCue(ml11f->TimeToPosition(7.5f));
 
 			ppFormat* ml12f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-12.wav");
 			ppSound* ml12s = ims->CreateSound("main_low_sound12", ml12f);
+			ppSegment* ml12seg = ims->CreateSegment("main_low_seg12");
+			ml12seg->AddSound(ml12s);
+			ml12seg->SetEntryCue(ml12f->TimeToPosition(1.875f));
+			ml12seg->SetExitCue(ml12f->TimeToPosition(6.0f));
 
 			ppFormat* ml13f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a4-13.wav");
 			ppSound* ml13s = ims->CreateSound("main_low_sound13", ml13f);
+			ppSegment* ml13seg = ims->CreateSegment("main_low_seg13");
+			ml13seg->AddSound(ml13s);
+			ml13seg->SetEntryCue(ml13f->TimeToPosition(1.5f));
+			ml13seg->SetExitCue(ml13f->TimeToPosition(6.0f));
 
-			////////////////
-			// Main Track //
-			////////////////
-			ppSegment* m1s = ims->CreateSegment("main_seg1");
-			m1s->AddSound(mn1s);
-			m1s->AddSound(ml1s);
-			// ppFormat* m1f = m1s->GetAudioFormat();
-			// m1s->SetEntryCue(m1f->TimeToPosition(0.0f));
-			// m1s->SetExitCue(m1f->TimeToPosition(0.0f));
-			ppSegment* m2s = ims->CreateSegment("main_seg2");
-			m2s->AddSound(mn2s);
-			m2s->AddSound(ml2s);
-			// ppFormat* m2f = m2s->GetAudioFormat();
-			// m2s->SetEntryCue(m2f->TimeToPosition(0.0f));
-			// m2s->SetExitCue(m2f->TimeToPosition(0.0f));
-			ppSegment* m3s = ims->CreateSegment("main_seg3");
-			m3s->AddSound(mn3s);
-			m3s->AddSound(ml3s);
-			// ppFormat* m3f = m3s->GetAudioFormat();
-			// m3s->SetEntryCue(m3f->TimeToPosition(0.0f));
-			// m3s->SetExitCue(m3f->TimeToPosition(0.0f));
-			ppSegment* m4s = ims->CreateSegment("main_seg4");
-			m4s->AddSound(mn4s);
-			m4s->AddSound(ml4s);
-			// ppFormat* m4f = m4s->GetAudioFormat();
-			// m4s->SetEntryCue(m4f->TimeToPosition(0.0f));
-			// m4s->SetExitCue(m4f->TimeToPosition(0.0f));
-			ppSegment* m5s = ims->CreateSegment("main_seg5");
-			m5s->AddSound(mn5s);
-			m5s->AddSound(ml5s);
-			// ppFormat* m5f = m5s->GetAudioFormat();
-			// m5s->SetEntryCue(m5f->TimeToPosition(0.0f));
-			// m5s->SetExitCue(m5f->TimeToPosition(0.0f));
-			ppSegment* m6s = ims->CreateSegment("main_seg6");
-			m6s->AddSound(mn6s);
-			m6s->AddSound(ml6s);
-			// ppFormat* m6f = m6s->GetAudioFormat();
-			// m6s->SetEntryCue(m6f->TimeToPosition(0.0f));
-			// m6s->SetExitCue(m6f->TimeToPosition(0.0f));
-			ppSegment* m7s = ims->CreateSegment("main_seg7");
-			m7s->AddSound(mn7s);
-			m7s->AddSound(ml7s);
-			// ppFormat* m7f = m7s->GetAudioFormat();
-			// m7s->SetEntryCue(m7f->TimeToPosition(0.0f));
-			// m7s->SetExitCue(m7f->TimeToPosition(0.0f));
-			ppSegment* m8s = ims->CreateSegment("main_seg8");
-			m8s->AddSound(mn8s);
-			m8s->AddSound(ml8s);
-			// ppFormat* m8f = m8s->GetAudioFormat();
-			// m8s->SetEntryCue(m8f->TimeToPosition(0.0f));
-			// m8s->SetExitCue(m8f->TimeToPosition(0.0f));
-			ppSegment* m9s = ims->CreateSegment("main_seg9");
-			m9s->AddSound(mn9s);
-			m9s->AddSound(ml9s);
-			// ppFormat* m9f = m9s->GetAudioFormat();
-			// m9s->SetEntryCue(m9f->TimeToPosition(0.0f));
-			// m9s->SetExitCue(m9f->TimeToPosition(0.0f));
-			ppSegment* m10s = ims->CreateSegment("main_seg10");
-			m10s->AddSound(mn10s);
-			m10s->AddSound(ml10s);
-			// ppFormat* m10f = m10s->GetAudioFormat();
-			// m10s->SetEntryCue(m10f->TimeToPosition(0.0f));
-			// m10s->SetExitCue(m10f->TimeToPosition(0.0f));
-			ppSegment* m11s = ims->CreateSegment("main_seg11");
-			m11s->AddSound(mn11s);
-			m11s->AddSound(ml11s);
-			// ppFormat* m11f = m11s->GetAudioFormat();
-			// m11s->SetEntryCue(m11f->TimeToPosition(0.0f));
-			// m11s->SetExitCue(m11f->TimeToPosition(0.0f));
-			ppSegment* m12s = ims->CreateSegment("main_seg12");
-			m12s->AddSound(mn12s);
-			m12s->AddSound(ml12s);
-			// ppFormat* m12f = m12s->GetAudioFormat();
-			// m12s->SetEntryCue(m12f->TimeToPosition(0.0f));
-			// m12s->SetExitCue(m12f->TimeToPosition(0.0f));
-			ppSegment* m13s = ims->CreateSegment("main_seg13");
-			m13s->AddSound(mn13s);
-			m13s->AddSound(ml13s);
-			// ppFormat* m13f = m13s->GetAudioFormat();
-			// m13s->SetEntryCue(m13f->TimeToPosition(0.0f));
-			// m13s->SetExitCue(m13f->TimeToPosition(0.0f));
+			ppPlaylist* mainLowPlaylist = ims->CreatePlaylist("main_low");
+			mainLowPlaylist->AddSound(ml1seg);
+			mainLowPlaylist->AddSound(ml2seg);
+			mainLowPlaylist->AddSound(ml3seg);
+			mainLowPlaylist->AddSound(ml4seg);
+			mainLowPlaylist->AddSound(ml5seg);
+			mainLowPlaylist->AddSound(ml6seg);
+			mainLowPlaylist->AddSound(ml7seg);
+			mainLowPlaylist->AddSound(ml8seg);
+			mainLowPlaylist->AddSound(ml9seg);
+			mainLowPlaylist->AddSound(ml10seg);
+			mainLowPlaylist->AddSound(ml11seg);
+			mainLowPlaylist->AddSound(ml12seg);
+			mainLowPlaylist->AddSound(ml13seg);
 
-			ppPlaylist* mainPlaylist = ims->CreatePlaylist("main");
-			mainPlaylist->AddSound(m1s);
-			mainPlaylist->AddSound(m2s);
-			mainPlaylist->AddSound(m3s);
-			mainPlaylist->AddSound(m4s);
-			mainPlaylist->AddSound(m5s);
-			mainPlaylist->AddSound(m6s);
-			mainPlaylist->AddSound(m7s);
-			mainPlaylist->AddSound(m8s);
-			mainPlaylist->AddSound(m9s);
-			mainPlaylist->AddSound(m10s);
-			mainPlaylist->AddSound(m11s);
-			mainPlaylist->AddSound(m12s);
-			mainPlaylist->AddSound(m13s);
-
-			mainPlaylist->SetLoop(-1);
-			mainPlaylist->SetLocation(130, 50);
-			mainPlaylist->SetSize(100, 250);
-			mainPlaylist->SetVisible(false);
-			this->gui->AddControl(mainPlaylist);
-			ppButton* mainButton = new ppButton("mainbtn", 142, 300, 75, 20);
-			mainButton->SetText("Play");
-			mainButton->SetListener(btnListener);
-			mainButton->SetVisible(false);
-			this->gui->AddControl(mainButton);
+			mainLowPlaylist->SetTempo(80);
+			mainLowPlaylist->SetLoop(-1);
+			mainLowPlaylist->SetLocation(240, 50);
+			mainLowPlaylist->SetSize(100, 250);
+			mainLowPlaylist->SetVisible(false);
+			this->gui->AddControl(mainLowPlaylist);
+			ppButton* mainLowButton = new ppButton("mainlowbtn", 252, 300, 75, 20);
+			mainLowButton->SetText("Play");
+			mainLowButton->SetListener(btnListener);
+			mainLowButton->SetVisible(false);
+			this->gui->AddControl(mainLowButton);
 
 			//////////////////////////
 			// Main->End Transition //
@@ -421,7 +493,8 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			ppSound* m2e_s = ims->CreateSound("main2end_sound", m2e_f);
 			ppSegment* m2e_seg = ims->CreateSegment("main2end_seg");
 			m2e_seg->AddSound(m2e_s);
-			// m2e_seg->SetExitCue();
+			m2e_seg->SetEntryCue(m2e_f->TimeToPosition(0.75f));
+			m2e_seg->SetExitCue(m2e_f->TimeToPosition(12.75f));
 
 			////////////////////
 			// Heroic Stinger //
@@ -430,26 +503,26 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			ppSound* h1s = ims->CreateSound("heroic_sound1", h1f);
 			ppSegment* h1seg = ims->CreateSegment("heroic_seg1");
 			h1seg->AddSound(h1s);
-			// h1seg->SetEntryCue(h1f->TimeToPosition(0.0f));
-			// h1seg->SetExitCue(h1f->TimeToPosition(0.0f));
+			h1seg->SetEntryCue(h1f->TimeToPosition(0.75f));
+			h1seg->SetExitCue(h1f->TimeToPosition(7.5f));
 			ppFormat* h2f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a3-15.wav");
 			ppSound* h2s = ims->CreateSound("heroic_sound2", h2f);
 			ppSegment* h2seg = ims->CreateSegment("heroic_seg2");
 			h2seg->AddSound(h2s);
-			// h2seg->SetEntryCue(h2f->TimeToPosition(0.0f));
-			// h2seg->SetExitCue(h2f->TimeToPosition(0.0f));
+			h2seg->SetEntryCue(h2f->TimeToPosition(0.75f));
+			h2seg->SetExitCue(h2f->TimeToPosition(7.5f));
 			ppFormat* h3f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a3-16.wav");
 			ppSound* h3s = ims->CreateSound("heroic_sound3", h3f);
 			ppSegment* h3seg = ims->CreateSegment("heroic_seg3");
 			h3seg->AddSound(h3s);
-			// h3seg->SetEntryCue(h3f->TimeToPosition(0.0f));
-			// h3seg->SetExitCue(h3f->TimeToPosition(0.0f));
+			h3seg->SetEntryCue(h3f->TimeToPosition(1.125f));
+			h3seg->SetExitCue(h3f->TimeToPosition(7.5f));
 			ppFormat* h4f = ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/Music/l4_a3-17.wav");
 			ppSound* h4s = ims->CreateSound("heroic_sound4", h4f);
 			ppSegment* h4seg = ims->CreateSegment("heroic_seg4");
 			h4seg->AddSound(h4s);
-			// h4seg->SetEntryCue(h4f->TimeToPosition(0.0f));
-			// h4seg->SetExitCue(h4f->TimeToPosition(0.0f));
+			h4seg->SetEntryCue(h4f->TimeToPosition(0.375f));
+			h4seg->SetExitCue(h4f->TimeToPosition(7.5f));
 
 			ppPlaylist* heroicPlaylist = ims->CreatePlaylist("heroic");
 			heroicPlaylist->AddSound(h1seg);
@@ -457,20 +530,55 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			heroicPlaylist->AddSound(h3seg);
 			heroicPlaylist->AddSound(h4seg);
 
-			heroicPlaylist->SetLocation(240, 50);
+			heroicPlaylist->SetTempo(80);
+			heroicPlaylist->SetLocation(350, 50);
 			heroicPlaylist->SetSize(100, 100);
 			heroicPlaylist->SetVisible(false);
 			this->gui->AddControl(heroicPlaylist);
-			ppButton* heroicButton = new ppButton("heroicbtn", 252, 150, 75, 20);
+			ppButton* heroicButton = new ppButton("heroicbtn", 362, 150, 75, 20);
 			heroicButton->SetText("Play");
 			heroicButton->SetListener(btnListener);
 			heroicButton->SetVisible(false);
 			this->gui->AddControl(heroicButton);
 
-			////////////////////
 			ppSwitch* sw = ims->CreateSwitch("level");
+			//////////////////////////////
+			// Transitions and Stingers //
+			//////////////////////////////
 
-			sw->SetLocation(360, 50);
+			ppTransition* bridge2mainNormal = sw->CreateTransition(0, bridgePlaylist, mainNormalPlaylist);
+			bridge2mainNormal->SetSourceCurve(NULL); // No Fade
+			bridge2mainNormal->SetDestinationCurve(NULL); // No Fade
+			bridge2mainNormal->SetTransitionTrack(b2m_seg);
+			bridge2mainNormal->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
+
+			ppTransition* bridge2mainLow = sw->CreateTransition(0, bridgePlaylist, mainLowPlaylist);
+			bridge2mainLow->SetSourceCurve(NULL); // No Fade
+			bridge2mainLow->SetDestinationCurve(NULL); // No Fade
+			bridge2mainLow->SetTransitionTrack(b2m_seg);
+			bridge2mainLow->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
+
+			ppTransition* normal2low = sw->CreateTransition(0, mainNormalPlaylist, mainLowPlaylist);
+			normal2low->SetSourceCurve(new ppExpoEasing());
+			normal2low->SetDestinationCurve(new ppExpoEasing());
+			normal2low->SetSourceDuration(2.5f);
+			normal2low->SetDestinationDuration(2.5f);
+			normal2low->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
+			normal2low->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
+
+			ppTransition* low2normal = sw->CreateTransition(0, mainLowPlaylist, mainNormalPlaylist);
+			low2normal->SetSourceCurve(new ppExpoEasing());
+			low2normal->SetDestinationCurve(new ppExpoEasing());
+			low2normal->SetSourceDuration(2.5f);
+			low2normal->SetDestinationDuration(2.5f);
+			low2normal->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
+			low2normal->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
+
+			sw->CreateStinger("heroic", heroicPlaylist, ppStingerTriggerPosition::ENTRY_CUE);
+
+			//////////////////////////////
+
+			sw->SetLocation(470, 50);
 			sw->SetSize(150, 20);
 			sw->SetVisible(false);
 			this->gui->AddControl(sw);
@@ -487,13 +595,19 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			bridgesw->SetVisible(false);
 			this->gui->AddControl(bridgesw);
 
-			ppButton* mainsw = new ppButton("mainsw", this->GetGame()->GetWidth()-80, 140, 75, 20);
-			mainsw->SetText("Main");
-			mainsw->SetListener(btnListener);
-			mainsw->SetVisible(false);
-			this->gui->AddControl(mainsw);
+			ppButton* mainnormalsw = new ppButton("mainnormalsw", this->GetGame()->GetWidth()-80, 140, 75, 20);
+			mainnormalsw->SetText("Main [Normal]");
+			mainnormalsw->SetListener(btnListener);
+			mainnormalsw->SetVisible(false);
+			this->gui->AddControl(mainnormalsw);
 
-			ppButton* heroicsw = new ppButton("heroicsw", this->GetGame()->GetWidth()-80, 170, 75, 20);
+			ppButton* mainlowsw = new ppButton("mainlowsw", this->GetGame()->GetWidth()-80, 165, 75, 20);
+			mainlowsw->SetText("Main [Low]");
+			mainlowsw->SetListener(btnListener);
+			mainlowsw->SetVisible(false);
+			this->gui->AddControl(mainlowsw);
+
+			ppButton* heroicsw = new ppButton("heroicsw", this->GetGame()->GetWidth()-80, 200, 75, 20);
 			heroicsw->SetText("Heroic");
 			heroicsw->SetListener(btnListener);
 			heroicsw->SetVisible(false);

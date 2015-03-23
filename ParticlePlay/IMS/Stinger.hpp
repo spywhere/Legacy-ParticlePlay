@@ -4,7 +4,7 @@
 #include <ParticlePlay/IMS/Interfaces.hpp>
 
 enum class ppStingerTriggerPosition {
-	IMMEDIATE, NEXT_BEAT, NEXT_BAR
+	IMMEDIATE, NEXT_BEAT, NEXT_BAR, ENTRY_CUE, EXIT_CUE
 };
 
 class ppStinger {
@@ -19,6 +19,7 @@ public:
 	void Trigger();
 	bool IsPreparing();
 	bool IsTriggering();
+	float GetEntryCue();
 	ppStingerTriggerPosition GetTriggerPosition();
 	void Update();
 };

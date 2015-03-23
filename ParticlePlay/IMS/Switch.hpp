@@ -42,11 +42,14 @@ public:
 	bool IsPlaying();
 	bool IsPause();
 	bool IsStop();
+	bool IsStingerTrigger(const char *stingerName);
 	void Render(SDL_Renderer* renderer);
 	void Update();
 	void Update(ppInput* input);
 	void OnBar(ppGenericSound* source);
 	void OnBeat(ppGenericSound* source);
+	void OnEntryCue(ppGenericSound* source);
+	void OnExitCue(ppGenericSound* source);
 	ppControlType GetType();
 };
 

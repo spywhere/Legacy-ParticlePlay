@@ -147,10 +147,27 @@ Sint64 ppPlaylist::GetCurrentPosition(){
 	if(!this->current){
 		return 0;
 	}
+	Sint64 pos = 0;
+	for(auto sound : this->soundOrder){
+		if(sound == this->current){
+			break;
+		}
+		if(pos == 0){
+			pos += sound->GetEntryCue();
+		}
+		pos += sound->GetNormalExitCue()-sound->GetEntryCue();
+	}
+	if(!this->current){
+		if(this->soundOrder.size()<=0){
+			return 0;
+		}else{
+			return pos+this->soundOrder.front()->GetCurrentTime();
+		}
+	}
 	if(playDuration == 0 || this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
-		return this->current->GetCurrentPosition();
+		return pos+this->current->GetCurrentPosition();
 	}else{
-		return this->current->GetCurrentPosition()-this->current->GetEntryCue()+this->playDuration;
+		return pos+this->current->GetCurrentPosition()-this->current->GetEntryCue()+this->playDuration;
 	}
 }
 
@@ -174,14 +191,24 @@ Sint64 ppPlaylist::GetPositionLength(){
 }
 
 float ppPlaylist::GetCurrentTime(){
+	float time = 0;
+	for(auto sound : this->soundOrder){
+		if(sound == this->current){
+			break;
+		}
+		if(time == 0){
+			time += sound->GetAudioFormat()->PositionToTime(sound->GetEntryCue());
+		}
+		time += sound->GetAudioFormat()->PositionToTime(sound->GetNormalExitCue()-sound->GetEntryCue());
+	}
 	if(!this->current){
 		if(this->soundOrder.size()<=0){
 			return 0;
 		}else{
-			return this->soundOrder.front()->GetCurrentTime();
+			return time+this->soundOrder.front()->GetCurrentTime();
 		}
 	}
-	return this->current->GetCurrentTime();
+	return time+this->current->GetCurrentTime();
 }
 
 float ppPlaylist::GetTotalTime(){
@@ -273,6 +300,7 @@ void ppPlaylist::Update(){
 			}else{
 				if(this->queue.back() == this->soundOrder.front() && this->queue.back()->IsStop()){
 					this->soundOrder.push_back(this->soundOrder.front());
+					this->soundOrder.front()->Seek(0.0f);
 					this->soundOrder.pop_front();
 					this->SoftStop(true, false);
 				}
@@ -281,6 +309,27 @@ void ppPlaylist::Update(){
 	}
 	for(auto sound : this->sounds){
 		sound->Update();
+	}
+}
+
+void ppPlaylist::Seek(float time){
+	int index = 0;
+	for(auto sound : this->sounds){
+		float duration = sound->GetAudioFormat()->PositionToTime(sound->GetNormalExitCue());
+		if(index != 0){
+			duration -= sound->GetAudioFormat()->PositionToTime(sound->GetEntryCue());
+		}
+		if(time < duration){
+			sound->Seek(time);
+			break;
+		}else{
+			time -= duration;
+		}
+		index++;
+	}
+	while(index-- > 0){
+		this->queue.push_back(this->queue.front());
+		this->queue.pop_front();
 	}
 }
 
