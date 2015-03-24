@@ -574,6 +574,18 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			low2normal->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
 			low2normal->SetDestinationPosition(ppTransitionDestinationPosition::SAME_TIME);
 
+			ppTransition* mainNormal2end = sw->CreateTransition(0, mainNormalPlaylist, NULL);
+			mainNormal2end->SetSourceCurve(NULL); // No Fade
+			mainNormal2end->SetDestinationCurve(NULL); // No Fade
+			mainNormal2end->SetTransitionTrack(m2e_seg);
+			mainNormal2end->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
+
+			ppTransition* mainLow2end = sw->CreateTransition(0, mainLowPlaylist, NULL);
+			mainLow2end->SetSourceCurve(NULL); // No Fade
+			mainLow2end->SetDestinationCurve(NULL); // No Fade
+			mainLow2end->SetTransitionTrack(m2e_seg);
+			mainLow2end->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
+
 			sw->CreateStinger("heroic", heroicPlaylist, ppStingerTriggerPosition::ENTRY_CUE);
 
 			//////////////////////////////
