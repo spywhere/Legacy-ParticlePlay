@@ -1,5 +1,5 @@
-#ifndef PLAYER_HEADER
-#define PLAYER_HEADER
+#ifndef FPLAYER_HEADER
+#define FPLAYER_HEADER
 
 #include <ParticlePlay/ParticlePlay.hpp>
 #include "Entity.hpp"

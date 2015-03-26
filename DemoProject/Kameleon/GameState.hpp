@@ -1,9 +1,13 @@
-#ifndef TESTTESTBED_HEADER
-#define TESTTESTBED_HEADER
+#ifndef GAMESTATE_HEADER
+#define GAMESTATE_HEADER
 
 #include <ParticlePlay/ParticlePlay.hpp>
+#include "kPlayer.hpp"
 
-class TestTestbed : public ppTestBed {
+class GameState {
+protected:
+	ppPhysics* physics;
+	kPlayer* player;
 public:
 	void OnInit();
 	void OnRender(SDL_Renderer* renderer, int delta);

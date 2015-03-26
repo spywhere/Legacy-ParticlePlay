@@ -2,11 +2,12 @@
 #define KAMELEONSTATE_HEADER
 
 #include <ParticlePlay/ParticlePlay.hpp>
+#include "GameState.hpp"
 
 class KameleonState : public ppState {
 protected:
 	ppGUI* gui;
-	ppIMS* ims;
+	GameState* gameState;
 public:
 	bool debugView;
 	void OnInit();

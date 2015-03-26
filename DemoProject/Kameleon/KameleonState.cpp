@@ -78,7 +78,9 @@ class DebugButtonListener : public ppButtonListener {
 
 void KameleonState::OnInit(){
 	this->gui = new ppGUI();
-	this->debugView = true;
+	this->debugView = false;
+	this->gameState = new GameState();
+	this->gameState->OnInit();
 }
 
 void KameleonState::OnRender(SDL_Renderer* renderer, int delta){
@@ -90,11 +92,10 @@ void KameleonState::OnRender(SDL_Renderer* renderer, int delta){
 		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
 	}
 	this->gui->Render(renderer);
+	this->gameState->OnRender(renderer, delta);
 }
 
 void KameleonState::OnUpdate(ppInput* input, int delta){
-
-
 	ppIMS* ims = this->GetGame()->GetInteractiveMusicSystem();
 	if(ims){
 		if(ims->GetSwitch("level")){
@@ -638,4 +639,5 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 		ims->ClearSwitch();
 		this->GetGame()->EnterState("ims");
 	}
+	this->gameState->OnUpdate(input, delta);
 }

@@ -16,11 +16,11 @@ protected:
 	ppBitmapFont* font;
 	ppGUI* gui;
 	int help, cd, px, py, fx, fy, tx, ty;
-	float ptm;
 	virtual void RenderCircle(b2Vec2 center, float radius, ppColor* color);
 	virtual void RenderEdge(b2Vec2 v1, b2Vec2 v2, ppColor* color);
 	virtual void RenderPolygon(std::vector<b2Vec2> vertices, ppColor* color);
 	virtual void RenderChain(std::vector<b2Vec2> vertices, ppColor* color);
+	virtual void RenderBody(b2Body* body);
 public:
 	virtual void OnInit();
 	virtual void OnRender(SDL_Renderer* renderer, int delta);

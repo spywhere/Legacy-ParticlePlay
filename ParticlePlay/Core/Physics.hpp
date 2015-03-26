@@ -5,14 +5,18 @@
 
 class ppPhysics{
 protected:
+	float ptm;
 	b2World* world;
-	int fps;
 public:
-	ppPhysics(int fps, float gx, float gy);
+	ppPhysics(float gx, float gy);
 	b2World* GetWorld();
 	// ppEffect* GetEffect();
-	void Update();
+	void Update(int delta);
 	void UpdateAllBody();
+	void SetPTM(float ptm);
+	float GetPTM();
+	float PixelToWorld(float pixel);
+	float WorldToPixel(float world);
 	~ppPhysics();
 };
 
