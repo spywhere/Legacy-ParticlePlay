@@ -1,6 +1,5 @@
 #include "KameleonState.hpp"
 
-#include <iostream>
 #include <sstream>
 
 class DebugButtonListener : public ppButtonListener {

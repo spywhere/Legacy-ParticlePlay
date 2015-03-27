@@ -14,7 +14,7 @@ protected:
 	bool mouseDown;
 	int mbtn;
 	int clicks;
-	int mx, my, rmx, rmy, mmx, mmy;
+	int mx, my, rmx, rmy, mmx, mmy, dmx, dmy;
 	ppGame* game;
 public:
 	ppInput(ppGame* game);
@@ -23,6 +23,8 @@ public:
 	int GetMouseY();
 	int GetRelativeMouseX();
 	int GetRelativeMouseY();
+	int GetDeltaMouseX();
+	int GetDeltaMouseY();
 	int GetScrollX();
 	int GetScrollY();
 	int GetScrollX(bool once);

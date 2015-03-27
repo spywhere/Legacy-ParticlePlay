@@ -3,11 +3,15 @@
 
 #include <ParticlePlay/ParticlePlay.hpp>
 #include "kPlayer.hpp"
+#include "Level.hpp"
 
 class GameState {
 protected:
+	ppGUI* gui;
 	ppPhysics* physics;
 	kPlayer* player;
+	Level* level;
+	int tx, ty;
 public:
 	void OnInit();
 	void OnRender(SDL_Renderer* renderer, int delta);

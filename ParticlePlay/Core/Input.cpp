@@ -14,6 +14,8 @@ ppInput::ppInput(ppGame* game){
 	this->rmy = -1;
 	this->mmx = 0;
 	this->mmy = 0;
+	this->dmx = 0;
+	this->dmy = 0;
 }
 
 ppGame* ppInput::GetGame(){
@@ -34,6 +36,18 @@ int ppInput::GetRelativeMouseX(){
 
 int ppInput::GetRelativeMouseY(){
 	return this->rmy;
+}
+
+int ppInput::GetDeltaMouseX(){
+	int dmx = this->dmx;
+	this->dmx = 0;
+	return dmx;
+}
+
+int ppInput::GetDeltaMouseY(){
+	int dmy = this->dmy;
+	this->dmy = 0;
+	return dmy;
 }
 
 int ppInput::GetScrollX(){
@@ -169,6 +183,8 @@ void ppInput::OnEvent(SDL_Event* event){
 		this->keyDown = true;
 		this->keyEvent = &event->key;
 	}else if(event->type == SDL_MOUSEMOTION){
+		this->dmx = event->motion.x-this->mx;
+		this->dmy = event->motion.y-this->my;
 		this->mx = event->motion.x;
 		this->my = event->motion.y;
 		this->rmx = event->motion.xrel;
