@@ -25,7 +25,6 @@ public:
 #include <ParticlePlay/Easings/ExpoInEasing.hpp>
 #include <ParticlePlay/Easings/ExpoOutEasing.hpp>
 #include <ParticlePlay/Easings/LinearEasing.hpp>
-#include <ParticlePlay/Easings/MultiEasing.hpp>
 #include <ParticlePlay/Easings/QuadEasing.hpp>
 #include <ParticlePlay/Easings/QuadInEasing.hpp>
 #include <ParticlePlay/Easings/QuadOutEasing.hpp>

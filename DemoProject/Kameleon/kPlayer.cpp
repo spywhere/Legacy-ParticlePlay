@@ -70,17 +70,21 @@ void kPlayer::Update(ppInput* input){
 	if(input->IsKeyDown(SDL_SCANCODE_W)){
 		if(vel.y > -0.01f && vel.y < 0.01f){
 			vel.y = -55;
-		}else if(this->circleBody->GetPosition().y+1 > 40){
-			vel.y = -15;
+		}else if(this->circleBody->GetPosition().y+1 > 40 && vel.y > -15){
+			vel.y -= 5;
 		}
 	}
 	if(input->IsKeyDown(SDL_SCANCODE_A)){
-		if(this->boxBody->GetLinearVelocity().x > -10){
-			vel.x -= 15;
+		if(this->circleBody->GetPosition().y+1 > 40){
+			vel.x = -13;
+		}else{
+			vel.x = -20;
 		}
 	}else if(input->IsKeyDown(SDL_SCANCODE_D)){
-		if(this->boxBody->GetLinearVelocity().x < 10){
-			vel.x += 15;
+		if(this->circleBody->GetPosition().y+1 > 40){
+			vel.x = 13;
+		}else{
+			vel.x = 20;
 		}
 	}else{
 		vel.x = 0;

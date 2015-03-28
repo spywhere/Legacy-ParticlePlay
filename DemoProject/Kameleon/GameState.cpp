@@ -21,7 +21,7 @@ void GameState::OnRender(SDL_Renderer* renderer, int delta){
 	std::stringstream ss;
 	ss << "Translate: " << this->tx << ", " << this->ty << "\n";
 	ss << "Zoom Factor: " << this->physics->GetPTM() << "\n";
-	ss << "Water Level: " << this->player->GetWaterLevel();
+	ss << "Water Level: " << (int(this->player->GetWaterLevel()*1000)/1000.0f);
 	if(this->gui->GetDefaultFont()){
 		glColor3f(1 ,1 ,1);
 		this->gui->GetDefaultFont()->Render(10, 35, ss.str().c_str(), renderer);
