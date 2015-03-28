@@ -11,6 +11,7 @@ protected:
 	int px, py;
 public:
 	kPlayer(ppPhysics* physics, int x, int y);
+	float GetWaterLevel();
 	void Render(SDL_Renderer* renderer);
 	void Update(ppInput* input);
 };

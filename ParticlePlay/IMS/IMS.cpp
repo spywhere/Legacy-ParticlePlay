@@ -92,6 +92,25 @@ ppSwitch *ppIMS::CreateSwitch(const char *name){
 	return sw;
 }
 
+ppFilter *ppIMS::CreateFilter(const char *name, ppFilterType filterType){
+	if(!name){
+		return NULL;
+	}
+	ppFilter *filter = NULL;
+	if(filterType == ppFilterType::LOW_PASS){
+		filter = new ppLowPassFilter();
+	}else if(filterType == ppFilterType::BAND_PASS){
+		filter = new ppBandPassFilter();
+	}else if(filterType == ppFilterType::HIGH_PASS){
+		filter = new ppHighPassFilter();
+	}
+	if(filter){
+		filter->InitFilter();
+		this->filters[name] = filter;
+	}
+	return filter;
+}
+
 ppPlaylist* ppIMS::CreatePlaylist(const char *name){
 	if(!name){
 		return NULL;
@@ -118,6 +137,17 @@ ppSwitch* ppIMS::GetSwitch(const char *name){
 	}
 	auto it = this->switches.find(name);
 	if (it != this->switches.end()){
+		return it->second;
+	}
+	return NULL;
+}
+
+ppFilter* ppIMS::GetFilter(const char *name){
+	if(!name){
+		return NULL;
+	}
+	auto it = this->filters.find(name);
+	if (it != this->filters.end()){
 		return it->second;
 	}
 	return NULL;
@@ -154,6 +184,13 @@ void ppIMS::ClearSwitch(){
 	this->switches.clear();
 }
 
+void ppIMS::ClearFilter(){
+	for(auto filter : this->filters){
+		delete filter.second;
+	}
+	this->filters.clear();
+}
+
 int ppIMS::Reinit(){
 	if(!this->device || !this->context){
 		return 1;
@@ -166,6 +203,7 @@ void ppIMS::Quit(){
 	if(!this->device || !this->context){
 		return;
 	}
+	this->ClearFilter();
 	this->ClearSound();
 	this->ClearSwitch();
 	for(auto format : this->formats){

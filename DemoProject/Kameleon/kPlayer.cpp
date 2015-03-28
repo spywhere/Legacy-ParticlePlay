@@ -55,6 +55,13 @@ void kPlayer::Render(SDL_Renderer* renderer){
 	glEnd();
 }
 
+float kPlayer::GetWaterLevel(){
+	if(this->circleBody->GetPosition().y+1 > 40){
+		return (this->circleBody->GetPosition().y+1-40)/10;
+	}
+	return 0;
+}
+
 void kPlayer::Update(ppInput* input){
 	b2Vec2 vel = this->boxBody->GetLinearVelocity();
 	if(this->circleBody->GetPosition().y+1 > 40 && vel.y > 0){

@@ -71,6 +71,12 @@ void ppSegment::RemoveRTPC(ppRTPC* rtpc){
 	}
 }
 
+void ppSegment::SetFilter(ppFilter* filter){
+	for(auto sound : this->sounds){
+		sound->SetFilter(filter);
+	}
+}
+
 void ppSegment::SetLoop(int loop){
 	this->emptySound->SetLoop(loop);
 }

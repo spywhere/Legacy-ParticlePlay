@@ -6,6 +6,7 @@
 #include <ParticlePlay/GUI/Control.hpp>
 #include <ParticlePlay/IMS/Format/Format.hpp>
 #include <ParticlePlay/IMS/RTPC.hpp>
+#include <ParticlePlay/IMS/Filter.hpp>
 
 class ppRTPC;
 class ppUpdatable {
@@ -91,12 +92,14 @@ protected:
 	float speed;
 	ALuint sourceID;
 	ppFormat* audioFormat;
+	ppFilter* filter;
 	std::list<ppRTPC*> rtpcs;
 	ppGenericSound(const char *name);
 public:
 	virtual ~ppGenericSound();
 	virtual void AddRTPC(ppRTPC* rtpc);
 	virtual void RemoveRTPC(ppRTPC* rtpc);
+	virtual void SetFilter(ppFilter* filter);
 	virtual int GetTotalBeat(float time);
 	virtual int GetCurrentBeat(float time);
 	virtual int GetCurrentBar(float time);

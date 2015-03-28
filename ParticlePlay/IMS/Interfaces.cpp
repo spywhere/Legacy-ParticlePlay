@@ -159,6 +159,7 @@ ppGenericSound::ppGenericSound(const char *name) : ppRhythmic(), ppPlayable(), p
 	this->autoloop = true;
 	this->loop = 0;
 	this->audioFormat = NULL;
+	this->filter = NULL;
 }
 
 ppGenericSound::~ppGenericSound(){}
@@ -179,6 +180,10 @@ void ppGenericSound::RemoveRTPC(ppRTPC* rtpc){
 			return;
 		}
 	}
+}
+
+void ppGenericSound::SetFilter(ppFilter* filter){
+	this->filter = filter;
 }
 
 int ppGenericSound::GetTotalBeat(float time){
@@ -269,6 +274,11 @@ void ppGenericSound::Update(){
 		}else if(effect->GetEffect() == ppRTPCEffect::PANNING){
 			alSource3f(sourceID, AL_POSITION, (value-0.5f)*2.0f, 0, 0);
 		}
+	}
+	if(this->filter && this->filter->IsSupported()){
+		alSourcei(sourceID, AL_DIRECT_FILTER, filter->GetFilterID());
+	}else{
+		alSourcei(sourceID, AL_DIRECT_FILTER, AL_FILTER_NULL);
 	}
 }
 

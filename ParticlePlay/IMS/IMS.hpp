@@ -13,6 +13,8 @@
 #include <ParticlePlay/IMS/Segment.hpp>
 #include <ParticlePlay/IMS/Sound.hpp>
 #include <ParticlePlay/IMS/Switch.hpp>
+#include <ParticlePlay/IMS/Filter.hpp>
+#include <ParticlePlay/IMS/Filter/Filters.hpp>
 
 class ppSegment;
 class ppSwitch;
@@ -23,6 +25,7 @@ protected:
 	bool preload;
 	std::map<std::string, ppGenericSound*> sounds;
 	std::map<std::string, ppSwitch*> switches;
+	std::map<std::string, ppFilter*> filters;
 	std::list<ppFormat*> formats;
 	ALCdevice* device;
 	ALCcontext* context;
@@ -38,13 +41,16 @@ public:
 	ppSound* CreateSound(const char *name, ppFormat* audioFormat);
 	ppSegment* CreateSegment(const char *name);
 	ppSwitch* CreateSwitch(const char *name);
+	ppFilter* CreateFilter(const char *name, ppFilterType filterType);
 	ppPlaylist* CreatePlaylist(const char *name);
 	ppGenericSound* GetSound(const char *name);
 	ppSwitch* GetSwitch(const char *name);
+	ppFilter* GetFilter(const char *name);
 	void RemoveSound(const char *name);
 	void RemoveSwitch(const char *name);
 	void ClearSound();
 	void ClearSwitch();
+	void ClearFilter();
 	int Init();
 	int Reinit();
 	void Quit();

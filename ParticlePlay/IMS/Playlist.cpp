@@ -238,6 +238,12 @@ void ppPlaylist::RemoveRTPC(ppRTPC* rtpc){
 	}
 }
 
+void ppPlaylist::SetFilter(ppFilter* filter){
+	for(auto sound : this->sounds){
+		sound->SetFilter(filter);
+	}
+}
+
 void ppPlaylist::SetVolume(float volume){
 	ppGenericSound::SetVolume(volume);
 	for(auto sound : this->sounds){

@@ -78,7 +78,7 @@ class DebugButtonListener : public ppButtonListener {
 void KameleonState::OnInit(){
 	this->gui = new ppGUI();
 	this->debugView = false;
-	this->gameState = new GameState();
+	this->gameState = new GameState(this->GetGame());
 	this->gameState->OnInit();
 }
 
@@ -131,6 +131,11 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			ims->CreateSound("jump", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/jump.wav"));
 			ims->CreateSound("ouch", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/ouch.wav"));
 			ims->CreateSound("splash", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/splash.wav"));
+
+			////////////
+			// Filter //
+			////////////
+			ppFilter* water_filter = ims->CreateFilter("water_filter", ppFilterType::LOW_PASS);
 
 			//////////////////
 			// Bridge Track //
@@ -358,6 +363,7 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			mainNormalPlaylist->SetLocation(130, 50);
 			mainNormalPlaylist->SetSize(100, 250);
 			mainNormalPlaylist->SetVisible(false);
+			mainNormalPlaylist->SetFilter(water_filter);
 			this->gui->AddControl(mainNormalPlaylist);
 			ppButton* mainNormalButton = new ppButton("mainnormalbtn", 142, 300, 75, 20);
 			mainNormalButton->SetText("Play");
@@ -479,6 +485,7 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			mainLowPlaylist->SetLocation(240, 50);
 			mainLowPlaylist->SetSize(100, 250);
 			mainLowPlaylist->SetVisible(false);
+			mainLowPlaylist->SetFilter(water_filter);
 			this->gui->AddControl(mainLowPlaylist);
 			ppButton* mainLowButton = new ppButton("mainlowbtn", 252, 300, 75, 20);
 			mainLowButton->SetText("Play");
@@ -495,6 +502,7 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			m2e_seg->AddSound(m2e_s);
 			m2e_seg->SetEntryCue(m2e_f->TimeToPosition(0.75f));
 			m2e_seg->SetExitCue(m2e_f->TimeToPosition(12.75f));
+			m2e_seg->SetFilter(water_filter);
 
 			////////////////////
 			// Heroic Stinger //
@@ -534,6 +542,7 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			heroicPlaylist->SetLocation(350, 50);
 			heroicPlaylist->SetSize(100, 100);
 			heroicPlaylist->SetVisible(false);
+			heroicPlaylist->SetFilter(water_filter);
 			this->gui->AddControl(heroicPlaylist);
 			ppButton* heroicButton = new ppButton("heroicbtn", 362, 150, 75, 20);
 			heroicButton->SetText("Play");

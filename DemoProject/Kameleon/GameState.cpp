@@ -2,6 +2,10 @@
 
 #include <sstream>
 
+GameState::GameState(ppGame* game){
+	this->game = game;
+}
+
 void GameState::OnInit(){
 	this->gui = new ppGUI();
 	this->physics = new ppPhysics(0, 50);
@@ -16,7 +20,8 @@ void GameState::OnInit(){
 void GameState::OnRender(SDL_Renderer* renderer, int delta){
 	std::stringstream ss;
 	ss << "Translate: " << this->tx << ", " << this->ty << "\n";
-	ss << "Zoom Factor: " << this->physics->GetPTM();
+	ss << "Zoom Factor: " << this->physics->GetPTM() << "\n";
+	ss << "Water Level: " << this->player->GetWaterLevel();
 	if(this->gui->GetDefaultFont()){
 		glColor3f(1 ,1 ,1);
 		this->gui->GetDefaultFont()->Render(10, 35, ss.str().c_str(), renderer);
@@ -35,6 +40,13 @@ void GameState::OnUpdate(ppInput* input, int delta){
 	this->physics->Update(delta);
 	this->level->Update(input);
 	this->player->Update(input);
+	if(this->game->GetInteractiveMusicSystem()){
+		ppIMS* ims = this->game->GetInteractiveMusicSystem();
+		if(ims->GetFilter("water_filter")){
+			ppLowPassFilter* water_filter = (ppLowPassFilter*)ims->GetFilter("water_filter");
+			water_filter->SetGainHF(1.0f-this->player->GetWaterLevel());
+		}
+	}
 
 	int scrolly = input->GetScrollY();
 	if(scrolly!=0){

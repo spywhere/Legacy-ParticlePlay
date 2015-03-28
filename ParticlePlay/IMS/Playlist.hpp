@@ -49,6 +49,7 @@ public:
 	ALuint GetSourceID();
 	void AddRTPC(ppRTPC* rtpc);
 	void RemoveRTPC(ppRTPC* rtpc);
+	void SetFilter(ppFilter* filter);
 
 	//Control
 	void Render(SDL_Renderer* renderer);
