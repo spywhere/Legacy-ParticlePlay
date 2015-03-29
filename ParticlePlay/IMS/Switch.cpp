@@ -191,6 +191,9 @@ void ppSwitch::Update(){
 			this->lastPlay = this->currentTransition->GetActualDestination();
 			this->currentTransition = NULL;
 			this->readyForTransition = true;
+			for(auto stinger : this->stingers){
+				stinger.second->Reset();
+			}
 		}
 	}
 }

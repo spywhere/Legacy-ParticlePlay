@@ -16,6 +16,7 @@ protected:
 public:
 	ppStinger(ppGenericSound* sound, ppStingerTriggerPosition position);
 	void PrepareTrigger();
+	void Reset();
 	void Trigger();
 	bool IsPreparing();
 	bool IsTriggering();

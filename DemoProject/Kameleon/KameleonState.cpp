@@ -13,7 +13,7 @@ class DebugButtonListener : public ppButtonListener {
 		void OnClick(ppButton* button){
 			ppIMS* ims = this->state->GetGame()->GetInteractiveMusicSystem();
 			if(button->GetName() == "debugbtn"){
-				this->state->debugView = !this->state->debugView;
+				this->state->debugView = (this->state->debugView+1)%4;
 			}else if(button->GetName() == "bridgebtn"){
 				ppGenericSound* sound = ims->GetSound("bridge");
 				if(sound->IsPlaying()){
@@ -77,12 +77,13 @@ class DebugButtonListener : public ppButtonListener {
 
 void KameleonState::OnInit(){
 	this->gui = new ppGUI();
-	this->debugView = false;
+	this->debugView = 0;
 	this->gameState = new GameState(this->GetGame());
 	this->gameState->OnInit();
 }
 
 void KameleonState::OnRender(SDL_Renderer* renderer, int delta){
+	this->gameState->OnRender(renderer, delta);
 	std::stringstream ss;
 	ss << "FPS: " << this->GetGame()->GetFPS() << " [" << this->GetGame()->GetAvgRenderTime() << "ms]\n";
 	ss << "UPS: " << this->GetGame()->GetUPS() << " [" << this->GetGame()->GetAvgUpdateTime() << "ms]\n";
@@ -91,36 +92,36 @@ void KameleonState::OnRender(SDL_Renderer* renderer, int delta){
 		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
 	}
 	this->gui->Render(renderer);
-	this->gameState->OnRender(renderer, delta);
 }
 
 void KameleonState::OnUpdate(ppInput* input, int delta){
+	this->gameState->SetDebugView(this->debugView);
 	ppIMS* ims = this->GetGame()->GetInteractiveMusicSystem();
 	if(ims){
 		if(ims->GetSwitch("level")){
-			this->gui->GetControl("bridge")->SetVisible(this->debugView);
+			this->gui->GetControl("bridge")->SetVisible(this->debugView==3);
 			ppButton* bridgeButton = (ppButton*)this->gui->GetControl("bridgebtn");
 			bridgeButton->SetText((ims->GetSound("bridge")->IsPlaying())?"Stop":"Play");
-			bridgeButton->SetVisible(this->debugView);
-			this->gui->GetControl("main_normal")->SetVisible(this->debugView);
+			bridgeButton->SetVisible(this->debugView==3);
+			this->gui->GetControl("main_normal")->SetVisible(this->debugView==3);
 			ppButton* mainNormalButton = (ppButton*)this->gui->GetControl("mainnormalbtn");
 			mainNormalButton->SetText((ims->GetSound("main_normal")->IsPlaying())?"Stop":"Play");
-			mainNormalButton->SetVisible(this->debugView);
-			this->gui->GetControl("main_low")->SetVisible(this->debugView);
+			mainNormalButton->SetVisible(this->debugView==3);
+			this->gui->GetControl("main_low")->SetVisible(this->debugView==3);
 			ppButton* mainLowButton = (ppButton*)this->gui->GetControl("mainlowbtn");
 			mainLowButton->SetText((ims->GetSound("main_low")->IsPlaying())?"Stop":"Play");
-			mainLowButton->SetVisible(this->debugView);
-			this->gui->GetControl("heroic")->SetVisible(this->debugView);
+			mainLowButton->SetVisible(this->debugView==3);
+			this->gui->GetControl("heroic")->SetVisible(this->debugView==3);
 			ppButton* heroicButton = (ppButton*)this->gui->GetControl("heroicbtn");
 			heroicButton->SetText((ims->GetSound("heroic")->IsPlaying())?"Stop":"Play");
-			heroicButton->SetVisible(this->debugView);
-			this->gui->GetControl("level")->SetVisible(this->debugView);
+			heroicButton->SetVisible(this->debugView==3);
+			this->gui->GetControl("level")->SetVisible(this->debugView==3);
 
-			this->gui->GetControl("stopsw")->SetVisible(this->debugView);
-			this->gui->GetControl("bridgesw")->SetVisible(this->debugView);
-			this->gui->GetControl("mainnormalsw")->SetVisible(this->debugView);
-			this->gui->GetControl("mainlowsw")->SetVisible(this->debugView);
-			this->gui->GetControl("heroicsw")->SetVisible(this->debugView && !ims->GetSwitch("level")->IsStingerTrigger("heroic"));
+			this->gui->GetControl("stopsw")->SetVisible(this->debugView==3);
+			this->gui->GetControl("bridgesw")->SetVisible(this->debugView==3);
+			this->gui->GetControl("mainnormalsw")->SetVisible(this->debugView==3);
+			this->gui->GetControl("mainlowsw")->SetVisible(this->debugView==3);
+			this->gui->GetControl("heroicsw")->SetVisible(this->debugView==3 && !ims->GetSwitch("level")->IsStingerTrigger("heroic"));
 		}else{
 			DebugButtonListener* btnListener = new DebugButtonListener(this);
 			///////////////////
@@ -130,7 +131,9 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			ims->CreateSound("heal", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/heal.wav"))->SetLoop(-1);
 			ims->CreateSound("jump", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/jump.wav"));
 			ims->CreateSound("ouch", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/ouch.wav"));
+			ims->CreateSound("out_water", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/out_water.wav"));
 			ims->CreateSound("splash", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/splash.wav"));
+			ims->CreateSound("thub", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/thub.wav"));
 
 			////////////
 			// Filter //

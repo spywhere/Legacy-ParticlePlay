@@ -2,6 +2,7 @@
 
 PhysicsObject::PhysicsObject(ppPhysics* physics){
 	this->physics = physics;
+	this->debugView = false;
 }
 
 void PhysicsObject::RenderCircle(b2Vec2 center, float radius, ppColor* color){
@@ -129,4 +130,8 @@ void PhysicsObject::RenderBody(b2Body* body){
 		}
 	}
 	glPopMatrix();
+}
+
+void PhysicsObject::SetDebugView(bool debugView){
+	this->debugView = debugView;
 }

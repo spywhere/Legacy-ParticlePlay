@@ -9,6 +9,12 @@ ppStinger::ppStinger(ppGenericSound* sound, ppStingerTriggerPosition position){
 	this->position = position;
 }
 
+void ppStinger::Reset(){
+	this->prepare = false;
+	this->trigger = false;
+	this->sound->Stop();
+}
+
 void ppStinger::PrepareTrigger(){
 	if(this->prepare){
 		return;
@@ -43,7 +49,6 @@ ppStingerTriggerPosition ppStinger::GetTriggerPosition(){
 
 void ppStinger::Update(){
 	if(this->prepare && this->trigger && this->sound->IsStop()){
-		this->prepare = false;
-		this->trigger = false;
+		this->Reset();
 	}
 }

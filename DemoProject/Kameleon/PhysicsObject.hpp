@@ -6,6 +6,7 @@
 
 class PhysicsObject {
 protected:
+	bool debugView;
 	ppPhysics* physics;
 	virtual void RenderCircle(b2Vec2 center, float radius, ppColor* color);
 	virtual void RenderEdge(b2Vec2 v1, b2Vec2 v2, ppColor* color);
@@ -13,6 +14,8 @@ protected:
 	virtual void RenderChain(std::vector<b2Vec2> vertices, ppColor* color);
 	virtual void RenderBody(b2Body* body);
 	PhysicsObject(ppPhysics* physics);
+public:
+	void SetDebugView(bool debugView);
 };
 
 #endif

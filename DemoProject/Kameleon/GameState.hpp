@@ -13,11 +13,13 @@ protected:
 	kPlayer* player;
 	Level* level;
 	int tx, ty;
+	int debugView;
 public:
 	GameState(ppGame* game);
 	void OnInit();
 	void OnRender(SDL_Renderer* renderer, int delta);
 	void OnUpdate(ppInput* input, int delta);
+	void SetDebugView(int debugView);
 };
 
 #endif
