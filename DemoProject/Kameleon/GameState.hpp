@@ -12,6 +12,7 @@ protected:
 	ppPhysics* physics;
 	kPlayer* player;
 	Level* level;
+	ppImage* background;
 	int tx, ty;
 	int debugView;
 public:

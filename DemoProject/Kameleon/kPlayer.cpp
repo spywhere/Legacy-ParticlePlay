@@ -23,7 +23,7 @@ kPlayer::kPlayer(ppGame* game, ppPhysics* physics, int x, int y) : PhysicsObject
 	this->circleBody->CreateFixture(&circleShape, 1.0f);
 
 	b2PolygonShape boxShape;
-	boxShape.SetAsBox(1, 1);
+	boxShape.SetAsBox(1, 0.5f);
 
 	b2FixtureDef boxFixtureDef;
 	boxFixtureDef.shape = &boxShape;
@@ -170,30 +170,30 @@ void kPlayer::Update(ppInput* input, int delta){
 	if(input->IsKeyDown(SDL_SCANCODE_W) || input->IsKeyDown(SDL_SCANCODE_UP)){
 		if(this->circleBody->GetPosition().y+1 > 40.25f){
 			if(vel.y > -15){
-				vel.y -= 3;
+				vel.y -= 2.5f;
 			}
 		}else if(vel.y > -0.01f && vel.y < 0.01f){
 			ims->GetSound("jump")->Stop();
 			ims->GetSound("jump")->Play();
-			vel.y = -55;
+			vel.y = -50;
 		}
 	}
 	if(input->IsKeyDown(SDL_SCANCODE_A) || input->IsKeyDown(SDL_SCANCODE_LEFT)){
 		if(this->circleBody->GetPosition().y+1 > 40.25f){
-			vel.x = -13;
+			vel.x = -12;
 		}else{
-			vel.x = -20;
+			vel.x = -15;
 		}
 	}else if(input->IsKeyDown(SDL_SCANCODE_D) || input->IsKeyDown(SDL_SCANCODE_RIGHT)){
 		if(this->circleBody->GetPosition().y+1 > 40.25f){
-			vel.x = 13;
+			vel.x = 12;
 		}else{
-			vel.x = 20;
+			vel.x = 15;
 		}
 	}else{
 		vel.x = 0;
 	}
-	this->boxBody->SetLinearVelocity(vel);
+	this->circleBody->SetLinearVelocity(vel);
 
 	this->idlePose->Update(delta);
 	this->runPose->Update(delta);

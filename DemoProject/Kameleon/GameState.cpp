@@ -16,16 +16,17 @@ void GameState::OnInit(){
 	this->tx = 0;
 	this->ty = -350;
 	this->debugView = 0;
+
+	this->background = new ppImage("tmpres/Kameleon/Assets/Image 2306.jpg");
 }
 
 void GameState::OnRender(SDL_Renderer* renderer, int delta){
-	glColor3f(0.5f, 0.5f, 0.5f);
-	glBegin(GL_QUADS);
-		glVertex3f(0, 0, 0);
-		glVertex3f(640, 0, 0);
-		glVertex3f(640, 480, 0);
-		glVertex3f(0, 480, 0);
-	glEnd();
+	this->background->Render(renderer, this->game->GetWidth()/2-369, this->game->GetHeight()/2-240, 738, 480);
+	glPushMatrix();
+	glTranslatef(this->tx+320, this->ty, 0);
+	this->level->Render(renderer);
+	this->player->Render(renderer);
+	glPopMatrix();
 
 	std::stringstream ss;
 	ss << "Translate: " << this->tx << ", " << this->ty << "\n";
@@ -37,12 +38,6 @@ void GameState::OnRender(SDL_Renderer* renderer, int delta){
 		this->gui->GetDefaultFont()->Render(10, 35, ss.str().c_str(), renderer);
 	}
 	this->gui->Render(renderer);
-
-	glPushMatrix();
-	glTranslatef(this->tx+320, this->ty, 0);
-	this->level->Render(renderer);
-	this->player->Render(renderer);
-	glPopMatrix();
 }
 
 void GameState::OnUpdate(ppInput* input, int delta){
