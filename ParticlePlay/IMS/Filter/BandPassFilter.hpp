@@ -5,11 +5,10 @@
 
 class ppBandPassFilter : public ppFilter {
 protected:
-	float gain, gainhf, gainlf;
+	float gainhf, gainlf;
 public:
-	ppBandPassFilter();
+	ppBandPassFilter(ppIMS* ims, ppFilterType type);
 	void InitFilter();
-	float GetGain();
 	float GetGainHF();
 	float GetGainLF();
 	void SetGain(float gain);

@@ -5,6 +5,8 @@
 
 class ppCircEasing : public ppEasing {
 public:
+	ppCircEasing(float begin, float changes) : ppEasing(begin, changes){};
+	ppCircEasing() : ppEasing(){};
 	float GetValue(float time, float duration, float begin, float changes);
 };
 

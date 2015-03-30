@@ -121,8 +121,6 @@ void kPlayer::Update(ppInput* input, int delta){
 		this->playerFlip = ppImage::NO_FLIP;
 	}
 
-	ims->GetSound("heal")->SetVolume(this->GetWaterLevel());
-
 	if(this->circleBody->GetPosition().y+1 <= 40.25f && this->currentPose == this->swimPose){
 		ims->GetSound("out_water")->Stop();
 		ims->GetSound("out_water")->Play();

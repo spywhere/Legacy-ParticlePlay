@@ -8,7 +8,7 @@ class DebugButtonListener : public ppButtonListener {
 	public:
 		DebugButtonListener(KameleonState* state) : ppButtonListener(){
 			this->state = state;
-		}
+		};
 
 		void OnClick(ppButton* button){
 			ppIMS* ims = this->state->GetGame()->GetInteractiveMusicSystem();
@@ -124,21 +124,25 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			this->gui->GetControl("heroicsw")->SetVisible(this->debugView==3 && !ims->GetSwitch("level")->IsStingerTrigger("heroic"));
 		}else{
 			DebugButtonListener* btnListener = new DebugButtonListener(this);
+			/////////////////////
+			// Filter and RTPC //
+			/////////////////////
+			ppRTPC* water_rtpc = ims->CreateRTPC("water_rtpc");
+			ppFilter* water_filter = ims->CreateFilter("water_filter", ppFilterType::LOW_PASS);
+			water_filter->AddRTPC(water_rtpc, ppRTPCEffect::GAINHF, new ppLinearEasing(1, -1));
+
 			///////////////////
 			// Sound Effects //
 			///////////////////
 			ims->CreateSound("bee", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/bee.wav"))->SetLoop(-1);
-			ims->CreateSound("heal", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/heal.wav"))->SetLoop(-1);
+			ppGenericSound* heal_sound = ims->CreateSound("heal", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/heal.wav"));
+			heal_sound->SetLoop(-1);
+			heal_sound->AddRTPC(water_rtpc, ppRTPCEffect::GAIN, new ppLinearEasing());
 			ims->CreateSound("jump", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/jump.wav"));
 			ims->CreateSound("ouch", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/ouch.wav"));
 			ims->CreateSound("out_water", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/out_water.wav"));
 			ims->CreateSound("splash", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/splash.wav"));
 			ims->CreateSound("thub", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/thub.wav"));
-
-			////////////
-			// Filter //
-			////////////
-			ppFilter* water_filter = ims->CreateFilter("water_filter", ppFilterType::LOW_PASS);
 
 			//////////////////
 			// Bridge Track //

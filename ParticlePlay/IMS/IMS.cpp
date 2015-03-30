@@ -83,6 +83,15 @@ ppSegment *ppIMS::CreateSegment(const char *name){
 	return segment;
 }
 
+ppPlaylist* ppIMS::CreatePlaylist(const char *name){
+	if(!name){
+		return NULL;
+	}
+	ppPlaylist* playlist = new ppPlaylist(name, this->randomizer);
+	this->sounds[name] = playlist;
+	return playlist;
+}
+
 ppSwitch *ppIMS::CreateSwitch(const char *name){
 	if(!name){
 		return NULL;
@@ -98,11 +107,11 @@ ppFilter *ppIMS::CreateFilter(const char *name, ppFilterType filterType){
 	}
 	ppFilter *filter = NULL;
 	if(filterType == ppFilterType::LOW_PASS){
-		filter = new ppLowPassFilter();
+		filter = new ppLowPassFilter(this, filterType);
 	}else if(filterType == ppFilterType::BAND_PASS){
-		filter = new ppBandPassFilter();
+		filter = new ppBandPassFilter(this, filterType);
 	}else if(filterType == ppFilterType::HIGH_PASS){
-		filter = new ppHighPassFilter();
+		filter = new ppHighPassFilter(this, filterType);
 	}
 	if(filter){
 		filter->InitFilter();
@@ -111,13 +120,13 @@ ppFilter *ppIMS::CreateFilter(const char *name, ppFilterType filterType){
 	return filter;
 }
 
-ppPlaylist* ppIMS::CreatePlaylist(const char *name){
+ppRTPC* ppIMS::CreateRTPC(const char *name){
 	if(!name){
 		return NULL;
 	}
-	ppPlaylist* playlist = new ppPlaylist(name, this->randomizer);
-	this->sounds[name] = playlist;
-	return playlist;
+	ppRTPC* rtpc = new ppRTPC(this);
+	this->rtpcs[name] = rtpc;
+	return rtpc;
 }
 
 ppGenericSound* ppIMS::GetSound(const char *name){
@@ -148,6 +157,17 @@ ppFilter* ppIMS::GetFilter(const char *name){
 	}
 	auto it = this->filters.find(name);
 	if (it != this->filters.end()){
+		return it->second;
+	}
+	return NULL;
+}
+
+ppRTPC* ppIMS::GetRTPC(const char *name){
+	if(!name){
+		return NULL;
+	}
+	auto it = this->rtpcs.find(name);
+	if (it != this->rtpcs.end()){
 		return it->second;
 	}
 	return NULL;
@@ -189,6 +209,13 @@ void ppIMS::ClearFilter(){
 		delete filter.second;
 	}
 	this->filters.clear();
+}
+
+void ppIMS::ClearRTPC(){
+	for(auto rtpc : this->rtpcs){
+		delete rtpc.second;
+	}
+	this->rtpcs.clear();
 }
 
 int ppIMS::Reinit(){

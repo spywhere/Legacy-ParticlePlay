@@ -39,7 +39,7 @@ public:
 	void Update(ppInput* input);
 	ppControlType GetType();
 	ALuint GetSourceID();
-	void AddRTPC(ppRTPC* rtpc);
+	void AddRTPC(ppRTPC* rtpc, ppRTPCEffect effect, ppEasing* easing);
 	void RemoveRTPC(ppRTPC* rtpc);
 	void SetFilter(ppFilter* filter);
 };

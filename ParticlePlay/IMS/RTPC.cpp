@@ -13,28 +13,8 @@ ppEasing* ppEffectInfo::GetCurve(){
 	return this->easing;
 }
 
-ppRTPC::ppRTPC(){
+ppRTPC::ppRTPC(ppIMS* ims){
 	this->offset = 0;
-}
-
-void ppRTPC::AddSound(ppGenericSound* sound, ppRTPCEffect effect, ppEasing* easing){
-	this->effects[sound] = new ppEffectInfo(effect, easing);
-}
-
-void ppRTPC::RemoveSound(ppGenericSound* sound){
-	auto it = this->effects.find(sound);
-	if (it != this->effects.end()){
-		this->effects.erase(sound);
-	}
-}
-
-ppEffectInfo* ppRTPC::GetEffectInfo(ppGenericSound* sound){
-	auto it = this->effects.find(sound);
-	if (it != this->effects.end()){
-		return it->second;
-	}else{
-		return NULL;
-	}
 }
 
 void ppRTPC::SetOffset(float offset){

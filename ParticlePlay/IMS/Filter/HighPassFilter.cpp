@@ -1,7 +1,6 @@
 #include "HighPassFilter.hpp"
 
-ppHighPassFilter::ppHighPassFilter() : ppFilter(){
-	this->gain = 1.0f;
+ppHighPassFilter::ppHighPassFilter(ppIMS* ims, ppFilterType type) : ppFilter(ims, type){
 	this->gainlf = 1.0f;
 }
 
@@ -14,16 +13,12 @@ void ppHighPassFilter::InitFilter(){
 	alFilteri(this->filterID, AL_FILTER_TYPE, AL_FILTER_HIGHPASS);
 }
 
-float ppHighPassFilter::GetGain(){
-	return this->gain;
-}
-
 float ppHighPassFilter::GetGainLF(){
 	return this->gainlf;
 }
 
 void ppHighPassFilter::SetGain(float gain){
-	this->gain = gain;
+	ppFilter::SetGain(gain);
 	alFilterf(this->filterID, AL_HIGHPASS_GAIN, this->gain);
 }
 

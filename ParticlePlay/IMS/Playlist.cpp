@@ -226,9 +226,9 @@ ALuint ppPlaylist::GetSourceID(){
 	return 0; // Override Add/Remove RTPCs instead
 }
 
-void ppPlaylist::AddRTPC(ppRTPC* rtpc){
+void ppPlaylist::AddRTPC(ppRTPC* rtpc, ppRTPCEffect effect, ppEasing* easing){
 	for(auto sound : this->sounds){
-		sound->AddRTPC(rtpc);
+		sound->AddRTPC(rtpc, effect, easing);
 	}
 }
 

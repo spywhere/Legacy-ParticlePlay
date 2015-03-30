@@ -5,11 +5,10 @@
 
 class ppLowPassFilter : public ppFilter {
 protected:
-	float gain, gainhf;
+	float gainhf;
 public:
-	ppLowPassFilter();
+	ppLowPassFilter(ppIMS* ims, ppFilterType type);
 	void InitFilter();
-	float GetGain();
 	float GetGainHF();
 	void SetGain(float gain);
 	void SetGainHF(float gainhf);

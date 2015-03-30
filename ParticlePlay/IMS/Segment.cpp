@@ -59,9 +59,9 @@ ALuint ppSegment::GetSourceID(){
 	return 0; // Override Add/Remove RTPCs instead
 }
 
-void ppSegment::AddRTPC(ppRTPC* rtpc){
+void ppSegment::AddRTPC(ppRTPC* rtpc, ppRTPCEffect effect, ppEasing* easing){
 	for(auto sound : this->sounds){
-		sound->AddRTPC(rtpc);
+		sound->AddRTPC(rtpc, effect, easing);
 	}
 }
 

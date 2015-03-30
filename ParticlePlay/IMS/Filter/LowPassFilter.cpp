@@ -1,7 +1,6 @@
 #include "LowPassFilter.hpp"
 
-ppLowPassFilter::ppLowPassFilter() : ppFilter(){
-	this->gain = 1.0f;
+ppLowPassFilter::ppLowPassFilter(ppIMS* ims, ppFilterType type) : ppFilter(ims, type){
 	this->gainhf = 1.0f;
 }
 
@@ -14,16 +13,12 @@ void ppLowPassFilter::InitFilter(){
 	alFilteri(this->filterID, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 }
 
-float ppLowPassFilter::GetGain(){
-	return this->gain;
-}
-
 float ppLowPassFilter::GetGainHF(){
 	return this->gainhf;
 }
 
 void ppLowPassFilter::SetGain(float gain){
-	this->gain = gain;
+	ppFilter::SetGain(gain);
 	alFilterf(this->filterID, AL_LOWPASS_GAIN, this->gain);
 }
 

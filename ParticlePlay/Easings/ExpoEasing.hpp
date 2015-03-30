@@ -5,6 +5,8 @@
 
 class ppExpoEasing : public ppEasing {
 public:
+	ppExpoEasing(float begin, float changes) : ppEasing(begin, changes){};
+	ppExpoEasing() : ppEasing(){};
 	float GetValue(float time, float duration, float begin, float changes);
 };
 

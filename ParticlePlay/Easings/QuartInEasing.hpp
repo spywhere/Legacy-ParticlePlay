@@ -5,6 +5,8 @@
 
 class ppQuartInEasing : public ppEasing {
 public:
+	ppQuartInEasing(float begin, float changes) : ppEasing(begin, changes){};
+	ppQuartInEasing() : ppEasing(){};
 	float GetValue(float time, float duration, float begin, float changes);
 };
 

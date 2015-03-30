@@ -68,9 +68,8 @@ void GameState::OnUpdate(ppInput* input, int delta){
 
 	if(this->game->GetInteractiveMusicSystem()){
 		ppIMS* ims = this->game->GetInteractiveMusicSystem();
-		if(ims->GetFilter("water_filter")){
-			ppLowPassFilter* water_filter = (ppLowPassFilter*)ims->GetFilter("water_filter");
-			water_filter->SetGainHF(1.0f-this->player->GetWaterLevel());
+		if(ims->GetRTPC("water_rtpc")){
+			ims->GetRTPC("water_rtpc")->SetOffset(this->player->GetWaterLevel());
 		}
 	}
 }

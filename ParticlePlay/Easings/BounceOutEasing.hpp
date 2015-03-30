@@ -5,6 +5,8 @@
 
 class ppBounceOutEasing : public ppEasing {
 public:
+	ppBounceOutEasing(float begin, float changes) : ppEasing(begin, changes){};
+	ppBounceOutEasing() : ppEasing(){};
 	float GetValue(float time, float duration, float begin, float changes);
 };
 

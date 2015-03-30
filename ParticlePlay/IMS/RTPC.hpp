@@ -1,14 +1,10 @@
 #ifndef RTPC_HEADER
 #define RTPC_HEADER
 
-#include <map>
-#include <list>
 #include <ParticlePlay/Easings/Easing.hpp>
-#include <ParticlePlay/IMS/Interfaces.hpp>
 
-class ppGenericSound;
 enum class ppRTPCEffect {
-	PANNING, VOLUME, PITCH
+	PANNING, PITCH, GAIN, GAINHF, GAINLF
 };
 
 class ppEffectInfo {
@@ -21,16 +17,13 @@ public:
 	ppRTPCEffect GetEffect();
 };
 
+class ppIMS;
 class ppRTPC {
 protected:
 	float offset;
-	std::map<ppGenericSound*, ppEffectInfo*> effects;
 public:
-	ppRTPC();
-	void AddSound(ppGenericSound* sound, ppRTPCEffect effect, ppEasing* easing);
-	void RemoveSound(ppGenericSound* sound);
+	ppRTPC(ppIMS* ims);
 	void SetOffset(float offset);
-	ppEffectInfo* GetEffectInfo(ppGenericSound* sound);
 	float GetOffset();
 };
 

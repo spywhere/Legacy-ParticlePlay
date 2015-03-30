@@ -2,8 +2,18 @@
 #define EASINGS_HEADER
 
 class ppEasing {
+protected:
+	float begin;
+	float changes;
 public:
+	ppEasing(float begin, float changes);
+	ppEasing() : ppEasing(0, 1){};
 	virtual float GetValue(float time, float duration, float begin, float changes)=0;
+	virtual float GetValue(float time, float duration);
+	void SetBegin(float begin);
+	void SetChanges(float changes);
+	float GetBegin();
+	float GetChanges();
 };
 
 #include <ParticlePlay/Easings/BackEasing.hpp>

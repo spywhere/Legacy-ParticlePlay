@@ -162,23 +162,18 @@ ppGenericSound::ppGenericSound(const char *name) : ppRhythmic(), ppPlayable(), p
 	this->filter = NULL;
 }
 
-ppGenericSound::~ppGenericSound(){}
+ppGenericSound::~ppGenericSound(){
+	this->rtpcs.clear();
+}
 
-void ppGenericSound::AddRTPC(ppRTPC* rtpc){
-	for(auto it : this->rtpcs){
-		if(it == rtpc){
-			return;
-		}
-	}
-	this->rtpcs.push_back(rtpc);
+void ppGenericSound::AddRTPC(ppRTPC* rtpc, ppRTPCEffect effect, ppEasing* easing){
+	this->rtpcs[rtpc] = new ppEffectInfo(effect, easing);
 }
 
 void ppGenericSound::RemoveRTPC(ppRTPC* rtpc){
-	for (auto it = this->rtpcs.begin(); it != this->rtpcs.end(); ++it){
-		if(*it == rtpc){
-			this->rtpcs.erase(it);
-			return;
-		}
+	auto it = this->rtpcs.find(rtpc);
+	if (it != this->rtpcs.end()){
+		this->rtpcs.erase(rtpc);
 	}
 }
 
@@ -261,13 +256,16 @@ bool ppGenericSound::IsReady(){
 void ppGenericSound::Update(){
 	ppUpdatable::Update();
 	for(auto rtpc : this->rtpcs){
-		ppEffectInfo* effect = rtpc->GetEffectInfo(this);
+		if(!rtpc.first){
+			continue;
+		}
+		ppEffectInfo* effect = rtpc.second;
 		if(!effect){
 			continue;
 		}
-		float value = effect->GetCurve()->GetValue(rtpc->GetOffset(), 1, 0, 1);
+		float value = effect->GetCurve()->GetValue(rtpc.first->GetOffset(), 1);
 		ALuint sourceID = this->GetSourceID();
-		if(effect->GetEffect() == ppRTPCEffect::VOLUME){
+		if(effect->GetEffect() == ppRTPCEffect::GAIN){
 			alSourcef(sourceID, AL_GAIN, value);
 		}else if(effect->GetEffect() == ppRTPCEffect::PITCH){
 			alSourcef(sourceID, AL_PITCH, value);
@@ -276,6 +274,31 @@ void ppGenericSound::Update(){
 		}
 	}
 	if(this->filter && this->filter->IsSupported()){
+		for(auto rtpc : this->filter->GetRTPCs()){
+			if(!rtpc.first){
+				continue;
+			}
+			ppEffectInfo* effect = rtpc.second;
+			if(!effect){
+				continue;
+			}
+			float value = effect->GetCurve()->GetValue(rtpc.first->GetOffset(), 1);
+			if(effect->GetEffect() == ppRTPCEffect::GAIN){
+				this->filter->SetGain(value);
+			}else if(effect->GetEffect() == ppRTPCEffect::GAINLF){
+				if(this->filter->GetFilterType() == ppFilterType::HIGH_PASS){
+					((ppHighPassFilter*)this->filter)->SetGainLF(value);
+				}else if(this->filter->GetFilterType() == ppFilterType::BAND_PASS){
+					((ppBandPassFilter*)this->filter)->SetGainLF(value);
+				}
+			}else if(effect->GetEffect() == ppRTPCEffect::GAINHF){
+				if(this->filter->GetFilterType() == ppFilterType::LOW_PASS){
+					((ppLowPassFilter*)this->filter)->SetGainHF(value);
+				}else if(this->filter->GetFilterType() == ppFilterType::BAND_PASS){
+					((ppBandPassFilter*)this->filter)->SetGainHF(value);
+				}
+			}
+		}
 		alSourcei(sourceID, AL_DIRECT_FILTER, filter->GetFilterID());
 	}else{
 		alSourcei(sourceID, AL_DIRECT_FILTER, AL_FILTER_NULL);

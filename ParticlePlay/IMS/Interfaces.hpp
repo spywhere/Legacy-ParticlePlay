@@ -1,14 +1,14 @@
 #ifndef INTERFACES_HEADER
 #define INTERFACES_HEADER
 
-#include <list>
+#include <map>
 #include <ParticlePlay/Includes.hpp>
 #include <ParticlePlay/GUI/Control.hpp>
 #include <ParticlePlay/IMS/Format/Format.hpp>
 #include <ParticlePlay/IMS/RTPC.hpp>
 #include <ParticlePlay/IMS/Filter.hpp>
+#include <ParticlePlay/IMS/Filter/Filters.hpp>
 
-class ppRTPC;
 class ppUpdatable {
 public:
 	virtual void Update();
@@ -93,11 +93,11 @@ protected:
 	ALuint sourceID;
 	ppFormat* audioFormat;
 	ppFilter* filter;
-	std::list<ppRTPC*> rtpcs;
+	std::map<ppRTPC*, ppEffectInfo*> rtpcs;
 	ppGenericSound(const char *name);
 public:
 	virtual ~ppGenericSound();
-	virtual void AddRTPC(ppRTPC* rtpc);
+	virtual void AddRTPC(ppRTPC* rtpc, ppRTPCEffect effect, ppEasing* easing);
 	virtual void RemoveRTPC(ppRTPC* rtpc);
 	virtual void SetFilter(ppFilter* filter);
 	virtual int GetTotalBeat(float time);
