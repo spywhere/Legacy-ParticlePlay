@@ -15,6 +15,7 @@ protected:
 	ppImage* background;
 	int tx, ty;
 	int debugView;
+	long revealTime;
 public:
 	GameState(ppGame* game);
 	void OnInit();

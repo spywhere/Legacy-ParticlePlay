@@ -76,6 +76,7 @@ class DebugButtonListener : public ppButtonListener {
 };
 
 void KameleonState::OnInit(){
+	this->gameStart = false;
 	this->gui = new ppGUI();
 	this->debugView = 0;
 	this->gameState = new GameState(this->GetGame());
@@ -99,6 +100,10 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 	ppIMS* ims = this->GetGame()->GetInteractiveMusicSystem();
 	if(ims){
 		if(ims->GetSwitch("level")){
+			if(!this->gameStart){
+				ims->GetSwitch("level")->SwitchState("bridge");
+				this->gameStart = true;
+			}
 			this->gui->GetControl("bridge")->SetVisible(this->debugView==3);
 			ppButton* bridgeButton = (ppButton*)this->gui->GetControl("bridgebtn");
 			bridgeButton->SetText((ims->GetSound("bridge")->IsPlaying())?"Stop":"Play");
@@ -601,6 +606,10 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			mainLow2end->SetDestinationCurve(NULL); // No Fade
 			mainLow2end->SetTransitionTrack(m2e_seg);
 			mainLow2end->SetSourcePosition(ppTransitionSourcePosition::EXIT_CUE);
+
+			ppTransition* defaultTransition = sw->CreateTransition(0, NULL, NULL);
+			defaultTransition->SetSourceDuration(1);
+			defaultTransition->SetDestinationDuration(1);
 
 			sw->CreateStinger("heroic", heroicPlaylist, ppStingerTriggerPosition::ENTRY_CUE);
 

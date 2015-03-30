@@ -8,6 +8,7 @@ class KameleonState : public ppState {
 protected:
 	ppGUI* gui;
 	GameState* gameState;
+	bool gameStart;
 public:
 	int debugView;
 	void OnInit();

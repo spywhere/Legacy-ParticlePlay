@@ -11,11 +11,12 @@ void GameState::OnInit(){
 	this->physics = new ppPhysics(0, 50);
 	this->physics->SetPTM(10);
 	this->level = new Level(this->physics);
-	this->player = new kPlayer(this->game, this->physics, 0, 240);
+	this->player = new kPlayer(this->game, this->physics, 575, 360);
 	this->physics->SetPTM(15);
 	this->tx = 0;
 	this->ty = -350;
 	this->debugView = 0;
+	this->revealTime = 0;
 
 	this->background = new ppImage("tmpres/Kameleon/Assets/Image 2306.jpg");
 }
@@ -47,6 +48,13 @@ void GameState::OnUpdate(ppInput* input, int delta){
 	this->player->SetDebugView(this->debugView != 0);
 	this->level->Update(input);
 	this->player->Update(input, delta);
+
+	if(this->revealTime > SDL_GetTicks()){
+		this->level->Reveal(this->revealTime - SDL_GetTicks());
+	}else if(this->player->GetX() < 490 && this->revealTime == 0){
+		this->revealTime = SDL_GetTicks() + 3000;
+		this->game->GetInteractiveMusicSystem()->GetSwitch("level")->SwitchState("main_normal");
+	}
 
 	if(this->debugView > 1){
 		int scrolly = input->GetScrollY();

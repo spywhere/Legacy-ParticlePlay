@@ -52,6 +52,8 @@ public:
 	ppRTPC* GetRTPC(const char *name);
 	void RemoveSound(const char *name);
 	void RemoveSwitch(const char *name);
+	void RemoveFilter(const char *name);
+	void RemoveRTPC(const char *name);
 	void ClearSound();
 	void ClearSwitch();
 	void ClearFilter();

@@ -65,6 +65,9 @@ ppSound *ppIMS::CreateSound(const char *name, ppFormat* audioFormat, int track){
 	if(!name || !audioFormat){
 		return NULL;
 	}
+	if(this->GetSound(name)){
+		this->RemoveSound(name);
+	}
 	ppSound* sound = new ppSound(name, audioFormat, track, this->randomizer);
 	this->sounds[name] = sound;
 	return sound;
@@ -78,6 +81,9 @@ ppSegment *ppIMS::CreateSegment(const char *name){
 	if(!name){
 		return NULL;
 	}
+	if(this->GetSound(name)){
+		this->RemoveSound(name);
+	}
 	ppSegment *segment = new ppSegment(name, this);
 	this->sounds[name] = segment;
 	return segment;
@@ -86,6 +92,9 @@ ppSegment *ppIMS::CreateSegment(const char *name){
 ppPlaylist* ppIMS::CreatePlaylist(const char *name){
 	if(!name){
 		return NULL;
+	}
+	if(this->GetSound(name)){
+		this->RemoveSound(name);
 	}
 	ppPlaylist* playlist = new ppPlaylist(name, this->randomizer);
 	this->sounds[name] = playlist;
@@ -96,6 +105,9 @@ ppSwitch *ppIMS::CreateSwitch(const char *name){
 	if(!name){
 		return NULL;
 	}
+	if(this->GetSwitch(name)){
+		this->RemoveSwitch(name);
+	}
 	ppSwitch *sw = new ppSwitch(name, this);
 	this->switches[name] = sw;
 	return sw;
@@ -104,6 +116,9 @@ ppSwitch *ppIMS::CreateSwitch(const char *name){
 ppFilter *ppIMS::CreateFilter(const char *name, ppFilterType filterType){
 	if(!name){
 		return NULL;
+	}
+	if(this->GetFilter(name)){
+		this->RemoveFilter(name);
 	}
 	ppFilter *filter = NULL;
 	if(filterType == ppFilterType::LOW_PASS){
@@ -123,6 +138,9 @@ ppFilter *ppIMS::CreateFilter(const char *name, ppFilterType filterType){
 ppRTPC* ppIMS::CreateRTPC(const char *name){
 	if(!name){
 		return NULL;
+	}
+	if(this->GetRTPC(name)){
+		this->RemoveRTPC(name);
 	}
 	ppRTPC* rtpc = new ppRTPC(this);
 	this->rtpcs[name] = rtpc;
@@ -187,6 +205,22 @@ void ppIMS::RemoveSwitch(const char *name){
 	if(sw){
 		this->switches.erase(name);
 		delete sw;
+	}
+}
+
+void ppIMS::RemoveFilter(const char *name){
+	ppFilter* filter = this->GetFilter(name);
+	if(filter){
+		this->filters.erase(name);
+		delete filter;
+	}
+}
+
+void ppIMS::RemoveRTPC(const char *name){
+	ppRTPC* rtpc = this->GetRTPC(name);
+	if(rtpc){
+		this->rtpcs.erase(name);
+		delete rtpc;
 	}
 }
 
