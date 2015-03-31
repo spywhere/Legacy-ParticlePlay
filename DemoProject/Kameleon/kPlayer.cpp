@@ -1,7 +1,6 @@
 #include "kPlayer.hpp"
 
-kPlayer::kPlayer(ppGame* game, ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
-	this->game = game;
+kPlayer::kPlayer(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
 	b2BodyDef* myBodyDef = new b2BodyDef();
 	myBodyDef->type = b2_dynamicBody;
 	myBodyDef->position.Set(this->physics->PixelToWorld(x), this->physics->PixelToWorld(y)+1);
@@ -113,7 +112,7 @@ int kPlayer::GetY(){
 }
 
 void kPlayer::Update(ppInput* input, int delta){
-	ppIMS* ims = this->game->GetInteractiveMusicSystem();
+	ppIMS* ims = input->GetGame()->GetInteractiveMusicSystem();
 	b2Vec2 vel = this->circleBody->GetLinearVelocity();
 	if(vel.x < 0){
 		this->playerFlip = ppImage::FLIP_HORIZONTAL;

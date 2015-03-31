@@ -79,7 +79,7 @@ void KameleonState::OnInit(){
 	this->gameStart = false;
 	this->gui = new ppGUI();
 	this->debugView = 0;
-	this->gameState = new GameState(this->GetGame());
+	this->gameState = new GameState();
 	this->gameState->OnInit();
 }
 
@@ -133,13 +133,17 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			// Filter and RTPC //
 			/////////////////////
 			ppRTPC* water_rtpc = ims->CreateRTPC("water_rtpc");
+			ppRTPC* tracking_rtpc = ims->CreateRTPC("tracking_rtpc");
 			ppFilter* water_filter = ims->CreateFilter("water_filter", ppFilterType::LOW_PASS);
 			water_filter->AddRTPC(water_rtpc, ppRTPCEffect::GAINHF, new ppLinearEasing(1, -1));
 
 			///////////////////
 			// Sound Effects //
 			///////////////////
-			ims->CreateSound("bee", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/bee.wav"))->SetLoop(-1);
+			ppGenericSound* bee_sound = ims->CreateSound("bee", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/bee.wav"));
+			bee_sound->SetLoop(-1);
+			bee_sound->SetFilter(water_filter);
+			bee_sound->AddRTPC(tracking_rtpc, ppRTPCEffect::GAIN, new ppLinearEasing());
 			ppGenericSound* heal_sound = ims->CreateSound("heal", ims->CreateFormat(ppAudioFormat::WAVE, "tmpres/Kameleon/SFX/heal.wav"));
 			heal_sound->SetLoop(-1);
 			heal_sound->AddRTPC(water_rtpc, ppRTPCEffect::GAIN, new ppLinearEasing());

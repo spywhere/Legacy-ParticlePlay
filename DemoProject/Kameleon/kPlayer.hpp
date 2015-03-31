@@ -7,7 +7,6 @@
 
 class kPlayer : public PhysicsObject {
 protected:
-	ppGame* game;
 	AnimateImage* idlePose;
 	AnimateImage* runPose;
 	AnimateImage* swimPose;
@@ -18,7 +17,7 @@ protected:
 	b2Body* boxBody;
 	b2Body* circleBody;
 public:
-	kPlayer(ppGame* game, ppPhysics* physics, int x, int y);
+	kPlayer(ppPhysics* physics, int x, int y);
 	float GetWaterLevel();
 	int GetX();
 	int GetY();

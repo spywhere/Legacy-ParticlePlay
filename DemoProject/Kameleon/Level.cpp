@@ -110,25 +110,43 @@ void Level::Render(SDL_Renderer* renderer){
     glEnd();
     glDisable(GL_BLEND);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0, 0, 0, this->reveal);
-    glBegin(GL_QUADS);
-        for(auto vec : this->levelFog){
-            glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
-        }
-    glEnd();
-    glDisable(GL_BLEND);
+    if(this->reveal > 0){
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0, 0, 0, this->reveal);
+        glBegin(GL_QUADS);
+            for(auto vec : this->levelFog){
+                glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+            }
+        glEnd();
+        glDisable(GL_BLEND);
+    }
 
     if(this->debugView){
-    	this->RenderBody(this->body);
+        this->RenderBody(this->body);
+    }
+}
+
+void Level::RenderMask(SDL_Renderer* renderer){
+    if(this->reveal > 0){
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(0, 0, 0, this->reveal);
+        glBegin(GL_QUADS);
+            for(auto vec : this->levelFog){
+                glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+            }
+        glEnd();
+        glDisable(GL_BLEND);
     }
 }
 
 void Level::Update(ppInput* input){
-
 }
 
 void Level::Reveal(long revealTime){
+    if(this->reveal == 0){
+        return;
+    }
     this->reveal = revealTime / 3000.0f;
 }

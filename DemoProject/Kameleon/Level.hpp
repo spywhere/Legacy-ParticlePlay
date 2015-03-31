@@ -20,6 +20,7 @@ protected:
 public:
 	Level(ppPhysics* physics);
 	void Render(SDL_Renderer* renderer);
+	void RenderMask(SDL_Renderer* renderer);
 	void Update(ppInput* input);
 	void Reveal(long revealTime);
 };
