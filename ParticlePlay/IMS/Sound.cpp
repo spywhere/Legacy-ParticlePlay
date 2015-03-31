@@ -143,6 +143,9 @@ void ppSound::Update(){
 		alBufferData(bufferID, this->audioFormat->GetFormat(), bufferData, size, this->audioFormat->GetSampleRate());
 		alSourceQueueBuffers(this->sourceID, 1, &bufferID);
 		if(size<this->bufferSize){
+			if(!this->IsAutoLoop() || this->loop == 0){
+				break;
+			}
 			this->GetNextTrack();
 			this->nextReadPosition = this->clipStart;
 		}

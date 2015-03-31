@@ -244,6 +244,7 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			bridgePlaylist->SetLocation(20, 50);
 			bridgePlaylist->SetSize(100, 250);
 			bridgePlaylist->SetVisible(false);
+			bridgePlaylist->SetFilter(water_filter);
 			this->gui->AddControl(bridgePlaylist);
 			ppButton* bridgeButton = new ppButton("bridgebtn", 32, 300, 75, 20);
 			bridgeButton->SetText("Play");
@@ -260,6 +261,7 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 			b2m_seg->AddSound(b2m_s);
 			b2m_seg->SetEntryCue(b2m_f->TimeToPosition(1.125f));
 			b2m_seg->SetExitCue(b2m_f->TimeToPosition(2.25f));
+			b2m_seg->SetFilter(water_filter);
 
 			////////////////////////////////
 			// Main Track Sounds (normal) //

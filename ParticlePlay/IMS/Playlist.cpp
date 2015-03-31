@@ -147,27 +147,10 @@ Sint64 ppPlaylist::GetCurrentPosition(){
 	if(!this->current){
 		return 0;
 	}
-	Sint64 pos = 0;
-	for(auto sound : this->soundOrder){
-		if(sound == this->current){
-			break;
-		}
-		if(pos == 0){
-			pos += sound->GetEntryCue();
-		}
-		pos += sound->GetNormalExitCue()-sound->GetEntryCue();
-	}
-	if(!this->current){
-		if(this->soundOrder.size()<=0){
-			return 0;
-		}else{
-			return pos+this->soundOrder.front()->GetCurrentTime();
-		}
-	}
-	if(playDuration == 0 || this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
-		return pos+this->current->GetCurrentPosition();
+	if(this->playDuration == 0 || this->playOrder == ppPlaylistPlayOrder::SHUFFLE_STEP || this->playOrder == ppPlaylistPlayOrder::SEQUENCE_STEP){
+		return this->current->GetCurrentPosition();
 	}else{
-		return pos+this->current->GetCurrentPosition()-this->current->GetEntryCue()+this->playDuration;
+		return this->current->GetCurrentPosition()-this->current->GetEntryCue()+this->playDuration;
 	}
 }
 

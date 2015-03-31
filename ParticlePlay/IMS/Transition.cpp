@@ -116,7 +116,7 @@ void ppTransition::Update(){
 		transitionEntryCue = transition->GetAudioFormat()->PositionToTime(transition->GetEntryCue())*1000;
 		transitionExitCue = transition->GetAudioFormat()->PositionToTime(transition->GetNormalExitCue())*1000;
 		transitionStartTime = this->syncPoint-transitionEntryCue;
-		transitionEndTime = this->syncPoint+transitionExitCue+((transition->GetTotalTime()*1000)-transitionExitCue);
+		transitionEndTime = transitionStartTime+transitionExitCue+((transition->GetTotalTime()*1000)-transitionExitCue);
 		long destEntryCue = 0;
 		if(dest){
 			destEntryCue = dest->GetAudioFormat()->PositionToTime(dest->GetEntryCue())*1000;
