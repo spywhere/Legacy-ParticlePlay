@@ -173,6 +173,10 @@ bool ppSwitch::IsStingerTrigger(const char *stingerName){
 	return stinger && stinger->IsPreparing();
 }
 
+bool ppSwitch::IsTransitioning(){
+	return this->currentTransition && this->currentTransition->IsTransitioning();
+}
+
 void ppSwitch::Update(ppInput* input){
 	ppControl::Update(input);
 }

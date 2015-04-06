@@ -10,14 +10,15 @@ class GameState {
 protected:
 	ppGUI* gui;
 	ppPhysics* physics;
-	kPlayer* player;
-	Bee* bee;
 	Level* level;
 	ppImage* background;
 	int tx, ty;
 	int debugView;
 	long revealTime;
+	bool triggerHeroic;
 public:
+	kPlayer* player;
+	Bee* bee;
 	void OnInit();
 	void OnRender(SDL_Renderer* renderer, int delta);
 	void OnUpdate(ppInput* input, int delta);

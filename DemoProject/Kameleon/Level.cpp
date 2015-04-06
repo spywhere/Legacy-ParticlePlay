@@ -150,3 +150,7 @@ void Level::Reveal(long revealTime){
     }
     this->reveal = revealTime / 3000.0f;
 }
+
+float Level::GetReveal(){
+    return this->reveal;
+}

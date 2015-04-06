@@ -14,13 +14,17 @@ protected:
 	AnimateImage* fallPose;
 	AnimateImage* currentPose;
 	SDL_RendererFlip playerFlip;
-	b2Body* boxBody;
 	b2Body* circleBody;
+	float health;
+	bool isAttack;
 public:
+	b2Body* boxBody;
 	kPlayer(ppPhysics* physics, int x, int y);
 	float GetWaterLevel();
+	float GetHealth();
 	int GetX();
 	int GetY();
+	void Attack();
 	void Render(SDL_Renderer* renderer);
 	void Update(ppInput* input, int delta);
 };

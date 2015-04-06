@@ -23,6 +23,7 @@ public:
 	void RenderMask(SDL_Renderer* renderer);
 	void Update(ppInput* input);
 	void Reveal(long revealTime);
+	float GetReveal();
 };
 
 #endif

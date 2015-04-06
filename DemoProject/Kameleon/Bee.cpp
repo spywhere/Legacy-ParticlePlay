@@ -5,6 +5,7 @@
 const float TO_RAD = 0.017453f;
 
 Bee::Bee(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
+	this->health = 100;
 	this->tracking = false;
 	this->trackingPoint = b2Vec2(this->physics->PixelToWorld(x), this->physics->PixelToWorld(y));
 
@@ -34,6 +35,9 @@ Bee::Bee(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
 }
 
 void Bee::Render(SDL_Renderer* renderer){
+	if(!this->body){
+		return;
+	}
 	if(this->debugView){
 		this->RenderBody(this->body);
 		glColor4f(1, 1, 1, 1);
@@ -48,10 +52,22 @@ void Bee::Render(SDL_Renderer* renderer){
 }
 
 void Bee::Update(ppInput* input, int delta){
+	if(!this->body){
+		return;
+	}
+	if(this->health < 0){
+		this->physics->GetWorld()->DestroyBody(this->body);
+		this->body = NULL;
+		this->health = 0;
+		return;
+	}
 	ppRandomizer* randomizer = input->GetGame()->GetRandomizer();
 	this->flyPose->Update(delta);
 
 	if(this->tracking){
+		if(this->health < 100){
+			this->health += 0.025f;
+		}
 		b2Vec2 deltaPoint = this->trackingPoint-this->body->GetPosition();
 
 		float angle = std::atan2(deltaPoint.y, deltaPoint.x);
@@ -63,6 +79,13 @@ void Bee::Update(ppInput* input, int delta){
 	}
 }
 
+void Bee::Attack(){
+	if(!this->body || this->health <= 0){
+		return;
+	}
+	this->health -= 10;
+}
+
 void Bee::SetTracking(b2Vec2 point){
 	this->trackingPoint = point;
 }
@@ -72,5 +95,12 @@ void Bee::StartTracking(){
 }
 
 float Bee::GetTrackingLength(){
+	if(this->health <= 0){
+		return 0;
+	}
 	return (this->trackingPoint-this->body->GetPosition()).Length();
+}
+
+float Bee::GetHealth(){
+	return this->health;
 }

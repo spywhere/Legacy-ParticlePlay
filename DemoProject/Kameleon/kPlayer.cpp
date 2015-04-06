@@ -1,6 +1,7 @@
 #include "kPlayer.hpp"
 
 kPlayer::kPlayer(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
+	this->health = 100;
 	b2BodyDef* myBodyDef = new b2BodyDef();
 	myBodyDef->type = b2_dynamicBody;
 	myBodyDef->position.Set(this->physics->PixelToWorld(x), this->physics->PixelToWorld(y)+1);
@@ -39,6 +40,7 @@ kPlayer::kPlayer(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
 	this->physics->GetWorld()->CreateJoint(joint);
 
 	this->playerFlip = ppImage::NO_FLIP;
+	this->isAttack = false;
 
 	this->idlePose = new AnimateImage(400);
 	this->idlePose->AddImage(new ppImage("tmpres/Kameleon/Assets/Image 303.png"), 0, -1);
@@ -103,12 +105,24 @@ float kPlayer::GetWaterLevel(){
 	return 0;
 }
 
+float kPlayer::GetHealth(){
+	return this->health;
+}
+
 int kPlayer::GetX(){
 	return this->physics->WorldToPixel(this->circleBody->GetPosition().x);
 }
 
 int kPlayer::GetY(){
 	return this->physics->WorldToPixel(this->circleBody->GetPosition().y);
+}
+
+void kPlayer::Attack(){
+	this->health -= 20;
+	this->isAttack = true;
+	if(this->health <= 5){
+		this->health = 5;
+	}
 }
 
 void kPlayer::Update(ppInput* input, int delta){
@@ -133,6 +147,12 @@ void kPlayer::Update(ppInput* input, int delta){
 			ims->GetSound("heal")->Play();
 		}
 		this->currentPose = this->swimPose;
+		if(this->health < 100){
+			this->health += this->GetWaterLevel()*0.25f;
+			if(this->health > 100){
+				this->health = 100;
+			}
+		}
 	}else if(vel.x < 0.15f && vel.x > -0.15f && vel.y < 0.15f && vel.y > -0.15f){
 		if(this->currentPose == this->fallPose){
 			ims->GetSound("thub")->Stop();
@@ -159,6 +179,12 @@ void kPlayer::Update(ppInput* input, int delta){
 	}else if(vel.y > 0){
 		this->jumpPose->SetCurrentFrame(1);
 		this->currentPose = this->jumpPose;
+	}
+
+	if(this->isAttack){
+		ims->GetSound("ouch")->Stop();
+		ims->GetSound("ouch")->Play();
+		this->isAttack = false;
 	}
 
 	if(this->circleBody->GetPosition().y+1 > 40.25f && vel.y > 0){

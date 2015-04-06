@@ -43,6 +43,7 @@ public:
 	bool IsPause();
 	bool IsStop();
 	bool IsStingerTrigger(const char *stingerName);
+	bool IsTransitioning();
 	void Render(SDL_Renderer* renderer);
 	void Update();
 	void Update(ppInput* input);
