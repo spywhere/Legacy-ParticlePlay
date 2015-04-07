@@ -130,7 +130,9 @@ void GameState::OnUpdate(ppInput* input, int delta){
 
 	if(this->bee->GetHealth() <= 0 && !ims->GetSwitch("level")->IsTransitioning() && ims->GetSwitch("level")->GetCurrentState() != ""){
 		ims->GetSound("bee")->Stop();
-		ims->GetSwitch("level")->SwitchState("");
+		if(!ims->GetSwitch("level")->IsTransitioning() && !ims->GetSwitch("level")->GetStinger("heroic")->IsTriggering()){
+			ims->GetSwitch("level")->SwitchState("");
+		}
 	}
 
 	if(this->player->GetHealth() < 25 && ims->GetSwitch("level")->GetCurrentState() == "main_normal"){
