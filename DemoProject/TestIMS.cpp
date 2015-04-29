@@ -46,8 +46,9 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		msg << "5 = Playlist Play Order Test\n";
 		msg << "6 = Music Notation\n";
 		msg << "7 = Music Transition\n";
-		msg << "8 = Farm Game [Demo Game]\n";
-		msg << "9 = Kameleon [Demo Game]";
+		msg << "8 = Basic Farm Game [Demo Game]\n";
+		msg << "9 = Kameleon [Demo Game]\n";
+		msg << "F = Farm State [Presentation Demo]";
 
 		if(input->IsKeyDown(SDL_SCANCODE_1, 10)){
 			this->test = 1;
@@ -64,9 +65,11 @@ void TestIMS::OnUpdate(ppInput* input, int delta){
 		}else if(input->IsKeyDown(SDL_SCANCODE_7, 10)){
 			this->test = 7;
 		}else if(input->IsKeyDown(SDL_SCANCODE_8, 10)){
-			this->GetGame()->EnterState("farmstate");
+			this->GetGame()->EnterState("basicfarmstate");
 		}else if(input->IsKeyDown(SDL_SCANCODE_9, 10)){
 			this->GetGame()->EnterState("kameleon");
+		}else if(input->IsKeyDown(SDL_SCANCODE_F, 10)){
+			this->GetGame()->EnterState("farmstate");
 		}
 	}else if(this->test == 1){
 		msg << "Sound Test\n";
