@@ -44,6 +44,14 @@ void ppGame::SetTitle(const char* title){
 	}
 }
 
+int ppGame::GetScreenWidth(){
+	return this->screenWidth;
+}
+
+int ppGame::GetScreenHeight(){
+	return this->screenHeight;
+}
+
 int ppGame::GetWidth(){
 	return this->width;
 }

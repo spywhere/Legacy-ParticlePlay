@@ -10,6 +10,7 @@
 #include <ParticlePlay/Core/State.hpp>
 #include <ParticlePlay/IMS/IMS.hpp>
 
+class ppInput;
 class ppState;
 class ppGame{
 private:
@@ -46,6 +47,8 @@ public:
 	void SetTitle(const char* title);
 	int GetWidth();
 	int GetHeight();
+	int GetScreenWidth();
+	int GetScreenHeight();
 	void SetScreenSize(int width, int height);
 	void SetSize(int width, int height);
 	bool IsResizable();

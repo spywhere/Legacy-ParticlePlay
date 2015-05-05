@@ -25,6 +25,12 @@ public:
 	int GetRelativeMouseY();
 	int GetDeltaMouseX();
 	int GetDeltaMouseY();
+	int GetActualMouseX();
+	int GetActualMouseY();
+	int GetActualRelativeMouseX();
+	int GetActualRelativeMouseY();
+	int GetActualDeltaMouseX();
+	int GetActualDeltaMouseY();
 	int GetScrollX();
 	int GetScrollY();
 	int GetScrollX(bool once);

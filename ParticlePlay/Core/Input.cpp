@@ -1,4 +1,5 @@
 #include "Input.hpp"
+#include <ParticlePlay/Core/Game.hpp>
 
 ppInput::ppInput(ppGame* game){
 	this->game = game;
@@ -23,28 +24,52 @@ ppGame* ppInput::GetGame(){
 }
 
 int ppInput::GetMouseX(){
-	return this->mx;
+	return this->GetActualMouseX()*this->game->GetWidth()/this->game->GetScreenWidth();
 }
 
 int ppInput::GetMouseY(){
-	return this->my;
+	return this->GetActualMouseY()*this->game->GetHeight()/this->game->GetScreenHeight();
 }
 
 int ppInput::GetRelativeMouseX(){
-	return this->rmx;
+	return this->GetActualRelativeMouseX()*this->game->GetWidth()/this->game->GetScreenWidth();
 }
 
 int ppInput::GetRelativeMouseY(){
-	return this->rmy;
+	return this->GetActualRelativeMouseY()*this->game->GetHeight()/this->game->GetScreenHeight();
 }
 
 int ppInput::GetDeltaMouseX(){
+	return this->GetActualDeltaMouseX()*this->game->GetWidth()/this->game->GetScreenWidth();
+}
+
+int ppInput::GetDeltaMouseY(){
+	return this->GetActualDeltaMouseY()*this->game->GetHeight()/this->game->GetScreenHeight();
+}
+
+int ppInput::GetActualMouseX(){
+	return this->mx;
+}
+
+int ppInput::GetActualMouseY(){
+	return this->my;
+}
+
+int ppInput::GetActualRelativeMouseX(){
+	return this->rmx;
+}
+
+int ppInput::GetActualRelativeMouseY(){
+	return this->rmy;
+}
+
+int ppInput::GetActualDeltaMouseX(){
 	int dmx = this->dmx;
 	this->dmx = 0;
 	return dmx;
 }
 
-int ppInput::GetDeltaMouseY(){
+int ppInput::GetActualDeltaMouseY(){
 	int dmy = this->dmy;
 	this->dmy = 0;
 	return dmy;
