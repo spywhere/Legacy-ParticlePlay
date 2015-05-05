@@ -140,7 +140,7 @@ void GameState::OnUpdate(ppInput* input, int delta){
 	}else if(this->player->GetHealth() > 25 && ims->GetSwitch("level")->GetCurrentState() == "main_low"){
 		ims->GetSwitch("level")->SwitchState("main_normal");
 	}
-	if(!this->triggerHeroic && this->bee->GetHealth() < 25 && this->level->GetReveal() < 0.1f && !ims->GetSwitch("level")->IsTransitioning()){
+	if(!this->triggerHeroic && this->bee->GetHealth() < 35 && this->level->GetReveal() < 0.1f && !ims->GetSwitch("level")->IsTransitioning()){
 		ims->GetSwitch("level")->TriggerStinger("heroic");
 	}
 	this->triggerHeroic = this->triggerHeroic || ims->GetSwitch("level")->GetStinger("heroic")->IsTriggering();
@@ -150,7 +150,7 @@ void GameState::OnUpdate(ppInput* input, int delta){
 		this->bee->Attack();
 	}
 
-	if(this->debugView > 1){
+	if(this->debugView > 1 && this->debugView < 4){
 		int scrolly = input->GetScrollY();
 		if(scrolly!=0){
 			this->physics->SetPTM(this->physics->GetPTM()+scrolly);

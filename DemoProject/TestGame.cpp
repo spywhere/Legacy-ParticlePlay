@@ -13,6 +13,8 @@ int main(int argc, char* argv[]) {
 	TestGame* game = new TestGame();
 
 	// game->SetShowFPS(true);
+	game->SetScreenSize(1024, 768);
+	game->SetSize(800, 600);
 	game->SetResizable(true);
 	#ifdef FULL
 	game->SetTitle("ParticlePlay Game Test");

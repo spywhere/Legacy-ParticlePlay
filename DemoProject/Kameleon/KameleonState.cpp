@@ -13,7 +13,7 @@ class DebugButtonListener : public ppButtonListener {
 		void OnClick(ppButton* button){
 			ppIMS* ims = this->state->GetGame()->GetInteractiveMusicSystem();
 			if(button->GetName() == "debugbtn"){
-				this->state->debugView = (this->state->debugView+1)%4;
+				this->state->debugView = (this->state->debugView+1)%5;
 			}else if(button->GetName() == "bridgebtn"){
 				ppGenericSound* sound = ims->GetSound("bridge");
 				if(sound->IsPlaying()){
@@ -104,29 +104,29 @@ void KameleonState::OnUpdate(ppInput* input, int delta){
 				ims->GetSwitch("level")->SwitchState("bridge");
 				this->gameStart = true;
 			}
-			this->gui->GetControl("bridge")->SetVisible(this->debugView==3);
+			this->gui->GetControl("bridge")->SetVisible(this->debugView>=3);
 			ppButton* bridgeButton = (ppButton*)this->gui->GetControl("bridgebtn");
 			bridgeButton->SetText((ims->GetSound("bridge")->IsPlaying())?"Stop":"Play");
-			bridgeButton->SetVisible(this->debugView==3);
-			this->gui->GetControl("main_normal")->SetVisible(this->debugView==3);
+			bridgeButton->SetVisible(this->debugView>=3);
+			this->gui->GetControl("main_normal")->SetVisible(this->debugView>=3);
 			ppButton* mainNormalButton = (ppButton*)this->gui->GetControl("mainnormalbtn");
 			mainNormalButton->SetText((ims->GetSound("main_normal")->IsPlaying())?"Stop":"Play");
-			mainNormalButton->SetVisible(this->debugView==3);
-			this->gui->GetControl("main_low")->SetVisible(this->debugView==3);
+			mainNormalButton->SetVisible(this->debugView>=3);
+			this->gui->GetControl("main_low")->SetVisible(this->debugView>=3);
 			ppButton* mainLowButton = (ppButton*)this->gui->GetControl("mainlowbtn");
 			mainLowButton->SetText((ims->GetSound("main_low")->IsPlaying())?"Stop":"Play");
-			mainLowButton->SetVisible(this->debugView==3);
-			this->gui->GetControl("heroic")->SetVisible(this->debugView==3);
+			mainLowButton->SetVisible(this->debugView>=3);
+			this->gui->GetControl("heroic")->SetVisible(this->debugView>=3);
 			ppButton* heroicButton = (ppButton*)this->gui->GetControl("heroicbtn");
 			heroicButton->SetText((ims->GetSound("heroic")->IsPlaying())?"Stop":"Play");
-			heroicButton->SetVisible(this->debugView==3);
-			this->gui->GetControl("level")->SetVisible(this->debugView==3);
+			heroicButton->SetVisible(this->debugView>=3);
+			this->gui->GetControl("level")->SetVisible(this->debugView>=3);
 
-			this->gui->GetControl("stopsw")->SetVisible(this->debugView==3);
-			this->gui->GetControl("bridgesw")->SetVisible(this->debugView==3);
-			this->gui->GetControl("mainnormalsw")->SetVisible(this->debugView==3);
-			this->gui->GetControl("mainlowsw")->SetVisible(this->debugView==3);
-			this->gui->GetControl("heroicsw")->SetVisible(this->debugView==3 && !ims->GetSwitch("level")->IsStingerTrigger("heroic"));
+			this->gui->GetControl("stopsw")->SetVisible(this->debugView>=3);
+			this->gui->GetControl("bridgesw")->SetVisible(this->debugView>=3);
+			this->gui->GetControl("mainnormalsw")->SetVisible(this->debugView>=3);
+			this->gui->GetControl("mainlowsw")->SetVisible(this->debugView>=3);
+			this->gui->GetControl("heroicsw")->SetVisible(this->debugView>=3 && !ims->GetSwitch("level")->IsStingerTrigger("heroic"));
 		}else{
 			DebugButtonListener* btnListener = new DebugButtonListener(this);
 			/////////////////////

@@ -24,6 +24,7 @@ private:
 	ppRandomizer* randomizer;
 	const char* title;
 	ppState* currentState;
+	int screenWidth, screenHeight;
 	int width, height;
 	int targetFPS;
 	int targetUPS;
@@ -45,6 +46,7 @@ public:
 	void SetTitle(const char* title);
 	int GetWidth();
 	int GetHeight();
+	void SetScreenSize(int width, int height);
 	void SetSize(int width, int height);
 	bool IsResizable();
 	void SetResizable(bool resizable);

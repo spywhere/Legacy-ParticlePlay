@@ -14,7 +14,9 @@ ppGame::ppGame(){
 	this->ims = NULL;
 	this->title = "My Game";
 	this->currentState = NULL;
+	this->screenWidth = 640;
 	this->width = 640;
+	this->screenHeight = 480;
 	this->height = 480;
 	this->targetFPS = 60;
 	this->targetUPS = 60;
@@ -54,10 +56,19 @@ ppRandomizer* ppGame::GetRandomizer(){
 	return this->randomizer;
 }
 
+void ppGame::SetScreenSize(int width, int height){
+	this->screenWidth = width;
+	this->screenHeight = height;
+	this->SetSize(width, height);
+	this->RestartGame();
+}
+
 void ppGame::SetSize(int width, int height){
 	this->width = width;
 	this->height = height;
-	this->RestartGame();
+	if(this->renderer){
+		glOrtho(0, this->width, this->height, 0, 1, -1);
+	}
 }
 
 bool ppGame::IsResizable(){
@@ -132,7 +143,7 @@ void ppGame::OnEvent(SDL_Event* event) {
 		break;
 		case SDL_WINDOWEVENT:
 		if(event->window.event == SDL_WINDOWEVENT_RESIZED){
-			this->SetSize(event->window.data1, event->window.data2);
+			this->SetScreenSize(event->window.data1, event->window.data2);
 		}
 		if(this->currentState){
 			this->currentState->OnEvent(event);
@@ -178,7 +189,7 @@ int ppGame::StartGame(){
 		if(this->fullscreen){
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
-		if(!(this->mainWindow = SDL_CreateWindow(this->title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->width, this->height, flags))) {
+		if(!(this->mainWindow = SDL_CreateWindow(this->title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->screenWidth, this->screenHeight, flags))) {
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize window.", 0);
 			return 1;
 		}
@@ -200,7 +211,7 @@ int ppGame::StartGame(){
 			#endif
 			this->glContext = SDL_GL_CreateContext(this->mainWindow);
 
-			glViewport(0, 0, this->width, this->height);
+			glViewport(0, 0, this->screenWidth, this->screenHeight);
 
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
