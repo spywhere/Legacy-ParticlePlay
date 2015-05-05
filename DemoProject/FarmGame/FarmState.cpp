@@ -13,18 +13,16 @@ void FarmState::InitEntities(){
 void FarmState::Render(SDL_Renderer* renderer, int delta){
 	if(this->ims){
 		ppGenericSound* track = this->ims->GetSound("dawnTrack");
-		if(!track->IsPlaying()){
+		if(track && !track->IsPlaying()){
 			track = this->ims->GetSound("nightTrack");
-			if(!track->IsPlaying()){
+			if(track && !track->IsPlaying()){
 				track = this->ims->GetSound("predawnTrack");
 			}
 		}
-		if(track){
-			if(track->GetCurrentBar()%2 == 0){
-				this->RenderText(renderer, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "o");
-			}else{
-				this->RenderText(renderer, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "O");
-			}
+		if(track && track->GetCurrentBar()%2 == 0){
+			this->RenderText(renderer, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "o");
+		}else{
+			this->RenderText(renderer, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "O");
 		}
 	}
 }
