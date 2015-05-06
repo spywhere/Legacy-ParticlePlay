@@ -41,9 +41,9 @@ Level::Level(ppPhysics* physics) : PhysicsObject(physics){
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-400), this->physics->PixelToWorld(500)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-625), this->physics->PixelToWorld(500)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-625), this->physics->PixelToWorld(700)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(900), this->physics->PixelToWorld(700)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(900), this->physics->PixelToWorld(500)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-625), this->physics->PixelToWorld(900)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(900)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(500)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(400)));
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(325)));
@@ -52,21 +52,21 @@ Level::Level(ppPhysics* physics) : PhysicsObject(physics){
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(150), this->physics->PixelToWorld(400)));
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(400)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(700)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(150), this->physics->PixelToWorld(700)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(900)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(150), this->physics->PixelToWorld(900)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(900), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(900), this->physics->PixelToWorld(700)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(700)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(20)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(900)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(900)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(20)));
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(20)));
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(250)));
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(250)));
 
-    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(-650), this->physics->PixelToWorld(700)));
-    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(325), this->physics->PixelToWorld(700)));
+    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(-650), this->physics->PixelToWorld(900)));
+    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(325), this->physics->PixelToWorld(900)));
     this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(325), this->physics->PixelToWorld(20)));
     this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(-650), this->physics->PixelToWorld(20)));
 

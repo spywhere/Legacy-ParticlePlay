@@ -45,7 +45,7 @@ void GameState::OnInit(){
 }
 
 void GameState::OnRender(SDL_Renderer* renderer, int delta){
-	this->background->Render(renderer, ((-this->player->GetX()+600)*98/4000)-60, 0, 738, 480);
+	this->background->Render(renderer, ((-this->player->GetX()+600)*98/4000)-60, 0, 900, 585);
 	glPushMatrix();
 	glTranslatef(this->tx+320, this->ty, 0);
 	this->level->Render(renderer);
