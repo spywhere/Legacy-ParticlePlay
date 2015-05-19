@@ -22,7 +22,7 @@ public:
 	void SetCustomData(void* customData);
 	template<typename ppType> ppType GetCustomData(){
 		return static_cast<ppType>(this->customData);
-	}
+	};
 	ppGame* GetGame();
 	void SetGame(ppGame* game);
 	virtual void OnInit()=0;
