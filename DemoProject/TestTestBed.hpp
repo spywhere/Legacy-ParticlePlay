@@ -6,7 +6,7 @@
 class TestTestbed : public ppTestBed {
 public:
 	void OnInit();
-	void OnRender(SDL_Renderer* renderer, int delta);
+	void OnRender(ppGraphics* graphics, int delta);
 	void OnUpdate(ppInput* input, int delta);
 };
 

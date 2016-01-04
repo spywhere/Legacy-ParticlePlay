@@ -143,7 +143,7 @@ void ppTestBed::RenderBody(b2Body* body){
 	glPopMatrix();
 }
 
-void ppTestBed::OnRender(SDL_Renderer* renderer, int delta){
+void ppTestBed::OnRender(ppGraphics* graphics, int delta){
 	glPushMatrix();
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	std::stringstream ss;
@@ -154,14 +154,14 @@ void ppTestBed::OnRender(SDL_Renderer* renderer, int delta){
 	ss << "Position: " << (this->px) << ", " << (this->py) << "\n";
 	ss << "PTM: " << this->physics->GetPTM();
 	if(this->gui->GetDefaultFont()){
-		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
+		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), graphics);
 	}
 
 	for(b2Body* bd=this->physics->GetWorld()->GetBodyList();bd!=NULL;bd=bd->GetNext()){
 		this->RenderBody(bd);
 	}
 
-	this->gui->Render(renderer);
+	this->gui->Render(graphics);
 	glPopMatrix();
 }
 

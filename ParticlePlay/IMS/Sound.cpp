@@ -250,8 +250,8 @@ ALuint ppSound::GetSourceID(){
 	return this->sourceID;
 }
 
-void ppSound::Render(SDL_Renderer* renderer){
-	ppControl::Render(renderer);
+void ppSound::Render(ppGraphics* graphics){
+	ppControl::Render(graphics);
 	if(!this->visible){
 		return;
 	}

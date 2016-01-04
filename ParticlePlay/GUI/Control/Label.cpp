@@ -12,13 +12,13 @@ void ppLabel::SetText(std::string text){
 	this->text = text;
 }
 
-void ppLabel::Render(SDL_Renderer* renderer){
-	ppControl::Render(renderer);
+void ppLabel::Render(ppGraphics* graphics){
+	ppControl::Render(graphics);
 	if(!this->visible){
 		return;
 	}
 	if(this->GetGUI()->GetDefaultFont()){
-		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text.c_str(), renderer);
+		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text.c_str(), graphics);
 	}
 }
 

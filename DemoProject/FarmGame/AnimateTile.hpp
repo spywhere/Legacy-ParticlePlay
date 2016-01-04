@@ -15,7 +15,7 @@ protected:
 	int animationDelay;
 public:
 	AnimateTile(Spritesheet* spritesheet, int* xOffsets, int* yOffsets, int animationSize, int animationDelay, float scale);
-	void Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip);
 	void Update(ppInput* input, int delta);
 };
 

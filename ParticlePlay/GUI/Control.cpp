@@ -103,9 +103,9 @@ void ppControl::SetVisible(bool visible){
 	this->visible = visible;
 }
 
-void ppControl::Render(SDL_Renderer* renderer){
+void ppControl::Render(ppGraphics* graphics){
 	if(this->parent){
-		this->parent->Render(renderer);
+		this->parent->Render(graphics);
 	}
 	if(!this->visible){
 		return;

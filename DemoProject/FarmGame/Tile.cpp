@@ -9,28 +9,28 @@ Tile::Tile(Spritesheet* spritesheet, int xOffset, int yOffset, float scale){
 	this->clipY = 1.0f;
 }
 
-void Tile::Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip){
-	this->spritesheet->GetSheet()->Render(renderer, this->xOffset, this->yOffset, x, y, (int)(this->GetTileWidth()*this->clipX), (int)(this->GetTileHeight()*this->clipY), (int)(this->GetWidth()*this->clipX), (int)(this->GetHeight()*this->clipY), angle, center, flip);
+void Tile::Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip){
+	this->spritesheet->GetSheet()->Render(graphics->GetRenderer(), this->xOffset, this->yOffset, x, y, (int)(this->GetTileWidth()*this->clipX), (int)(this->GetTileHeight()*this->clipY), (int)(this->GetWidth()*this->clipX), (int)(this->GetHeight()*this->clipY), angle, center, flip);
 }
 
-void Tile::Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_RendererFlip flip){
-	this->Render(renderer, x, y, angle, ppImage::NO_CENTER, flip);
+void Tile::Render(ppGraphics* graphics, int x, int y, double angle, SDL_RendererFlip flip){
+	this->Render(graphics, x, y, angle, ppImage::NO_CENTER, flip);
 }
 
-void Tile::Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center){
-	this->Render(renderer, x, y, angle, center, ppImage::NO_FLIP);
+void Tile::Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center){
+	this->Render(graphics, x, y, angle, center, ppImage::NO_FLIP);
 }
 
-void Tile::Render(SDL_Renderer *renderer, int x, int y, SDL_RendererFlip flip){
-	this->Render(renderer, x, y, 0.0, ppImage::NO_CENTER, flip);
+void Tile::Render(ppGraphics* graphics, int x, int y, SDL_RendererFlip flip){
+	this->Render(graphics, x, y, 0.0, ppImage::NO_CENTER, flip);
 }
 
-void Tile::Render(SDL_Renderer *renderer, int x, int y, double angle){
-	this->Render(renderer, x, y, angle, ppImage::NO_CENTER, ppImage::NO_FLIP);
+void Tile::Render(ppGraphics* graphics, int x, int y, double angle){
+	this->Render(graphics, x, y, angle, ppImage::NO_CENTER, ppImage::NO_FLIP);
 }
 
-void Tile::Render(SDL_Renderer *renderer, int x, int y){
-	this->Render(renderer, x, y, 0.0, ppImage::NO_CENTER, ppImage::NO_FLIP);
+void Tile::Render(ppGraphics* graphics, int x, int y){
+	this->Render(graphics, x, y, 0.0, ppImage::NO_CENTER, ppImage::NO_FLIP);
 }
 
 void Tile::Update(ppInput* input, int delta){

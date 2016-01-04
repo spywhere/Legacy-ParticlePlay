@@ -83,16 +83,16 @@ void KameleonState::OnInit(){
 	this->gameState->OnInit();
 }
 
-void KameleonState::OnRender(SDL_Renderer* renderer, int delta){
-	this->gameState->OnRender(renderer, delta);
+void KameleonState::OnRender(ppGraphics* graphics, int delta){
+	this->gameState->OnRender(graphics, delta);
 	std::stringstream ss;
 	ss << "FPS: " << this->GetGame()->GetFPS() << " [" << this->GetGame()->GetAvgRenderTime() << "ms]\n";
 	ss << "UPS: " << this->GetGame()->GetUPS() << " [" << this->GetGame()->GetAvgUpdateTime() << "ms]\n";
 	if(this->gui->GetDefaultFont()){
-		glColor3f(1 ,1 ,1);
-		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), graphics);
 	}
-	this->gui->Render(renderer);
+	this->gui->Render(graphics);
 }
 
 void KameleonState::OnUpdate(ppInput* input, int delta){

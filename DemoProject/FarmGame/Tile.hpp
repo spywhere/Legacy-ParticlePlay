@@ -15,12 +15,12 @@ protected:
 	float clipY;
 public:
 	Tile(Spritesheet* spritesheet, int xOffset, int yOffset, float scale);
-	virtual void Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	virtual void Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_RendererFlip flip);
-	virtual void Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center);
-	virtual void Render(SDL_Renderer *renderer, int x, int y, SDL_RendererFlip flip);
-	virtual void Render(SDL_Renderer *renderer, int x, int y, double angle);
-	virtual void Render(SDL_Renderer *renderer, int x, int y);
+	virtual void Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	virtual void Render(ppGraphics* graphics, int x, int y, double angle, SDL_RendererFlip flip);
+	virtual void Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center);
+	virtual void Render(ppGraphics* graphics, int x, int y, SDL_RendererFlip flip);
+	virtual void Render(ppGraphics* graphics, int x, int y, double angle);
+	virtual void Render(ppGraphics* graphics, int x, int y);
 	virtual void Update(ppInput* input, int delta);
 	void SetClip(float cx, float cy);
 	int GetTileWidth();

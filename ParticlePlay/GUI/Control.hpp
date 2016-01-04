@@ -41,7 +41,7 @@ public:
 	void SetName(const char *name);
 	virtual bool IsVisible();
 	virtual void SetVisible(bool visible);
-	virtual void Render(SDL_Renderer* renderer);
+	virtual void Render(ppGraphics* graphics);
 	virtual void Update(ppInput* input);
 	virtual ppControlType GetType()=0;
 };

@@ -7,8 +7,8 @@
 class ppButton;
 class ppButtonListener {
 public:
-	virtual void OnClick(ppButton* button){}
-	virtual void OnMouseOver(ppButton* button){}
+	virtual void OnClick(ppButton* button){};
+	virtual void OnMouseOver(ppButton* button){};
 };
 
 class ppButton : public ppControl {
@@ -30,7 +30,7 @@ public:
 	void SetBackgroundColor(int color);
 	void SetHighlightColor(int color);
 	void SetForegroundColor(int color);
-	void Render(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
 	void Update(ppInput* input);
 	ppControlType GetType();
 };

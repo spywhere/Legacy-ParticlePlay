@@ -39,8 +39,8 @@ void ppButton::SetForegroundColor(int color){
 	this->foregroundColor = color;
 }
 
-void ppButton::Render(SDL_Renderer* renderer){
-	ppControl::Render(renderer);
+void ppButton::Render(ppGraphics* graphics){
+	ppControl::Render(graphics);
 	if(!this->visible){
 		return;
 	}
@@ -57,7 +57,7 @@ void ppButton::Render(SDL_Renderer* renderer){
 	glEnd();
 	glColor3f((this->foregroundColor >> 16 & 0xff) / 255.0f, (this->foregroundColor >> 8 & 0xff) / 255.0f, (this->foregroundColor & 0xff) / 255.0f);
 	if(this->GetGUI()->GetDefaultFont()){
-		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text.c_str(), renderer);
+		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text.c_str(), graphics);
 	}
 }
 

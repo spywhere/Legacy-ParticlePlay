@@ -8,9 +8,10 @@
 class ppGraphics{
 protected:
 	SDL_Renderer* renderer;
-	void DrawArc(int x, int y, int w, int h, int start, int end, GLenum mode);
+	void Arc(int x, int y, int w, int h, int start, int end, bool filled);
+	void Oval(int x, int y, int w, int h, bool filled);
 public:
-	ppGraphics(SDL_Renderer *renderer);
+	ppGraphics(SDL_Renderer* renderer);
 	void DrawArc(int x, int y, int w, int h, int start, int end);
 	void DrawImage(int x, int y, ppImage* image);
 	void DrawLine(int x1, int y1, int x2, int y2);
@@ -27,8 +28,11 @@ public:
 
 	// void Rotate(int degree);
 	// void Rotate(float radian);
-	void SetForeground(ppColor* color);
-	void SetBackground(ppColor* color);
+	void SetBlendMode(SDL_BlendMode blendMode);
+	void SetColor(ppColor* color);
+
+	SDL_BlendMode GetBlendMode();
+	SDL_Renderer* GetRenderer();
 };
 
 #endif

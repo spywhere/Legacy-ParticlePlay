@@ -15,7 +15,7 @@ protected:
 public:
 	b2Body* body;
 	Bee(ppPhysics* physics, int x, int y);
-	void Render(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
 	void Update(ppInput* input, int delta);
 	void SetTracking(b2Vec2 point);
 	void StartTracking();

@@ -10,7 +10,7 @@ void FarmState::InitEntities(){
 	this->chicken = new Chicken(this->spritesheet, this->GetGame()->GetWidth()/2, this->GetGame()->GetHeight()/8);
 }
 
-void FarmState::Render(SDL_Renderer* renderer, int delta){
+void FarmState::Render(ppGraphics* graphics, int delta){
 	if(this->ims){
 		ppGenericSound* track = this->ims->GetSound("dawnTrack");
 		if(track && !track->IsPlaying()){
@@ -20,17 +20,17 @@ void FarmState::Render(SDL_Renderer* renderer, int delta){
 			}
 		}
 		if(track && track->GetCurrentBar()%2 == 0){
-			this->RenderText(renderer, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "o");
+			this->RenderText(graphics, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "o");
 		}else{
-			this->RenderText(renderer, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "O");
+			this->RenderText(graphics, this->GetGame()->GetWidth()-40, this->GetGame()->GetHeight()-40, "O");
 		}
 	}
 }
 
-void FarmState::RenderEntities(SDL_Renderer* renderer, int delta){
+void FarmState::RenderEntities(ppGraphics* graphics, int delta){
 	// Render entities
-	this->chicken->Render(renderer);
-	this->player->Render(renderer);
+	this->chicken->Render(graphics);
+	this->player->Render(graphics);
 }
 
 void FarmState::UpdateEntities(ppInput* input, int delta){

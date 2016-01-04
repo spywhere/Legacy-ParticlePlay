@@ -19,8 +19,8 @@ protected:
 	float reveal;
 public:
 	Level(ppPhysics* physics);
-	void Render(SDL_Renderer* renderer);
-	void RenderMask(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
+	void RenderMask(ppGraphics* graphics);
 	void Update(ppInput* input);
 	void Reveal(long revealTime);
 	float GetReveal();

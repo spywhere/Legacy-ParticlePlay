@@ -305,8 +305,8 @@ void ppGenericSound::Update(){
 	}
 }
 
-void ppGenericSound::Render(SDL_Renderer* renderer){
-	ppControl::Render(renderer);
+void ppGenericSound::Render(ppGraphics* graphics){
+	ppControl::Render(graphics);
 }
 
 void ppGenericSound::Update(ppInput* input){

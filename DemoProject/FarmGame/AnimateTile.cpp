@@ -9,8 +9,8 @@ AnimateTile::AnimateTile(Spritesheet* spritesheet, int* xOffsets, int* yOffsets,
 	this->frameTime = 0;
 }
 
-void AnimateTile::Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip){
-	this->spritesheet->GetTile(this->xOffsets[this->currentFrame], this->yOffsets[this->currentFrame])->Render(renderer, x, y);
+void AnimateTile::Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip){
+	this->spritesheet->GetTile(this->xOffsets[this->currentFrame], this->yOffsets[this->currentFrame])->Render(graphics, x, y);
 }
 
 void AnimateTile::Update(ppInput* input, int delta){

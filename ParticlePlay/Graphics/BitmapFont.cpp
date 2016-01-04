@@ -107,7 +107,7 @@ Uint32 ppBitmapFont::GetPixel(int x, int y, SDL_Surface* surface){
 	return pixels[ ( y * surface->w ) + x ];
 }
 
-void ppBitmapFont::Render(int x, int y, const char* text, SDL_Renderer *renderer){
+void ppBitmapFont::Render(int x, int y, const char* text, ppGraphics* graphics){
 	if(!this->bitmap){
 		return;
 	}
@@ -120,7 +120,7 @@ void ppBitmapFont::Render(int x, int y, const char* text, SDL_Renderer *renderer
 			X=x;
 		}else{
 			int ascii = (unsigned char)text[show];
-			this->image->Render(renderer, chars[ascii].x, chars[ascii].y, X, Y, chars[ascii].w, chars[ascii].h, chars[ascii].w, chars[ascii].h);
+			this->image->Render(graphics->GetRenderer(), chars[ascii].x, chars[ascii].y, X, Y, chars[ascii].w, chars[ascii].h, chars[ascii].w, chars[ascii].h);
 			X += chars[ascii].w + this->spacing;
 		}
 	}

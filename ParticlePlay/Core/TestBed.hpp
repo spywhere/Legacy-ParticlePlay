@@ -23,7 +23,7 @@ protected:
 	virtual void RenderBody(b2Body* body);
 public:
 	virtual void OnInit();
-	virtual void OnRender(SDL_Renderer* renderer, int delta);
+	virtual void OnRender(ppGraphics* graphics, int delta);
 	virtual void OnUpdate(ppInput* input, int delta);
 };
 

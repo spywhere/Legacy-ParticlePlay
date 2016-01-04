@@ -41,8 +41,8 @@ void TestTestbed::OnInit(){
 	boxBody->CreateFixture(&boxFixtureDef);
 }
 
-void TestTestbed::OnRender(SDL_Renderer* renderer, int delta){
-	ppTestBed::OnRender(renderer, delta);
+void TestTestbed::OnRender(ppGraphics* graphics, int delta){
+	ppTestBed::OnRender(graphics, delta);
 }
 
 void TestTestbed::OnUpdate(ppInput* input, int delta){

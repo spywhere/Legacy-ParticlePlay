@@ -59,10 +59,10 @@ void ppGUI::ClearControl(){
 	this->controls.clear();
 }
 
-void ppGUI::Render(SDL_Renderer* renderer){
+void ppGUI::Render(ppGraphics* graphics){
 	std::sort(this->controls.begin(), this->controls.end(), ppGUI::ppControlOrdering);
 	for(auto control : this->controls){
-		control->Render(renderer);
+		control->Render(graphics);
 	}
 }
 

@@ -44,7 +44,7 @@ public:
 	bool IsStop();
 	bool IsStingerTrigger(const char *stingerName);
 	bool IsTransitioning();
-	void Render(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
 	void Update();
 	void Update(ppInput* input);
 	void OnBar(ppGenericSound* source);

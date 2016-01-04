@@ -10,24 +10,22 @@ void TestIMS::OnInit(){
 	this->test = 0;
 }
 
-void TestIMS::OnRender(SDL_Renderer* renderer, int delta){
+void TestIMS::OnRender(ppGraphics* graphics, int delta){
 	std::stringstream ss;
 	ss << "FPS: " << this->GetGame()->GetFPS() << " [" << this->GetGame()->GetAvgRenderTime() << "ms]\n";
 	ss << "UPS: " << this->GetGame()->GetUPS() << " [" << this->GetGame()->GetAvgUpdateTime() << "ms]\n";
 	if(this->gui->GetDefaultFont()){
-		glColor3f(1 ,1 ,1);
-		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), renderer);
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		this->gui->GetDefaultFont()->Render(10, 10, ss.str().c_str(), graphics);
 	}
 	if(this->test==0){
 		ppEasing* easing = new ppLinearEasing();
-		glColor3f(1, 1, 1);
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
 		for(int i=0;i<=100;i++){
-			glBegin(GL_POINTS);
-				glVertex2f(50+i, 300-easing->GetValue(i, 100, 0, 100));
-			glEnd();
+			graphics->DrawPoint(50+i, 300-easing->GetValue(i, 100, 0, 100));
 		}
 	}
-	this->gui->Render(renderer);
+	this->gui->Render(graphics);
 }
 
 void TestIMS::OnUpdate(ppInput* input, int delta){

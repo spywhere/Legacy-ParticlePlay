@@ -24,7 +24,7 @@ public:
 	int GetCurrentHeight();
 	int GetWidth();
 	int GetHeight();
-	void Render(SDL_Renderer *renderer, int x, int y, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, SDL_RendererFlip flip);
 	void Update(int delta);
 };
 

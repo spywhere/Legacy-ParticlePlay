@@ -52,7 +52,7 @@ public:
 	void SetFilter(ppFilter* filter);
 
 	//Control
-	void Render(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
 	void Update(ppInput* input);
 	ppControlType GetType();
 };

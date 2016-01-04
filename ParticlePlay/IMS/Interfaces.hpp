@@ -120,7 +120,7 @@ public:
 	virtual bool IsAutoLoop();
 	virtual bool IsReady();
 	virtual void Update();
-	virtual void Render(SDL_Renderer* renderer);
+	virtual void Render(ppGraphics* graphics);
 	virtual void Update(ppInput* input);
 	virtual ppControlType GetType();
 	virtual ALuint GetSourceID()=0;

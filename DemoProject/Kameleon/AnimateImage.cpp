@@ -63,14 +63,14 @@ int AnimateImage::GetHeight(){
 	return this->height;
 }
 
-void AnimateImage::Render(SDL_Renderer *renderer, int x, int y, SDL_RendererFlip flip){
+void AnimateImage::Render(ppGraphics* graphics, int x, int y, SDL_RendererFlip flip){
 	if(this->frames.size() <= 0){
 		return;
 	}
 	ppImage* image = (*std::next(this->frames.begin(), this->currentFrame));
 	int offsetX = (*std::next(this->offsetX.begin(), this->currentFrame));
 	int offsetY = (*std::next(this->offsetY.begin(), this->currentFrame));
-	image->Render(renderer, x-image->GetWidth()/2+offsetX, y-image->GetWidth()/2+offsetY, flip);
+	image->Render(graphics->GetRenderer(), x-image->GetWidth()/2+offsetX, y-image->GetWidth()/2+offsetY, flip);
 }
 
 void AnimateImage::Update(int delta){

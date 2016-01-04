@@ -44,14 +44,14 @@ void GameState::OnInit(){
 	this->background = new ppImage("tmpres/Kameleon/Assets/Image 2306.jpg");
 }
 
-void GameState::OnRender(SDL_Renderer* renderer, int delta){
-	this->background->Render(renderer, ((-this->player->GetX()+600)*98/4000)-60, 0, 900, 585);
+void GameState::OnRender(ppGraphics* graphics, int delta){
+	this->background->Render(graphics->GetRenderer(), ((-this->player->GetX()+600)*98/4000)-60, 0, 900, 585);
 	glPushMatrix();
 	glTranslatef(this->tx+320, this->ty, 0);
-	this->level->Render(renderer);
-	this->bee->Render(renderer);
-	this->player->Render(renderer);
-	this->level->RenderMask(renderer);
+	this->level->Render(graphics);
+	this->bee->Render(graphics);
+	this->player->Render(graphics);
+	this->level->RenderMask(graphics);
 	glPopMatrix();
 
 	if(this->debugView != 0){
@@ -64,44 +64,21 @@ void GameState::OnRender(SDL_Renderer* renderer, int delta){
 		ss << "Tracking: " << (10/this->bee->GetTrackingLength()) << "\n";
 		ss << "Health: " << this->player->GetHealth() << " - " << this->bee->GetHealth();
 		if(this->gui->GetDefaultFont()){
-			glColor3f(1 ,1 ,1);
-			this->gui->GetDefaultFont()->Render(10, 35, ss.str().c_str(), renderer);
+			graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+			this->gui->GetDefaultFont()->Render(10, 35, ss.str().c_str(), graphics);
 		}
 	}else if(this->level->GetReveal() > 0 && this->bee->GetHealth() > 0){
-		glEnable(GL_BLEND);
-	    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glColor4f(0.25f, 0.25f, 0.25f, 1-this->level->GetReveal());
-		glBegin(GL_QUADS);
-			glVertex2f(20, 50);
-			glVertex2f(170, 50);
-			glVertex2f(170, 70);
-			glVertex2f(20, 70);
-		glEnd();
-		glColor4f(0.5f, 0.5f, 1, 1-this->level->GetReveal());
-		glBegin(GL_QUADS);
-			glVertex2f(20, 50);
-			glVertex2f(20+(this->player->GetHealth()*1.5f), 50);
-			glVertex2f(20+(this->player->GetHealth()*1.5f), 70);
-			glVertex2f(20, 70);
-		glEnd();
+	    graphics->SetColor(new ppColor(0.25f, 0.25f, 0.25f, 1-this->level->GetReveal()));
+		graphics->FillRect(20, 50, 150, 20);
+		graphics->SetColor(new ppColor(0.5f, 0.5f, 1, 1-this->level->GetReveal()));
+		graphics->FillRect(20, 50, (this->player->GetHealth()*1.5f), 20);
 
-		glColor4f(0.25f, 0.25f, 0.25f, 1-this->level->GetReveal());
-		glBegin(GL_QUADS);
-			glVertex2f(470, 50);
-			glVertex2f(620, 50);
-			glVertex2f(620, 70);
-			glVertex2f(470, 70);
-		glEnd();
-		glColor4f(1, 0.5f, 0.5f, 1-this->level->GetReveal());
-		glBegin(GL_QUADS);
-			glVertex2f(470, 50);
-			glVertex2f(470+(this->bee->GetHealth()*1.5f), 50);
-			glVertex2f(470+(this->bee->GetHealth()*1.5f), 70);
-			glVertex2f(470, 70);
-		glEnd();
-		glDisable(GL_BLEND);
+		graphics->SetColor(new ppColor(0.25f, 0.25f, 0.25f, 1-this->level->GetReveal()));
+		graphics->FillRect(470, 50, 150, 20);
+		graphics->SetColor(new ppColor(1, 0.5f, 0.5f, 1-this->level->GetReveal()));
+		graphics->FillRect(470, 50, (this->bee->GetHealth()*1.5f), 20);
 	}
-	this->gui->Render(renderer);
+	this->gui->Render(graphics);
 }
 
 void GameState::OnUpdate(ppInput* input, int delta){

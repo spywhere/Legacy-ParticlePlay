@@ -34,21 +34,18 @@ Bee::Bee(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
 	this->flyPose->AddImage(new ppImage("tmpres/Kameleon/Assets/Image 2334.png"), -20, 50);
 }
 
-void Bee::Render(SDL_Renderer* renderer){
+void Bee::Render(ppGraphics* graphics){
 	if(!this->body){
 		return;
 	}
 	if(this->debugView){
 		this->RenderBody(this->body);
-		glColor4f(1, 1, 1, 1);
-		glBegin(GL_LINES);
-			glVertex2f(this->physics->WorldToPixel(this->body->GetPosition().x), this->physics->WorldToPixel(this->body->GetPosition().y));
-			glVertex2f(this->physics->WorldToPixel(this->trackingPoint.x), this->physics->WorldToPixel(this->trackingPoint.y));
-		glEnd();
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		graphics->DrawLine(this->physics->WorldToPixel(this->body->GetPosition().x), this->physics->WorldToPixel(this->body->GetPosition().y), this->physics->WorldToPixel(this->trackingPoint.x), this->physics->WorldToPixel(this->trackingPoint.y));
 	}
 
-	glColor4f(1, 1, 1, 1);
-	this->flyPose->Render(renderer, this->physics->WorldToPixel(this->body->GetPosition().x)+10, this->physics->WorldToPixel(this->body->GetPosition().y)-75, ppImage::NO_FLIP);
+	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+	this->flyPose->Render(graphics, this->physics->WorldToPixel(this->body->GetPosition().x)+10, this->physics->WorldToPixel(this->body->GetPosition().y)-75, ppImage::NO_FLIP);
 }
 
 void Bee::Update(ppInput* input, int delta){

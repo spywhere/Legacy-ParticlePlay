@@ -20,7 +20,7 @@ public:
 	ppBitmapFont* GetDefaultFont();
 	void RemoveControl(const char *name);
 	void ClearControl();
-	void Render(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
 	void Update(ppInput* input);
 };
 

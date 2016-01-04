@@ -14,7 +14,7 @@ protected:
 	bool inWater;
 public:
 	Entity(Spritesheet* spritesheet, int startX, int startY);
-	virtual void Render(SDL_Renderer* renderer)=0;
+	virtual void Render(ppGraphics* graphics)=0;
 	virtual void Update(ppInput* input, int delta);
 	int GetDirection();
 	int GetPositionX();

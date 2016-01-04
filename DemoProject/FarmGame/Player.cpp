@@ -6,7 +6,7 @@ Player::Player(Spritesheet* spritesheet, int startX, int startY) : Entity(sprite
 	this->spritesheet = new Spritesheet(spritesheet->GetSheet(), 16, 16, 3.5f);
 }
 
-void Player::Render(SDL_Renderer* renderer){
+void Player::Render(ppGraphics* graphics){
 	int xTile = this->GetDirection() & 1;
 	SDL_RendererFlip flip = ppImage::NO_FLIP;
 	if((this->GetDirection() >> 1) == 1){
@@ -27,7 +27,7 @@ void Player::Render(SDL_Renderer* renderer){
 		entityTile->SetClip(1.0f, 0.5f);
 		offsetY += 20;
 	}
-	entityTile->Render(renderer, this->GetPositionX()-entityTile->GetWidth()/2, offsetY+this->GetPositionY()-entityTile->GetHeight()/2, flip);
+	entityTile->Render(graphics, this->GetPositionX()-entityTile->GetWidth()/2, offsetY+this->GetPositionY()-entityTile->GetHeight()/2, flip);
 }
 
 void Player::Update(ppInput* input, int delta){

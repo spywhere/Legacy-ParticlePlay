@@ -10,7 +10,7 @@ Chicken::Chicken(Spritesheet* spritesheet, int startX, int startY) : Entity(spri
 	this->angle = 180;
 }
 
-void Chicken::Render(SDL_Renderer* renderer){
+void Chicken::Render(ppGraphics* graphics){
 	int xTile = 0;
 	SDL_RendererFlip flip = ppImage::NO_FLIP;
 	int offsetY = 0;
@@ -34,7 +34,7 @@ void Chicken::Render(SDL_Renderer* renderer){
 		entityTile->SetClip(1.0f, 0.5f);
 		offsetY += 20;
 	}
-	entityTile->Render(renderer, this->GetPositionX()-entityTile->GetWidth()/2, offsetY+this->GetPositionY()-entityTile->GetHeight()/2, flip);
+	entityTile->Render(graphics, this->GetPositionX()-entityTile->GetWidth()/2, offsetY+this->GetPositionY()-entityTile->GetHeight()/2, flip);
 }
 
 void Chicken::Update(ppInput* input, int delta){

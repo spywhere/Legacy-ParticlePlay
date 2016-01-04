@@ -12,7 +12,7 @@ public:
 	ppLabel(const char *name) : ppLabel(name, 0, 0) {};
 	std::string GetText();
 	void SetText(std::string text);
-	void Render(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
 	ppControlType GetType();
 };
 

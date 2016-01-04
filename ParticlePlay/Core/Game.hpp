@@ -8,6 +8,7 @@
 #include <ParticlePlay/Core/Input.hpp>
 #include <ParticlePlay/Core/Randomizer.hpp>
 #include <ParticlePlay/Core/State.hpp>
+#include <ParticlePlay/Graphics/Graphics.hpp>
 #include <ParticlePlay/IMS/IMS.hpp>
 
 class ppInput;
@@ -18,6 +19,7 @@ private:
 	SDL_Window* mainWindow;
 	SDL_Renderer* renderer;
 	SDL_GLContext glContext;
+	ppGraphics* graphics;
 	ppColor* backgroundColor;
 	ppInput* gameInput;
 	ppIO* gameIO;

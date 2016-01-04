@@ -77,25 +77,19 @@ kPlayer::kPlayer(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
 	this->currentPose = this->idlePose;
 }
 
-void kPlayer::Render(SDL_Renderer* renderer){
+void kPlayer::Render(ppGraphics* graphics){
 	if(this->debugView){
 		this->RenderBody(this->boxBody);
 		this->RenderBody(this->circleBody);
-		glColor3f(1, 1, 1);
-		glBegin(GL_LINES);
-			glVertex3f(this->physics->WorldToPixel(this->circleBody->GetPosition().x-1), this->physics->WorldToPixel(this->circleBody->GetPosition().y+1), 0);
-			glVertex3f(this->physics->WorldToPixel(this->circleBody->GetPosition().x+1), this->physics->WorldToPixel(this->circleBody->GetPosition().y+1), 0);
-		glEnd();
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		graphics->DrawLine(this->physics->WorldToPixel(this->circleBody->GetPosition().x-1), this->physics->WorldToPixel(this->circleBody->GetPosition().y+1), this->physics->WorldToPixel(this->circleBody->GetPosition().x+1), this->physics->WorldToPixel(this->circleBody->GetPosition().y+1));
 
-		glColor3f(1, 1, 1);
-		glBegin(GL_LINES);
-			glVertex3f(this->physics->WorldToPixel(this->circleBody->GetPosition().x-1), this->physics->WorldToPixel(40.25f), 0);
-			glVertex3f(this->physics->WorldToPixel(this->circleBody->GetPosition().x+1), this->physics->WorldToPixel(40.25f), 0);
-		glEnd();
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		graphics->DrawLine(this->physics->WorldToPixel(this->circleBody->GetPosition().x-1), this->physics->WorldToPixel(40.25f), this->physics->WorldToPixel(this->circleBody->GetPosition().x+1), this->physics->WorldToPixel(40.25f));
 	}
 
-	glColor3f(1, 1, 1);
-	this->currentPose->Render(renderer, this->physics->WorldToPixel(this->circleBody->GetPosition().x), this->physics->WorldToPixel(this->circleBody->GetPosition().y), this->playerFlip);
+	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+	this->currentPose->Render(graphics, this->physics->WorldToPixel(this->circleBody->GetPosition().x), this->physics->WorldToPixel(this->circleBody->GetPosition().y), this->playerFlip);
 }
 
 float kPlayer::GetWaterLevel(){

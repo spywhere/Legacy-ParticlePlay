@@ -4,6 +4,7 @@
 #include <ParticlePlay/Includes.hpp>
 #include <ParticlePlay/Core/Input.hpp>
 #include <ParticlePlay/Core/Game.hpp>
+#include <ParticlePlay/Graphics/Graphics.hpp>
 
 class ppGame;
 class ppState{
@@ -26,7 +27,7 @@ public:
 	ppGame* GetGame();
 	void SetGame(ppGame* game);
 	virtual void OnInit()=0;
-	virtual void OnRender(SDL_Renderer* renderer, int delta)=0;
+	virtual void OnRender(ppGraphics* graphics, int delta)=0;
 	virtual void OnUpdate(ppInput* input, int delta)=0;
 	virtual void OnExit();
 	virtual void OnRestart();

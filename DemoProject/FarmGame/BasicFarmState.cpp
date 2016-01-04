@@ -10,10 +10,10 @@ void BasicFarmState::InitEntities(){
 	this->chicken = new Chicken(this->spritesheet, this->GetGame()->GetWidth()/2, this->GetGame()->GetHeight()/8);
 }
 
-void BasicFarmState::RenderEntities(SDL_Renderer* renderer, int delta){
+void BasicFarmState::RenderEntities(ppGraphics* graphics, int delta){
 	// Render entities
-	this->chicken->Render(renderer);
-	this->player->Render(renderer);
+	this->chicken->Render(graphics);
+	this->player->Render(graphics);
 }
 
 void BasicFarmState::UpdateEntities(ppInput* input, int delta){

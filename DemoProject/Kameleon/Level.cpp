@@ -85,15 +85,15 @@ Level::Level(ppPhysics* physics) : PhysicsObject(physics){
     this->tree2 = new ppImage("tmpres/Kameleon/Assets/Image 1394.png");
 }
 
-void Level::Render(SDL_Renderer* renderer){
-    this->vine1->Render(renderer, this->physics->WorldToPixel(45), this->physics->WorldToPixel(38));
-    this->vine2->Render(renderer, this->physics->WorldToPixel(43), this->physics->WorldToPixel(25));
-    this->vine2->Render(renderer, this->physics->WorldToPixel(49), this->physics->WorldToPixel(25));
-    this->vine3->Render(renderer, this->physics->WorldToPixel(-35), this->physics->WorldToPixel(38));
-    this->tree1->Render(renderer, this->physics->WorldToPixel(20), this->physics->WorldToPixel(30));
-    this->tree2->Render(renderer, this->physics->WorldToPixel(-20), this->physics->WorldToPixel(30));
+void Level::Render(ppGraphics* graphics){
+    this->vine1->Render(graphics->GetRenderer(), this->physics->WorldToPixel(45), this->physics->WorldToPixel(38));
+    this->vine2->Render(graphics->GetRenderer(), this->physics->WorldToPixel(43), this->physics->WorldToPixel(25));
+    this->vine2->Render(graphics->GetRenderer(), this->physics->WorldToPixel(49), this->physics->WorldToPixel(25));
+    this->vine3->Render(graphics->GetRenderer(), this->physics->WorldToPixel(-35), this->physics->WorldToPixel(38));
+    this->tree1->Render(graphics->GetRenderer(), this->physics->WorldToPixel(20), this->physics->WorldToPixel(30));
+    this->tree2->Render(graphics->GetRenderer(), this->physics->WorldToPixel(-20), this->physics->WorldToPixel(30));
 
-    glColor3f(0, 0, 0);
+    graphics->SetColor(new ppColor(0.0f, 0.0f, 0.0f));
     glBegin(GL_QUADS);
         for(auto vec : this->levelMask){
             glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
@@ -127,7 +127,7 @@ void Level::Render(SDL_Renderer* renderer){
     }
 }
 
-void Level::RenderMask(SDL_Renderer* renderer){
+void Level::RenderMask(ppGraphics* graphics){
     if(this->reveal > 0){
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -10,7 +10,7 @@ protected:
 	int angle;
 public:
 	Chicken(Spritesheet* spritesheet, int startX, int startY);
-	void Render(SDL_Renderer* renderer);
+	void Render(ppGraphics* graphics);
 	void Update(ppInput* input, int delta);
 };
 

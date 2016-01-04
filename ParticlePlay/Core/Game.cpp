@@ -7,6 +7,7 @@
 ppGame::ppGame(){
 	this->mainWindow = NULL;
 	this->renderer = NULL;
+	this->graphics = NULL;
 	this->backgroundColor = new ppColor();
 	this->gameInput = new ppInput(this);
 	this->gameIO = new ppIO();
@@ -75,7 +76,8 @@ void ppGame::SetSize(int width, int height){
 	this->width = width;
 	this->height = height;
 	if(this->renderer){
-		glOrtho(0, this->width, this->height, 0, 1, -1);
+		// glOrtho(0, this->width, this->height, 0, 1, -1);
+		SDL_RenderSetLogicalSize(this->renderer, this->width, this->height);
 	}
 }
 
@@ -210,6 +212,7 @@ int ppGame::StartGame(){
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize renderer.", 0);
 			return 1;
 		}
+		this->graphics = new ppGraphics(this->renderer);
 
 		if(this->renderer){
 			#ifdef PPDEBUG
@@ -219,22 +222,29 @@ int ppGame::StartGame(){
 			#endif
 			this->glContext = SDL_GL_CreateContext(this->mainWindow);
 
-			glViewport(0, 0, this->screenWidth, this->screenHeight);
+			// glViewport(0, 0, this->screenWidth, this->screenHeight);
+			SDL_Rect* rect = new SDL_Rect;
+			rect->x = 0;
+			rect->y = 0;
+			rect->w = this->screenWidth;
+			rect->h = this->screenHeight;
+			SDL_RenderSetViewport(this->renderer, rect);
 
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho(0, this->width, this->height, 0, 1, -1);
+			// glMatrixMode(GL_PROJECTION);
+			// glLoadIdentity();
+			// glOrtho(0, this->width, this->height, 0, 1, -1);
+			SDL_RenderSetLogicalSize(this->renderer, this->width, this->height);
 
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
+			// glMatrixMode(GL_MODELVIEW);
+			// glLoadIdentity();
 
-			glEnable(GL_TEXTURE_2D);
-			glLoadIdentity();
+			// glEnable(GL_TEXTURE_2D);
+			// glLoadIdentity();
 
-			if(glGetError() != GL_NO_ERROR){
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenGL.", 0);
-				return 1;
-			}
+			// if(glGetError() != GL_NO_ERROR){
+			// 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenGL.", 0);
+			// 	return 1;
+			// }
 		}
 
 		if(!this->restarting){
@@ -312,54 +322,60 @@ int ppGame::StartGame(){
 				renderDelta -= msPerRender;
 				frames++;
 
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				glLoadIdentity();
+				SDL_SetRenderDrawColor(this->renderer, this->backgroundColor->GetR(), this->backgroundColor->GetG(), this->backgroundColor->GetB(), this->backgroundColor->GetA());
+				SDL_RenderClear(this->renderer);
 
-				glClearColor(this->backgroundColor->GetRf(), this->backgroundColor->GetGf(), this->backgroundColor->GetBf(), this->backgroundColor->GetAf());
+				// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				// glLoadIdentity();
+
+				// glClearColor(this->backgroundColor->GetRf(), this->backgroundColor->GetGf(), this->backgroundColor->GetBf(), this->backgroundColor->GetAf());
 
 				if(this->currentState && this->currentState->GetGame()){
-					this->currentState->OnRender(this->renderer, renderDeltaTime);
+					SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
+					this->currentState->OnRender(this->graphics, renderDeltaTime);
 				}
 				renderDeltaTime = 0;
 
 				if(this->showFPS){
 					// BG
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-					glBegin(GL_QUADS);
-					glColor4f(1, 1, 1, 0.5f);
-					glVertex3f(0, 0, 0);
-					glVertex3f(this->width, 0, 0);
-					glVertex3f(this->width, 6, 0);
-					glVertex3f(0, 6, 0);
-					glEnd();
+					// SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
+					SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 127);
+					SDL_Rect* rect = new SDL_Rect;
+					rect->x = 0;
+					rect->y = 0;
+					rect->w = this->width;
+					rect->h = 6;
+					SDL_RenderFillRect(this->renderer, rect);
+
 					// FPS
 					if(this->fps > 0){
 						Uint8 delta = this->fps / this->width;
 
-						glBegin(GL_QUADS);
-						glColor4f(0, (255-(delta*2))/255.0f, 0, 0.5f);
-						glVertex3f(0, 1, 0);
-						glVertex3f(this->fps % this->width, 1, 0);
-						glVertex3f(this->fps % this->width, 3, 0);
-						glVertex3f(0, 3, 0);
-						glEnd();
+						// SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
+						SDL_SetRenderDrawColor(this->renderer, 0, (255-(delta*2)), 0, 127);
+						SDL_Rect* rect = new SDL_Rect;
+						rect->x = 0;
+						rect->y = 1;
+						rect->w = this->fps % this->width;
+						rect->h = 2;
+						SDL_RenderFillRect(this->renderer, rect);
 					}
 					// UPS
 					if(this->ups > 0){
 						Uint8 delta = this->ups / this->width;
 
-						glBegin(GL_QUADS);
-						glColor4f(0, 0, (255-(delta*2))/255.0f, 0.5f);
-						glVertex3f(0, 3, 0);
-						glVertex3f(this->ups % this->width, 3, 0);
-						glVertex3f(this->ups % this->width, 5, 0);
-						glVertex3f(0, 5, 0);
-						glEnd();
+						// SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
+						SDL_SetRenderDrawColor(this->renderer, 0, 0, (255-(delta*2)), 127);
+						SDL_Rect* rect = new SDL_Rect;
+						rect->x = 0;
+						rect->y = 3;
+						rect->w = this->ups % this->width;
+						rect->h = 2;
+						SDL_RenderFillRect(this->renderer, rect);
 					}
-					glDisable(GL_BLEND);
 				}
-				SDL_GL_SwapWindow(this->mainWindow);
+				SDL_RenderPresent(this->renderer);
+				// SDL_GL_SwapWindow(this->mainWindow);
 				avgRenderTime += SDL_GetTicks()-speedTimer;
 			}
 

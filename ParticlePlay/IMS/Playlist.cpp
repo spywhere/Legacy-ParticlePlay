@@ -322,8 +322,8 @@ void ppPlaylist::Seek(float time){
 	}
 }
 
-void ppPlaylist::Render(SDL_Renderer* renderer){
-	ppControl::Render(renderer);
+void ppPlaylist::Render(ppGraphics* graphics){
+	ppControl::Render(graphics);
 	if(!this->visible){
 		return;
 	}
@@ -401,7 +401,7 @@ void ppPlaylist::Render(SDL_Renderer* renderer){
 		ss << sound->GetName();
 		if(this->GetGUI()->GetDefaultFont()){
 			glColor3f(1 ,1 ,1);
-			this->GetGUI()->GetDefaultFont()->Render(this->x+5, this->y+(index*height)+(height/2)-5, ss.str().c_str(), renderer);
+			this->GetGUI()->GetDefaultFont()->Render(this->x+5, this->y+(index*height)+(height/2)-5, ss.str().c_str(), graphics);
 		}
 
 		index++;

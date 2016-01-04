@@ -202,8 +202,8 @@ void ppSwitch::Update(){
 	}
 }
 
-void ppSwitch::Render(SDL_Renderer* renderer){
-	ppControl::Render(renderer);
+void ppSwitch::Render(ppGraphics* graphics){
+	ppControl::Render(graphics);
 	if(!this->visible){
 		return;
 	}
