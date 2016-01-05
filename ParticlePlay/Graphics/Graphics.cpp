@@ -5,9 +5,10 @@ const double PI = std::acos(-1);
 
 ppGraphics::ppGraphics(SDL_Renderer* renderer){
 	this->renderer = renderer;
-	this->translation_x = 0;
-	this->translation_y = 0;
+	this->translationX = 0;
+	this->translationY = 0;
 	this->rotation = 0;
+	this->drawn = true;
 }
 
 void ppGraphics::Arc(int x, int y, int w, int h, int start, int end, bool filled){
@@ -49,22 +50,60 @@ void ppGraphics::Oval(int x, int y, int w, int h, bool filled){
 	}
 }
 
-void ppGraphics::FillTriangle(int x1, int y1, int x2, int x3, int y2){
-	int yDiff = y2 - y1;
-	float x2Step = (x2 - x1);
-	float x3Step = (x3 - x1);
-	for(int i=0;i<yDiff;i++){
-		this->DrawLine(x1 + (x2Step * i / yDiff), y1 + i, x1 + (x3Step * i / yDiff), y1 + i);
+void ppGraphics::DrawPolygon(){
+	if(this->verts.size() == 0){
+		this->drawn = true;
+		return;
+	}else if(this->verts.size() == 1){
+		this->DrawPoint(this->verts[0].x, this->verts[0].y);
+		this->drawn = true;
+		return;
 	}
+
+	int numVerts = this->verts.size();
+	int prevVert = numVerts - 1;
+	for(int i=0;i<numVerts;i++){
+		this->DrawLine(this->verts[prevVert].x, this->verts[prevVert].y, this->verts[i].x, this->verts[i].y);
+		prevVert = (prevVert + 1) % numVerts;
+	}
+	this->drawn = true;
 }
 
-void ppGraphics::FillTriangle(int x1, int y1, int x2, int y2, int x3, int y3){
-	int xDiff = x3 - x2;
-	int yDiff = y3 - y2;
-	float dist23 = sqrtf(xDiff * xDiff + yDiff * yDiff);
-	for(float i=0;i<=1;i+=1.0f/dist23){
-		this->DrawLine(x1, y1, x2 + xDiff * i, y2 + yDiff * i);
+void ppGraphics::FillPolygon(){
+	if(this->verts.size() == 0){
+		this->drawn = true;
+		return;
+	}else if(this->verts.size() == 1){
+		this->DrawPoint(this->verts[0].x, this->verts[0].y);
+		this->drawn = true;
+		return;
 	}
+
+	for(int y=this->minYVert;y<this->maxYVert;y++){
+		int n = this->verts.size();
+		int prevVert = n - 1;
+		std::deque<int> scanXPoints;
+		for(int curVert=0;curVert<n;curVert++){
+			if((this->verts[curVert].y < y && y <= this->verts[prevVert].y) || (this->verts[prevVert].y < y && y <= this->verts[curVert].y)){
+				int diffX = this->verts[prevVert].x - this->verts[curVert].x;
+				int diffY = this->verts[prevVert].y - this->verts[curVert].y;
+				scanXPoints.push_back(rint(this->verts[curVert].x + (y - verts[curVert].y) * diffX / diffY));
+			}
+			for(int k=scanXPoints.size() - 1; k > 0 && scanXPoints[k-1] > scanXPoints[k]; k--){
+				int tmp = scanXPoints[k-1];
+				scanXPoints[k-1] = scanXPoints[k];
+				scanXPoints[k] = tmp;
+			}
+			prevVert = (prevVert + 1) % n;
+		}
+
+		int numScanXPoints = scanXPoints.size();
+		for(int i=0;i<numScanXPoints;i+=2){
+			this->DrawLine(scanXPoints[i], y, scanXPoints[i+1], y);
+		}
+	}
+
+	this->drawn = true;
 }
 
 void ppGraphics::DrawArc(int x, int y, int w, int h, int start, int end){
@@ -72,8 +111,8 @@ void ppGraphics::DrawArc(int x, int y, int w, int h, int start, int end){
 }
 
 void ppGraphics::DrawTexture(SDL_Texture* texture, SDL_Rect sourceOffset, SDL_Rect targetOffset, double angle, SDL_Point* center, SDL_RendererFlip flip){
-	targetOffset.x += this->translation_x;
-	targetOffset.y += this->translation_y;
+	targetOffset.x += this->translationX;
+	targetOffset.y += this->translationY;
 	SDL_RenderCopyEx(this->renderer, texture, &sourceOffset, &targetOffset, angle, center, flip);
 }
 
@@ -82,7 +121,7 @@ SDL_Texture* ppGraphics::CreateTextureFromSurface(SDL_Surface* surface){
 }
 
 void ppGraphics::DrawLine(int x1, int y1, int x2, int y2){
-	SDL_RenderDrawLine(this->renderer, this->translation_x+x1, this->translation_y+y1, this->translation_x+x2, this->translation_y+y2);
+	SDL_RenderDrawLine(this->renderer, this->translationX+x1, this->translationY+y1, this->translationX+x2, this->translationY+y2);
 }
 
 void ppGraphics::DrawOval(int x, int y, int w, int h){
@@ -90,13 +129,13 @@ void ppGraphics::DrawOval(int x, int y, int w, int h){
 }
 
 void ppGraphics::DrawPoint(int x, int y){
-	SDL_RenderDrawPoint(this->renderer, this->translation_x+x, this->translation_y+y);
+	SDL_RenderDrawPoint(this->renderer, this->translationX+x, this->translationY+y);
 }
 
 void ppGraphics::DrawRect(int x, int y, int w, int h){
 	SDL_Rect* rect = new SDL_Rect;
-	rect->x = this->translation_x+x;
-	rect->y = this->translation_y+y;
+	rect->x = this->translationX+x;
+	rect->y = this->translationY+y;
 	rect->w = w;
 	rect->h = h;
 	SDL_RenderDrawRect(this->renderer, rect);
@@ -123,8 +162,8 @@ void ppGraphics::FillOval(int x, int y, int w, int h){
 
 void ppGraphics::FillRect(int x, int y, int w, int h){
 	SDL_Rect* rect = new SDL_Rect;
-	rect->x = this->translation_x+x;
-	rect->y = this->translation_y+y;
+	rect->x = this->translationX+x;
+	rect->y = this->translationY+y;
 	rect->w = w;
 	rect->h = h;
 	SDL_RenderFillRect(this->renderer, rect);
@@ -147,28 +186,50 @@ void ppGraphics::PushContext(){
 	SDL_GetRenderDrawColor(this->renderer, &r, &g, &b, &a);
 	context.color = new ppColor(r, g, b, a);
 	SDL_GetRenderDrawBlendMode(this->renderer, &context.blendMode);
-	context.translation_x = this->translation_x;
-	context.translation_y = this->translation_y;
+	context.translationX = this->translationX;
+	context.translationY = this->translationY;
 	context.rotation = this->rotation;
-	this->contexts.push(context);
+	this->contexts.push_back(context);
 }
 
 void ppGraphics::PopContext(){
 	if(this->contexts.empty()){
 		return;
 	}
-	ppGraphicsContext context = this->contexts.top();
-	this->contexts.pop();
+	ppGraphicsContext context = this->contexts.back();
+	this->contexts.pop_back();
 	this->SetColor(context.color);
 	this->SetBlendMode(context.blendMode);
-	this->translation_x = context.translation_x;
-	this->translation_y = context.translation_y;
+	this->translationX = context.translationX;
+	this->translationY = context.translationY;
 	this->rotation = context.rotation;
 }
 
+void ppGraphics::SetVertex(int x, int y){
+	if(this->drawn){
+		this->verts.clear();
+		this->drawn = false;
+	}
+	ppPoint point;
+	point.x = x;
+	point.y = y;
+	if(this->verts.empty()){
+		this->minYVert = y;
+		this->maxYVert = y;
+	}else{
+		if(y < this->minYVert){
+			this->minYVert = y;
+		}
+		if(y > this->maxYVert){
+			this->maxYVert = y;
+		}
+	}
+	this->verts.push_back(point);
+}
+
 void ppGraphics::Translate(int x, int y){
-	this->translation_x = x;
-	this->translation_y = y;
+	this->translationX = x;
+	this->translationY = y;
 }
 
 void ppGraphics::SetBlendMode(SDL_BlendMode blendMode){

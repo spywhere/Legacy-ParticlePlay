@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_HEADER
 #define GRAPHICS_HEADER
 
-#include <stack>
+#include <deque>
 #include <ParticlePlay/Includes.hpp>
 #include <ParticlePlay/Core/Color.hpp>
 #include <ParticlePlay/Graphics/GraphicsContext.hpp>
@@ -14,20 +14,19 @@ struct ppPoint {
 
 class ppGraphics{
 protected:
-	std::stack<ppGraphicsContext> contexts;
-	int translation_x;
-	int translation_y;
+	std::deque<ppGraphicsContext> contexts;
+	std::deque<ppPoint> verts;
+	bool drawn;
+	int minYVert;
+	int maxYVert;
+	int translationX;
+	int translationY;
 	float rotation;
-	uint8 trifan_mode;
-	ppPoint* p1;
-	ppPoint* p2;
-	ppPoint* p3;
+
 	SDL_Renderer* renderer;
 	void Arc(int x, int y, int w, int h, int start, int end, bool filled);
 	void Oval(int x, int y, int w, int h, bool filled);
 public:
-	void FillTriangle(int x1, int y1, int x2, int x3, int y2);
-	void FillTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
 	ppGraphics(SDL_Renderer* renderer);
 	void DrawArc(int x, int y, int w, int h, int start, int end);
 	void DrawTexture(SDL_Texture* texture, SDL_Rect sourceOffset, SDL_Rect targetOffset, double angle, SDL_Point* center, SDL_RendererFlip flip);
@@ -35,18 +34,16 @@ public:
 	void DrawLine(int x1, int y1, int x2, int y2);
 	void DrawOval(int x, int y, int w, int h);
 	void DrawPoint(int x, int y);
-	//DrawPolygon
 	void DrawRect(int x, int y, int w, int h);
 	void DrawRoundRect(int x, int y, int w, int h, int roundness);
 	void FillArc(int x, int y, int w, int h, int start, int end);
 	void FillOval(int x, int y, int w, int h);
-	//FillPolygon
 	void FillRect(int x, int y, int w, int h);
 	void FillRoundRect(int x, int y, int w, int h, int roundness);
 
-	void BeginTriangleFan(bool filled);
-	void BeginTriangleFan();
-	void EndTriangleFan();
+	void SetVertex(int x, int y);
+	void DrawPolygon();
+	void FillPolygon();
 
 	void PushContext();
 	void PopContext();

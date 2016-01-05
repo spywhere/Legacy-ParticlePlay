@@ -4,8 +4,8 @@
 struct ppGraphicsContext {
 	ppColor* color;
 	SDL_BlendMode blendMode;
-	int translation_x;
-	int translation_y;
+	int translationX;
+	int translationY;
 	float rotation;
 };
 
