@@ -30,50 +30,32 @@ Level::Level(ppPhysics* physics) : PhysicsObject(physics){
     vs[index++].Set(this->physics->PixelToWorld(-400), this->physics->PixelToWorld(20));
     chainShape->CreateChain(vs, index);
 
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-625), this->physics->PixelToWorld(550)));
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-625), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-400), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-400), this->physics->PixelToWorld(550)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(225), this->physics->PixelToWorld(530)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-400), this->physics->PixelToWorld(400)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-150), this->physics->PixelToWorld(400)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-150), this->physics->PixelToWorld(500)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-400), this->physics->PixelToWorld(500)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(250), this->physics->PixelToWorld(100)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-625), this->physics->PixelToWorld(500)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(-625), this->physics->PixelToWorld(900)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(900)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(500)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1825), this->physics->PixelToWorld(400)));
 
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(400)));
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(325)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(350), this->physics->PixelToWorld(325)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(350), this->physics->PixelToWorld(400)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(50), this->physics->PixelToWorld(80)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(150), this->physics->PixelToWorld(400)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(400)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(900)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(150), this->physics->PixelToWorld(900)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(500), this->physics->PixelToWorld(500)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(1200), this->physics->PixelToWorld(900)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(900)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(550), this->physics->PixelToWorld(880)));
 
     this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(20)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(650), this->physics->PixelToWorld(250)));
-    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(250)));
+    this->levelMask.push_back(b2Vec2(this->physics->PixelToWorld(350), this->physics->PixelToWorld(230)));
 
-    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(-650), this->physics->PixelToWorld(900)));
-    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(325), this->physics->PixelToWorld(900)));
-    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(325), this->physics->PixelToWorld(20)));
     this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(-650), this->physics->PixelToWorld(20)));
+    this->levelFog.push_back(b2Vec2(this->physics->PixelToWorld(975), this->physics->PixelToWorld(880)));
 
     this->waterMask.push_back(b2Vec2(this->physics->PixelToWorld(-150), 40.25f));
-    this->waterMask.push_back(b2Vec2(this->physics->PixelToWorld(150), 40.25f));
-    this->waterMask.push_back(b2Vec2(this->physics->PixelToWorld(150), this->physics->PixelToWorld(500)));
-    this->waterMask.push_back(b2Vec2(this->physics->PixelToWorld(-150), this->physics->PixelToWorld(500)));
+    this->waterMask.push_back(b2Vec2(this->physics->PixelToWorld(300), this->physics->PixelToWorld(500) - 40.25f));
 
 	this->body->CreateFixture(chainShape, 1.0f);
 
@@ -86,40 +68,45 @@ Level::Level(ppPhysics* physics) : PhysicsObject(physics){
 }
 
 void Level::Render(ppGraphics* graphics){
-    this->vine1->Render(graphics->GetRenderer(), this->physics->WorldToPixel(45), this->physics->WorldToPixel(38));
-    this->vine2->Render(graphics->GetRenderer(), this->physics->WorldToPixel(43), this->physics->WorldToPixel(25));
-    this->vine2->Render(graphics->GetRenderer(), this->physics->WorldToPixel(49), this->physics->WorldToPixel(25));
-    this->vine3->Render(graphics->GetRenderer(), this->physics->WorldToPixel(-35), this->physics->WorldToPixel(38));
-    this->tree1->Render(graphics->GetRenderer(), this->physics->WorldToPixel(20), this->physics->WorldToPixel(30));
-    this->tree2->Render(graphics->GetRenderer(), this->physics->WorldToPixel(-20), this->physics->WorldToPixel(30));
+    this->vine1->Render(graphics, this->physics->WorldToPixel(45), this->physics->WorldToPixel(38));
+    this->vine2->Render(graphics, this->physics->WorldToPixel(43), this->physics->WorldToPixel(25));
+    this->vine2->Render(graphics, this->physics->WorldToPixel(49), this->physics->WorldToPixel(25));
+    this->vine3->Render(graphics, this->physics->WorldToPixel(-35), this->physics->WorldToPixel(38));
+    this->tree1->Render(graphics, this->physics->WorldToPixel(20), this->physics->WorldToPixel(30));
+    this->tree2->Render(graphics, this->physics->WorldToPixel(-20), this->physics->WorldToPixel(30));
 
     graphics->SetColor(new ppColor(0.0f, 0.0f, 0.0f));
-    glBegin(GL_QUADS);
-        for(auto vec : this->levelMask){
-            glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+    b2Vec2 pos;
+    bool gotPos = false;
+    for(auto vec : this->levelMask){
+        if(gotPos){
+            graphics->FillRect(this->physics->WorldToPixel(pos.x), this->physics->WorldToPixel(pos.y), this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+        }else{
+            pos = vec;
         }
-    glEnd();
+        gotPos = !gotPos;
+    }
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.5f, 0.5f, 1, 0.7f);
-    glBegin(GL_QUADS);
-        for(auto vec : this->waterMask){
-            glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+    graphics->SetColor(new ppColor(0.5f, 0.5f, 1, 0.7f));
+    for(auto vec : this->waterMask){
+        if(gotPos){
+            graphics->FillRect(this->physics->WorldToPixel(pos.x), this->physics->WorldToPixel(pos.y), this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+        }else{
+            pos = vec;
         }
-    glEnd();
-    glDisable(GL_BLEND);
+        gotPos = !gotPos;
+    }
 
     if(this->reveal > 0){
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(0, 0, 0, this->reveal);
-        glBegin(GL_QUADS);
-            for(auto vec : this->levelFog){
-                glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+        graphics->SetColor(new ppColor(0, 0, 0, this->reveal));
+        for(auto vec : this->levelFog){
+            if(gotPos){
+                graphics->FillRect(this->physics->WorldToPixel(pos.x), this->physics->WorldToPixel(pos.y), this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+            }else{
+                pos = vec;
             }
-        glEnd();
-        glDisable(GL_BLEND);
+            gotPos = !gotPos;
+        }
     }
 
     if(this->debugView){
@@ -129,15 +116,17 @@ void Level::Render(ppGraphics* graphics){
 
 void Level::RenderMask(ppGraphics* graphics){
     if(this->reveal > 0){
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(0, 0, 0, this->reveal);
-        glBegin(GL_QUADS);
-            for(auto vec : this->levelFog){
-                glVertex2f(this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+        graphics->SetColor(new ppColor(0, 0, 0, this->reveal));
+        b2Vec2 pos;
+        bool gotPos = false;
+        for(auto vec : this->levelFog){
+            if(gotPos){
+                graphics->FillRect(this->physics->WorldToPixel(pos.x), this->physics->WorldToPixel(pos.y), this->physics->WorldToPixel(vec.x), this->physics->WorldToPixel(vec.y));
+            }else{
+                pos = vec;
             }
-        glEnd();
-        glDisable(GL_BLEND);
+            gotPos = !gotPos;
+        }
     }
 }
 

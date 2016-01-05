@@ -10,7 +10,7 @@ Tile::Tile(Spritesheet* spritesheet, int xOffset, int yOffset, float scale){
 }
 
 void Tile::Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip){
-	this->spritesheet->GetSheet()->Render(graphics->GetRenderer(), this->xOffset, this->yOffset, x, y, (int)(this->GetTileWidth()*this->clipX), (int)(this->GetTileHeight()*this->clipY), (int)(this->GetWidth()*this->clipX), (int)(this->GetHeight()*this->clipY), angle, center, flip);
+	this->spritesheet->GetSheet()->Render(graphics, this->xOffset, this->yOffset, x, y, (int)(this->GetTileWidth()*this->clipX), (int)(this->GetTileHeight()*this->clipY), (int)(this->GetWidth()*this->clipX), (int)(this->GetHeight()*this->clipY), angle, center, flip);
 }
 
 void Tile::Render(ppGraphics* graphics, int x, int y, double angle, SDL_RendererFlip flip){

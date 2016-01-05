@@ -45,17 +45,12 @@ void ppButton::Render(ppGraphics* graphics){
 		return;
 	}
 	if(this->highlight){
-		glColor3f((this->highlightColor >> 16 & 0xff) / 255.0f, (this->highlightColor >> 8 & 0xff) / 255.0f, (this->highlightColor & 0xff) / 255.0f);
+		graphics->SetColor(new ppColor((this->highlightColor >> 16 & 0xff) / 255.0f, (this->highlightColor >> 8 & 0xff) / 255.0f, (this->highlightColor & 0xff) / 255.0f));
 	}else{
-		glColor3f((this->backgroundColor >> 16 & 0xff) / 255.0f, (this->backgroundColor >> 8 & 0xff) / 255.0f, (this->backgroundColor & 0xff) / 255.0f);
+		graphics->SetColor(new ppColor((this->backgroundColor >> 16 & 0xff) / 255.0f, (this->backgroundColor >> 8 & 0xff) / 255.0f, (this->backgroundColor & 0xff) / 255.0f));
 	}
-	glBegin(GL_QUADS);
-		glVertex3f(this->GetX(), this->GetY(), 0);
-		glVertex3f(this->GetX()+this->GetWidth(), this->GetY(), 0);
-		glVertex3f(this->GetX()+this->GetWidth(), this->GetY()+this->GetHeight(), 0);
-		glVertex3f(this->GetX(), this->GetY()+this->GetHeight(), 0);
-	glEnd();
-	glColor3f((this->foregroundColor >> 16 & 0xff) / 255.0f, (this->foregroundColor >> 8 & 0xff) / 255.0f, (this->foregroundColor & 0xff) / 255.0f);
+	graphics->FillRect(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight());
+	graphics->SetColor(new ppColor((this->foregroundColor >> 16 & 0xff) / 255.0f, (this->foregroundColor >> 8 & 0xff) / 255.0f, (this->foregroundColor & 0xff) / 255.0f));
 	if(this->GetGUI()->GetDefaultFont()){
 		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text.c_str(), graphics);
 	}

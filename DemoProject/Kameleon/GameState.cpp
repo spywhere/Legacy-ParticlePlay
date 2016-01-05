@@ -45,14 +45,14 @@ void GameState::OnInit(){
 }
 
 void GameState::OnRender(ppGraphics* graphics, int delta){
-	this->background->Render(graphics->GetRenderer(), ((-this->player->GetX()+600)*98/4000)-60, 0, 900, 585);
-	glPushMatrix();
-	glTranslatef(this->tx+320, this->ty, 0);
+	this->background->Render(graphics, ((-this->player->GetX()+600)*98/4000)-60, 0, 900, 585);
+	graphics->PushContext();
+	graphics->Translate(this->tx+320, this->ty);
 	this->level->Render(graphics);
 	this->bee->Render(graphics);
 	this->player->Render(graphics);
 	this->level->RenderMask(graphics);
-	glPopMatrix();
+	graphics->PopContext();
 
 	if(this->debugView != 0){
 		std::stringstream ss;

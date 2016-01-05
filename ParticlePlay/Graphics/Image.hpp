@@ -3,11 +3,12 @@
 
 #include <ParticlePlay/Includes.hpp>
 
+class ppGraphics;
 class ppImage{
 protected:
 	SDL_Surface* surface;
 	SDL_Texture* texture;
-	SDL_Renderer* renderer;
+	ppGraphics* graphics;
 public:
 	ppImage(SDL_Surface *surface);
 	ppImage(const char *filename);
@@ -19,54 +20,54 @@ public:
 	static SDL_RendererFlip FLIP_VERTICAL;
 	static SDL_RendererFlip FLIP_ALL;
 
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle, SDL_Point* center);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle, SDL_Point* center);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh, double angle);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh);
 
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int width, int height, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int width, int height, double angle, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int width, int height, double angle, SDL_Point* center);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int width, int height, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int width, int height, double angle);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, int width, int height);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int width, int height, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int width, int height, double angle, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int width, int height, double angle, SDL_Point* center);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int width, int height, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int width, int height, double angle);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, int width, int height);
 
-	void Render(SDL_Renderer *renderer, int x, int y, int width, int height, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, int width, int height, double angle, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, int width, int height, double angle, SDL_Point* center);
-	void Render(SDL_Renderer *renderer, int x, int y, int width, int height, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, int width, int height, double angle);
-	void Render(SDL_Renderer *renderer, int x, int y, int width, int height);
+	void Render(ppGraphics* graphics, int x, int y, int width, int height, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, int width, int height, double angle, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, int width, int height, double angle, SDL_Point* center);
+	void Render(ppGraphics* graphics, int x, int y, int width, int height, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, int width, int height, double angle);
+	void Render(ppGraphics* graphics, int x, int y, int width, int height);
 
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle, SDL_Point* center);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle, SDL_Point* center);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh, double angle);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float sw, float sh, float dw, float dh);
 
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float width, float height, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float width, float height, double angle, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float width, float height, double angle, SDL_Point* center);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float width, float height, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float width, float height, double angle);
-	void Render(SDL_Renderer *renderer, int sx, int sy, int dx, int dy, float width, float height);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float width, float height, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float width, float height, double angle, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float width, float height, double angle, SDL_Point* center);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float width, float height, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float width, float height, double angle);
+	void Render(ppGraphics* graphics, int sx, int sy, int dx, int dy, float width, float height);
 
-	void Render(SDL_Renderer *renderer, int x, int y, float width, float height, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, float width, float height, double angle, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, float width, float height, double angle, SDL_Point* center);
-	void Render(SDL_Renderer *renderer, int x, int y, float width, float height, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, float width, float height, double angle);
-	void Render(SDL_Renderer *renderer, int x, int y, float width, float height);
+	void Render(ppGraphics* graphics, int x, int y, float width, float height, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, float width, float height, double angle, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, float width, float height, double angle, SDL_Point* center);
+	void Render(ppGraphics* graphics, int x, int y, float width, float height, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, float width, float height, double angle);
+	void Render(ppGraphics* graphics, int x, int y, float width, float height);
 
-	void Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, double angle, SDL_Point* center);
-	void Render(SDL_Renderer *renderer, int x, int y, SDL_RendererFlip flip);
-	void Render(SDL_Renderer *renderer, int x, int y, double angle);
-	void Render(SDL_Renderer *renderer, int x, int y);
+	void Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, double angle, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, double angle, SDL_Point* center);
+	void Render(ppGraphics* graphics, int x, int y, SDL_RendererFlip flip);
+	void Render(ppGraphics* graphics, int x, int y, double angle);
+	void Render(ppGraphics* graphics, int x, int y);
 
 	int GetWidth();
 	int GetHeight();

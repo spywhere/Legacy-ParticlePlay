@@ -5,6 +5,9 @@ const double PI = std::acos(-1);
 
 ppGraphics::ppGraphics(SDL_Renderer* renderer){
 	this->renderer = renderer;
+	this->translation_x = 0;
+	this->translation_y = 0;
+	this->rotation = 0;
 }
 
 void ppGraphics::Arc(int x, int y, int w, int h, int start, int end, bool filled){
@@ -34,12 +37,18 @@ void ppGraphics::DrawArc(int x, int y, int w, int h, int start, int end){
 	this->Arc(x, y, w, h, start, end, false);
 }
 
-void ppGraphics::DrawImage(int x, int y, ppImage* image){
-	image->Render(this->renderer, x, y);
+void ppGraphics::DrawTexture(SDL_Texture* texture, SDL_Rect sourceOffset, SDL_Rect targetOffset, double angle, SDL_Point* center, SDL_RendererFlip flip){
+	targetOffset.x += this->translation_x;
+	targetOffset.y += this->translation_y;
+	SDL_RenderCopyEx(this->renderer, texture, &sourceOffset, &targetOffset, angle, center, flip);
+}
+
+SDL_Texture* ppGraphics::CreateTextureFromSurface(SDL_Surface* surface){
+	return SDL_CreateTextureFromSurface(this->renderer, surface);
 }
 
 void ppGraphics::DrawLine(int x1, int y1, int x2, int y2){
-	SDL_RenderDrawLine(this->renderer, x1, y1, x2, y2);
+	SDL_RenderDrawLine(this->renderer, this->translation_x+x1, this->translation_y+y1, this->translation_x+x2, this->translation_y+y2);
 }
 
 void ppGraphics::Oval(int x, int y, int w, int h, bool filled){
@@ -63,13 +72,13 @@ void ppGraphics::DrawOval(int x, int y, int w, int h){
 }
 
 void ppGraphics::DrawPoint(int x, int y){
-	SDL_RenderDrawPoint(this->renderer, x, y);
+	SDL_RenderDrawPoint(this->renderer, this->translation_x+x, this->translation_y+y);
 }
 
 void ppGraphics::DrawRect(int x, int y, int w, int h){
 	SDL_Rect* rect = new SDL_Rect;
-	rect->x = x;
-	rect->y = y;
+	rect->x = this->translation_x+x;
+	rect->y = this->translation_y+y;
 	rect->w = w;
 	rect->h = h;
 	SDL_RenderDrawRect(this->renderer, rect);
@@ -96,8 +105,8 @@ void ppGraphics::FillOval(int x, int y, int w, int h){
 
 void ppGraphics::FillRect(int x, int y, int w, int h){
 	SDL_Rect* rect = new SDL_Rect;
-	rect->x = x;
-	rect->y = y;
+	rect->x = this->translation_x+x;
+	rect->y = this->translation_y+y;
 	rect->w = w;
 	rect->h = h;
 	SDL_RenderFillRect(this->renderer, rect);
@@ -114,18 +123,42 @@ void ppGraphics::FillRoundRect(int x, int y, int w, int h, int roundness){
 	this->FillRect(x, y + roundness, w - roundness, h - roundness * 2);
 }
 
+void ppGraphics::PushContext(){
+	ppGraphicsContext context;
+	uint8 r, g, b, a;
+	SDL_GetRenderDrawColor(this->renderer, &r, &g, &b, &a);
+	context.color = new ppColor(r, g, b, a);
+	SDL_GetRenderDrawBlendMode(this->renderer, &context.blendMode);
+	context.translation_x = this->translation_x;
+	context.translation_y = this->translation_y;
+	context.rotation = this->rotation;
+	this->contexts.push(context);
+}
+
+void ppGraphics::PopContext(){
+	if(this->contexts.empty()){
+		return;
+	}
+	ppGraphicsContext context = this->contexts.top();
+	this->contexts.pop();
+	this->SetColor(context.color);
+	this->SetBlendMode(context.blendMode);
+	this->translation_x = context.translation_x;
+	this->translation_y = context.translation_y;
+	this->rotation = context.rotation;
+}
+
+void ppGraphics::Translate(int x, int y){
+	this->translation_x = x;
+	this->translation_y = y;
+}
+
 void ppGraphics::SetBlendMode(SDL_BlendMode blendMode){
 	SDL_SetRenderDrawBlendMode(this->renderer, blendMode);
 }
 
 void ppGraphics::SetColor(ppColor* color){
 	SDL_SetRenderDrawColor(this->renderer, color->GetR(), color->GetG(), color->GetB(), color->GetA());
-}
-
-SDL_BlendMode ppGraphics::GetBlendMode(){
-	SDL_BlendMode blendMode;
-	SDL_GetRenderDrawBlendMode(this->renderer, &blendMode);
-	return blendMode;
 }
 
 SDL_Renderer* ppGraphics::GetRenderer(){

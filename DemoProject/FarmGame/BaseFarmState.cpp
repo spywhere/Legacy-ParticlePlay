@@ -94,11 +94,10 @@ void BaseFarmState::OnRender(ppGraphics* graphics, int delta){
 		graphics->SetColor(new ppColor(gain, 0.25f+gain*0.75f, 0.5f+gain*0.5f));
 	}
 
-	SDL_BlendMode blendMode = graphics->GetBlendMode();
+	graphics->PushContext();
 	graphics->SetBlendMode(SDL_BLENDMODE_MOD);
 	graphics->FillRect(0, 0, this->GetGame()->GetWidth(), this->GetGame()->GetHeight());
-	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
-	graphics->SetBlendMode(blendMode);
+	graphics->PopContext();
 
 	this->Render(graphics, delta);
 	this->RenderText(graphics, 8, this->GetGame()->GetHeight()-this->spritesheet->GetHeight()-50, this->FormatNumber(this->timeSpeed).c_str());
