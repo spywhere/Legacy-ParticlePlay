@@ -50,6 +50,12 @@ void TestScene::OnRender(ppGraphics* graphics, int delta){
 	graphics->SetColor(new ppColor(0.0f, 1.0f, 0.0f, 0.5f));
 	graphics->FillRect(300, 300, 200, 200);
 
+	graphics->SetColor(new ppColor(1.0f, 0.0f, 0.0f));
+	// graphics->DrawLine(350, 350, 250, 450);
+	// graphics->DrawLine(250, 450, 450, 450);
+	// graphics->DrawLine(450, 450, 350, 350);
+	graphics->FillTriangle(350, 350, 250, 450, 450);
+
 	// glBegin(GL_QUADS);
 	// 	glColor3f(1, 0, 0); glVertex3f(this->posx, this->posy, 0);
 	// 	glColor3f(1, 1, 0); glVertex3f(this->posx+100, this->posy, 0);

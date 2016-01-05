@@ -7,16 +7,27 @@
 #include <ParticlePlay/Graphics/GraphicsContext.hpp>
 #include <ParticlePlay/Graphics/Image.hpp>
 
+struct ppPoint {
+	int x;
+	int y;
+};
+
 class ppGraphics{
 protected:
 	std::stack<ppGraphicsContext> contexts;
 	int translation_x;
 	int translation_y;
 	float rotation;
+	uint8 trifan_mode;
+	ppPoint* p1;
+	ppPoint* p2;
+	ppPoint* p3;
 	SDL_Renderer* renderer;
 	void Arc(int x, int y, int w, int h, int start, int end, bool filled);
 	void Oval(int x, int y, int w, int h, bool filled);
 public:
+	void FillTriangle(int x1, int y1, int x2, int x3, int y2);
+	void FillTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
 	ppGraphics(SDL_Renderer* renderer);
 	void DrawArc(int x, int y, int w, int h, int start, int end);
 	void DrawTexture(SDL_Texture* texture, SDL_Rect sourceOffset, SDL_Rect targetOffset, double angle, SDL_Point* center, SDL_RendererFlip flip);
@@ -32,6 +43,10 @@ public:
 	//FillPolygon
 	void FillRect(int x, int y, int w, int h);
 	void FillRoundRect(int x, int y, int w, int h, int roundness);
+
+	void BeginTriangleFan(bool filled);
+	void BeginTriangleFan();
+	void EndTriangleFan();
 
 	void PushContext();
 	void PopContext();

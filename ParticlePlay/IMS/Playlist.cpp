@@ -332,75 +332,48 @@ void ppPlaylist::Render(ppGraphics* graphics){
 	for(auto sound : this->soundOrder){
 		int width = sound->GetCurrentPosition()*(this->width-2)/sound->GetPositionLength();
 		int max_width = this->width-2;
+
 		//Total playing time
-		glBegin(GL_QUADS);
-		{
-			glColor4f(0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2)), 1);
-			glVertex3f(this->x+width, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+max_width, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+max_width, this->y+(index*height)+height, 0);
-			glVertex3f(this->x+width, this->y+(index*height)+height, 0);
-		}
-		glEnd();
+		graphics->SetColor(new ppColor(0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2))));
+		graphics->FillRect(this->x+width, this->y+(index*height)+1, max_width-width, height);
+
 		//Current playing time
-		glBegin(GL_QUADS);
-		{
-			glColor4f(0.5f, 0.5f+(0.3f*(index%2)), 0.5f+(0.3f*((index+1)%2)), 1);
-			glVertex3f(this->x, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+width, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+width, this->y+(index*height)+height, 0);
-			glVertex3f(this->x, this->y+(index*height)+height, 0);
-		}
-		glEnd();
+		graphics->SetColor(new ppColor(0.5f, 0.5f+(0.3f*(index%2)), 0.5f+(0.3f*((index+1)%2))));
+		graphics->FillRect(this->x, this->y+(index*height)+1, width, height);
+
 		//Entry Cue
-		glBegin(GL_LINES);
-		{
-			glColor3f(1, 1, 1);
-			int offset = sound->GetEntryCue()*(this->width-2)/sound->GetPositionLength();
-			glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+offset, this->y+(index*height)+height, 0);
-		}
-		glEnd();
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		int offset = sound->GetEntryCue()*(this->width-2)/sound->GetPositionLength();
+		graphics->DrawLine(this->x+offset, this->y+(index*height)+1, this->x+offset, this->y+(index*height)+height);
+
 		//Exit Cue
-		glBegin(GL_LINES);
-		{
-			Sint64 exitCue = sound->GetEntryCue()+sound->GetNormalExitCue();
-			glColor3f(1, 1, 1);
-			int offset = exitCue*(this->width-2)/sound->GetPositionLength();
-			glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+offset, this->y+(index*height)+height, 0);
-		}
-		glEnd();
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		Sint64 exitCue = sound->GetEntryCue()+sound->GetNormalExitCue();
+		offset = exitCue*(this->width-2)/sound->GetPositionLength();
+		graphics->DrawLine(this->x+offset, this->y+(index*height)+1, this->x+offset, this->y+(index*height)+height);
+
 		//Beat line
-		glBegin(GL_LINES);
-		{
-			glColor4f(1, 1, 1, 0.25f);
-			float beatTime = sound->GetTimePerBeat();
-			while(sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(beatTime) < sound->GetPositionLength()){
-				int offset = (int)((sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(beatTime))*(this->width-2)/sound->GetPositionLength());
-				glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
-				glVertex3f(this->x+offset, this->y+(index*height)+(height/8), 0);
-				beatTime += sound->GetTimePerBeat();
-			}
+		graphics->SetColor(new ppColor(1, 1, 1, 0.25f));
+		float beatTime = sound->GetTimePerBeat();
+		while(sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(beatTime) < sound->GetPositionLength()){
+			int offset = (int)((sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(beatTime))*(this->width-2)/sound->GetPositionLength());
+			graphics->DrawLine(this->x+offset, this->y+(index*height)+1, this->x+offset, this->y+(index*height)+(height/8));
+			beatTime += sound->GetTimePerBeat();
 		}
+
 		//Bar line
-		glBegin(GL_LINES);
-		{
-			glColor4f(1, 1, 1, 0.5f);
-			float barTime = sound->GetTimePerBeat()*sound->GetBeatPerBar();
-			while(sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(barTime) < sound->GetPositionLength()){
-				int offset = (int)((sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(barTime))*(this->width-2)/sound->GetPositionLength());
-				glVertex3f(this->x+offset, this->y+(index*height)+1, 0);
-				glVertex3f(this->x+offset, this->y+(index*height)+(height/4), 0);
-				barTime += sound->GetTimePerBeat()*sound->GetBeatPerBar();
-			}
+		graphics->SetColor(new ppColor(1, 1, 1, 0.5f));
+		float barTime = sound->GetTimePerBeat()*sound->GetBeatPerBar();
+		while(sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(barTime) < sound->GetPositionLength()){
+			int offset = (int)((sound->GetEntryCue()+sound->GetAudioFormat()->TimeToPosition(barTime))*(this->width-2)/sound->GetPositionLength());
+			graphics->DrawLine(this->x+offset, this->y+(index*height)+1, this->x+offset, this->y+(index*height)+(height/4));
+			barTime += sound->GetTimePerBeat()*sound->GetBeatPerBar();
 		}
-		glEnd();
 
 		std::stringstream ss;
 		ss << sound->GetName();
 		if(this->GetGUI()->GetDefaultFont()){
-			glColor3f(1 ,1 ,1);
+			graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
 			this->GetGUI()->GetDefaultFont()->Render(this->x+5, this->y+(index*height)+(height/2)-5, ss.str().c_str(), graphics);
 		}
 

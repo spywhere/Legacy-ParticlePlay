@@ -33,6 +33,40 @@ void ppGraphics::Arc(int x, int y, int w, int h, int start, int end, bool filled
 	}
 }
 
+void ppGraphics::Oval(int x, int y, int w, int h, bool filled){
+	float hw = w / 2.0f;
+	float hh = h / 2.0f;
+	float cx = x + hw;
+	for (float i=0; i<h; i++){
+		float angle = acosf((i - hh) / hh);
+		float val = sinf(angle) * hw;
+		if (filled) {
+			this->DrawLine((int)(cx - val), (int)(y + i), (int)(cx + val), (int)(y + i));
+		} else {
+			this->DrawPoint((int)(cx - val), (int)(y + i));
+			this->DrawPoint((int)(cx + val), (int)(y + i));
+		}
+	}
+}
+
+void ppGraphics::FillTriangle(int x1, int y1, int x2, int x3, int y2){
+	int yDiff = y2 - y1;
+	float x2Step = (x2 - x1);
+	float x3Step = (x3 - x1);
+	for(int i=0;i<yDiff;i++){
+		this->DrawLine(x1 + (x2Step * i / yDiff), y1 + i, x1 + (x3Step * i / yDiff), y1 + i);
+	}
+}
+
+void ppGraphics::FillTriangle(int x1, int y1, int x2, int y2, int x3, int y3){
+	int xDiff = x3 - x2;
+	int yDiff = y3 - y2;
+	float dist23 = sqrtf(xDiff * xDiff + yDiff * yDiff);
+	for(float i=0;i<=1;i+=1.0f/dist23){
+		this->DrawLine(x1, y1, x2 + xDiff * i, y2 + yDiff * i);
+	}
+}
+
 void ppGraphics::DrawArc(int x, int y, int w, int h, int start, int end){
 	this->Arc(x, y, w, h, start, end, false);
 }
@@ -49,22 +83,6 @@ SDL_Texture* ppGraphics::CreateTextureFromSurface(SDL_Surface* surface){
 
 void ppGraphics::DrawLine(int x1, int y1, int x2, int y2){
 	SDL_RenderDrawLine(this->renderer, this->translation_x+x1, this->translation_y+y1, this->translation_x+x2, this->translation_y+y2);
-}
-
-void ppGraphics::Oval(int x, int y, int w, int h, bool filled){
-	float hw = w / 2.0f;
-	float hh = h / 2.0f;
-	float cx = x + hw;
-	for (float i=0; i<h; i++){
-		float angle = acosf((i - hh) / hh);
-		float val = sinf(angle) * hw;
-		if (filled) {
-			this->DrawLine((int)(cx - val), (int)(y + i), (int)(cx + val), (int)(y + i));
-		} else {
-			this->DrawPoint((int)(cx - val), (int)(y + i));
-			this->DrawPoint((int)(cx + val), (int)(y + i));
-		}
-	}
 }
 
 void ppGraphics::DrawOval(int x, int y, int w, int h){
