@@ -107,6 +107,10 @@ Uint32 ppBitmapFont::GetPixel(int x, int y, SDL_Surface* surface){
 	return pixels[ ( y * surface->w ) + x ];
 }
 
+void ppBitmapFont::Render(ppPoint origin, const char* text, ppGraphics* graphics){
+	this->Render(origin.x, origin.y, text, graphics);
+}
+
 void ppBitmapFont::Render(int x, int y, const char* text, ppGraphics* graphics){
 	if(!this->bitmap){
 		return;

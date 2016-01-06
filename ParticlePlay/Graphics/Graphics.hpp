@@ -4,13 +4,8 @@
 #include <deque>
 #include <ParticlePlay/Includes.hpp>
 #include <ParticlePlay/Core/Color.hpp>
-#include <ParticlePlay/Graphics/GraphicsContext.hpp>
+#include <ParticlePlay/Graphics/Types.hpp>
 #include <ParticlePlay/Graphics/Image.hpp>
-
-struct ppPoint {
-	int x;
-	int y;
-};
 
 class ppGraphics{
 protected:
