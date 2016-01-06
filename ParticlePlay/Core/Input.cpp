@@ -24,27 +24,27 @@ ppGame* ppInput::GetGame(){
 }
 
 int ppInput::GetMouseX(){
-	return this->GetActualMouseX()*this->game->GetWidth()/this->game->GetScreenWidth();
+	return this->GetActualMouseX();
 }
 
 int ppInput::GetMouseY(){
-	return this->GetActualMouseY()*this->game->GetHeight()/this->game->GetScreenHeight();
+	return this->GetActualMouseY();
 }
 
 int ppInput::GetRelativeMouseX(){
-	return this->GetActualRelativeMouseX()*this->game->GetWidth()/this->game->GetScreenWidth();
+	return this->GetActualRelativeMouseX();
 }
 
 int ppInput::GetRelativeMouseY(){
-	return this->GetActualRelativeMouseY()*this->game->GetHeight()/this->game->GetScreenHeight();
+	return this->GetActualRelativeMouseY();
 }
 
 int ppInput::GetDeltaMouseX(){
-	return this->GetActualDeltaMouseX()*this->game->GetWidth()/this->game->GetScreenWidth();
+	return this->GetActualDeltaMouseX();
 }
 
 int ppInput::GetDeltaMouseY(){
-	return this->GetActualDeltaMouseY()*this->game->GetHeight()/this->game->GetScreenHeight();
+	return this->GetActualDeltaMouseY();
 }
 
 int ppInput::GetActualMouseX(){
