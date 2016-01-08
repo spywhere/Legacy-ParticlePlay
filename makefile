@@ -17,7 +17,7 @@ re-demo: clean demo
 re-full: clean full
 
 run:
-	@./build/DemoProject/DemoProject
+	@./build/PewPew/PewPew
 
 demo: preclean
 	@${BUILDFILE} debug demo
@@ -26,7 +26,7 @@ full: preclean
 	@${BUILDFILE} debug full
 
 preclean:
-	@${REMOVECMD} ./build/DemoProject/DemoProject
+	@${REMOVECMD} ./build/PewPew/PewPew
 
 clean:
 	@${REMOVECMD} ./build/*

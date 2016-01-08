@@ -4,20 +4,20 @@
 #include <vector>
 #include <ParticlePlay/Includes.hpp>
 #include <ParticlePlay/Core/Input.hpp>
-#include <ParticlePlay/Graphics/BitmapFont.hpp>
+#include <ParticlePlay/Graphics/Font.hpp>
 #include <ParticlePlay/GUI/Control.hpp>
 
 class ppControl;
 class ppGUI{
 protected:
-	ppBitmapFont* defaultFont;
+	ppFont* defaultFont;
 	std::vector<ppControl*> controls;
 	static bool ppControlOrdering(ppControl* a, ppControl* b);
 public:
 	ppGUI();
 	void AddControl(ppControl* control);
 	ppControl* GetControl(const char *name);
-	ppBitmapFont* GetDefaultFont();
+	ppFont* GetDefaultFont();
 	void RemoveControl(const char *name);
 	void ClearControl();
 	void Render(ppGraphics* graphics);

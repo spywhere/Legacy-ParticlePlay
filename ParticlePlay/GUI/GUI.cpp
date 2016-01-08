@@ -3,6 +3,7 @@
 #ifdef PPDEBUG
 	#include <iostream>
 #endif
+#include <ParticlePlay/Graphics/SpriteFont.hpp>
 
 bool ppGUI::ppControlOrdering(ppControl* a, ppControl* b){
 	return a->GetZ()<b->GetZ();
@@ -16,7 +17,7 @@ ppGUI::ppGUI(){
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!", "Default GUI font is not found.", 0);
 		#endif
 	}else{
-		this->defaultFont = new ppBitmapFont(IMG_Load("res/monaco12.png"));
+		this->defaultFont = new ppSpriteFont(IMG_Load("res/monaco12.png"));
 	}
 }
 
@@ -25,7 +26,7 @@ void ppGUI::AddControl(ppControl* control){
 	this->controls.push_back(control);
 }
 
-ppBitmapFont* ppGUI::GetDefaultFont(){
+ppFont* ppGUI::GetDefaultFont(){
 	return this->defaultFont;
 }
 

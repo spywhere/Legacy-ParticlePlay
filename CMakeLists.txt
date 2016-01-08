@@ -7,6 +7,7 @@ option(PP_INSTALL "Install ParticlePlay libs and includes" OFF)
 option(PP_BUILD_SHARED "Build ParticlePlay shared libraries" OFF)
 option(PP_BUILD_STATIC "Build ParticlePlay static libraries" ON)
 option(PP_BUILD_DEMO "Build ParticlePlay demo project" OFF)
+option(PP_BUILD_RELEASE "Build actual project" ON)
 
 # Library constants
 set(PARTICLEPLAY_VERSION 0.1.0)
@@ -58,4 +59,6 @@ add_subdirectory(ParticlePlay)
 # Build Example
 if(PP_BUILD_DEMO)
 	add_subdirectory(DemoProject)
+elseif(PP_BUILD_RELEASE)
+	add_subdirectory(PewPew)
 endif()
