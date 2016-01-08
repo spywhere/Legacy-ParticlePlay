@@ -76,7 +76,6 @@ void ppGame::SetSize(int width, int height){
 	this->width = width;
 	this->height = height;
 	if(this->renderer){
-		// glOrtho(0, this->width, this->height, 0, 1, -1);
 		SDL_RenderSetLogicalSize(this->renderer, this->width, this->height);
 	}
 }
@@ -222,7 +221,6 @@ int ppGame::StartGame(){
 			#endif
 			this->glContext = SDL_GL_CreateContext(this->mainWindow);
 
-			// glViewport(0, 0, this->screenWidth, this->screenHeight);
 			SDL_Rect* rect = new SDL_Rect;
 			rect->x = 0;
 			rect->y = 0;
@@ -230,21 +228,7 @@ int ppGame::StartGame(){
 			rect->h = this->screenHeight;
 			SDL_RenderSetViewport(this->renderer, rect);
 
-			// glMatrixMode(GL_PROJECTION);
-			// glLoadIdentity();
-			// glOrtho(0, this->width, this->height, 0, 1, -1);
 			SDL_RenderSetLogicalSize(this->renderer, this->width, this->height);
-
-			// glMatrixMode(GL_MODELVIEW);
-			// glLoadIdentity();
-
-			// glEnable(GL_TEXTURE_2D);
-			// glLoadIdentity();
-
-			// if(glGetError() != GL_NO_ERROR){
-			// 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenGL.", 0);
-			// 	return 1;
-			// }
 		}
 
 		if(!this->restarting){
@@ -325,11 +309,6 @@ int ppGame::StartGame(){
 				SDL_SetRenderDrawColor(this->renderer, this->backgroundColor->GetR(), this->backgroundColor->GetG(), this->backgroundColor->GetB(), this->backgroundColor->GetA());
 				SDL_RenderClear(this->renderer);
 
-				// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				// glLoadIdentity();
-
-				// glClearColor(this->backgroundColor->GetRf(), this->backgroundColor->GetGf(), this->backgroundColor->GetBf(), this->backgroundColor->GetAf());
-
 				if(this->currentState && this->currentState->GetGame()){
 					SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 					this->currentState->OnRender(this->graphics, renderDeltaTime);
@@ -337,8 +316,6 @@ int ppGame::StartGame(){
 				renderDeltaTime = 0;
 
 				if(this->showFPS){
-					// BG
-					// SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 					SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 127);
 					SDL_Rect* rect = new SDL_Rect;
 					rect->x = 0;
@@ -350,8 +327,6 @@ int ppGame::StartGame(){
 					// FPS
 					if(this->fps > 0){
 						Uint8 delta = this->fps / this->width;
-
-						// SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 						SDL_SetRenderDrawColor(this->renderer, 0, (255-(delta*2)), 0, 127);
 						SDL_Rect* rect = new SDL_Rect;
 						rect->x = 0;
@@ -363,8 +338,6 @@ int ppGame::StartGame(){
 					// UPS
 					if(this->ups > 0){
 						Uint8 delta = this->ups / this->width;
-
-						// SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 						SDL_SetRenderDrawColor(this->renderer, 0, 0, (255-(delta*2)), 127);
 						SDL_Rect* rect = new SDL_Rect;
 						rect->x = 0;
@@ -375,7 +348,6 @@ int ppGame::StartGame(){
 					}
 				}
 				SDL_RenderPresent(this->renderer);
-				// SDL_GL_SwapWindow(this->mainWindow);
 				avgRenderTime += SDL_GetTicks()-speedTimer;
 			}
 

@@ -7,39 +7,30 @@
 struct ppPoint {
 	int x;
 	int y;
+
+	ppPoint(){
+		this->x = 0;
+		this->y = 0;
+	};
+
+	ppPoint(int x, int y){
+		this->x = x;
+		this->y = y;
+	};
 };
 
 struct ppSize {
 	int width;
 	int height;
-};
 
-struct ppRect {
-	ppPoint origin;
-	ppSize size;
-
-	ppRect(int x, int y, int width, int height){
-		this->origin.x = x;
-		this->origin.y = y;
-		this->size.width = width;
-		this->size.height = height;
+	ppSize(){
+		this->width = 0;
+		this->height = 0;
 	};
 
-	ppRect(ppPoint origin, int width, int height){
-		this->origin = origin;
-		this->size.width = width;
-		this->size.height = height;
-	};
-
-	ppRect(int x, int y, ppSize size){
-		this->origin.x = x;
-		this->origin.y = y;
-		this->size = size;
-	};
-
-	ppRect(ppPoint origin, ppSize size){
-		this->origin = origin;
-		this->size = size;
+	ppSize(int width, int height){
+		this->width = width;
+		this->height = height;
 	};
 };
 

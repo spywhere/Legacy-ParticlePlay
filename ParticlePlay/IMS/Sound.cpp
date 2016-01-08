@@ -256,56 +256,31 @@ void ppSound::Render(ppGraphics* graphics){
 		return;
 	}
 	//Border
-	glBegin(GL_LINE_LOOP);
-	{
-		glColor3f(1, 1, 1);
-		glVertex3f(this->x, this->y, 0);
-		glVertex3f(this->x+this->width, this->y, 0);
-		glVertex3f(this->x+this->width, this->y+this->height, 0);
-		glVertex3f(this->x, this->y+this->height, 0);
-	}
-	glEnd();
-	//Playing Cursor
-	glBegin(GL_LINES);
-	{
-		glColor3f(0.7f, 0.7f, 1);
-		int offset = this->GetCurrentTime()*(this->width-2)/this->GetTotalTime();
-		glVertex3f(this->x+offset, this->y+1, 0);
-		glVertex3f(this->x+offset, this->y+this->height, 0);
-	}
-	glEnd();
+	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+	graphics->DrawRect(this->x, this->y, this->width, this->height);
+
 	//Skipped position
 	int skippedWidth = this->audioFormat->ActualPosition(this->startReadPosition)*(this->width-2)/this->GetPositionLength();
-	glBegin(GL_QUADS);
-	{
-		glColor4f(1, 0.8f, 0.8f, 0.5f);
-		glVertex3f(this->x, this->y+1, 0);
-		glVertex3f(this->x+skippedWidth, this->y+1, 0);
-		glVertex3f(this->x+skippedWidth, this->y+this->height, 0);
-		glVertex3f(this->x, this->y+this->height, 0);
-	}
-	glEnd();
+	graphics->SetColor(new ppColor(1.0f, 0.8f, 0.8f, 0.5f));
+	graphics->FillRect(this->x, this->y+1, skippedWidth, this->height);
+
 	//Total processed buffer
-	glBegin(GL_QUADS);
-	{
-		glColor4f(0.8f, 0.8f, 1, 0.5f);
-		int width = this->audioFormat->ActualPosition(this->totalBufferProcessed*this->bufferSize)*(this->width-2)/this->GetPositionLength();
-		glVertex3f(this->x+skippedWidth, this->y+1, 0);
-		glVertex3f(this->x+skippedWidth+width, this->y+1, 0);
-		glVertex3f(this->x+skippedWidth+width, this->y+this->height, 0);
-		glVertex3f(this->x+skippedWidth, this->y+this->height, 0);
-	}
-	glEnd();
+	int width = this->audioFormat->ActualPosition(this->totalBufferProcessed*this->bufferSize)*(this->width-2)/this->GetPositionLength();
+	graphics->SetColor(new ppColor(0.8f, 0.8f, 1, 0.5f));
+	graphics->FillRect(this->x+skippedWidth, this->y+1, width, this->height);
+
+	//Playing Cursor
+	int offset = this->GetCurrentTime()*(this->width-2)/this->GetTotalTime();
+	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+	graphics->DrawLine(this->x+offset, this->y+1, this->x+offset, this->y+this->height);
+
 	//Next read position
-	glBegin(GL_LINE_STRIP);
-	{
-		glColor3f(1, 1, 1);
-		int offset = this->audioFormat->ActualPosition(this->nextReadPosition-this->clipStart)*(this->width-2)/this->GetPositionLength();
-		glVertex3f(this->x+offset-3, this->y+4, 0);
-		glVertex3f(this->x+offset, this->y+1, 0);
-		glVertex3f(this->x+offset+3, this->y+4, 0);
-	}
-	glEnd();
+	offset = this->audioFormat->ActualPosition(this->nextReadPosition-this->clipStart)*(this->width-2)/this->GetPositionLength();
+	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+	graphics->SetVertex(this->x+offset-3, this->y+4);
+	graphics->SetVertex(this->x+offset, this->y+1);
+	graphics->SetVertex(this->x+offset+3, this->y+4);
+	graphics->DrawPolygon();
 }
 
 void ppSound::Update(ppInput* input){

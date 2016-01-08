@@ -52,7 +52,8 @@ void ppButton::Render(ppGraphics* graphics){
 	graphics->FillRect(this->GetX(), this->GetY(), this->GetWidth(), this->GetHeight());
 	graphics->SetColor(new ppColor((this->foregroundColor >> 16 & 0xff) / 255.0f, (this->foregroundColor >> 8 & 0xff) / 255.0f, (this->foregroundColor & 0xff) / 255.0f));
 	if(this->GetGUI()->GetDefaultFont()){
-		this->GetGUI()->GetDefaultFont()->Render(this->GetX(), this->GetY(), this->text.c_str(), graphics);
+		ppSize textSize = this->GetGUI()->GetDefaultFont()->GetRenderSize(this->text.c_str());
+		this->GetGUI()->GetDefaultFont()->Render(this->GetX() + (this->width - textSize.width) / 2, this->GetY() + (this->height - textSize.height) / 2, this->text.c_str(), graphics);
 	}
 }
 

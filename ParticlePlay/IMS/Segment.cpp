@@ -166,42 +166,19 @@ void ppSegment::Render(ppGraphics* graphics){
 		return;
 	}
 	//Border
-	glBegin(GL_LINE_LOOP);
-	{
-		glColor3f(1, 1, 1);
-		glVertex3f(this->x, this->y, 0);
-		glVertex3f(this->x+this->width, this->y, 0);
-		glVertex3f(this->x+this->width, this->y+this->height, 0);
-		glVertex3f(this->x, this->y+this->height, 0);
-	}
-	glEnd();
-	//Playing Cursor
-	glBegin(GL_LINES);
-	{
-		glColor3f(0.7f, 0.7f, 1);
-		int offset = this->GetCurrentTime()*(this->width-2)/this->GetTotalTime();
-		glVertex3f(this->x+offset, this->y+1, 0);
-		glVertex3f(this->x+offset, this->y+this->height, 0);
-	}
-	glEnd();
+	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+	graphics->DrawRect(this->x, this->y, this->width, this->height);
+
 	int index=1;
 	int height=this->height/(this->sounds.size()+1);
-	glBegin(GL_QUADS);
-	{
-		glColor4f(0.8f, 0.5f, 0.5f, 1);
-		// int width = this->audioFormat->ActualPosition(this->totalBufferProcessed*this->bufferSize)*(this->width-2)/this->GetPositionLength();
-		int width = this->GetCurrentPosition()*(this->width-2)/this->GetPositionLength();
-		glVertex3f(this->x, this->y+1, 0);
-		glVertex3f(this->x+width, this->y+1, 0);
-		glVertex3f(this->x+width, this->y+height, 0);
-		glVertex3f(this->x, this->y+height, 0);
-	}
-	glEnd();
+	int width = this->GetCurrentPosition()*(this->width-2)/this->GetPositionLength();
+	graphics->SetColor(new ppColor(0.8f, 0.5f, 0.5f));
+	graphics->FillRect(this->x, this->y+1, width, height);
 
 	std::stringstream ss;
 	ss << this->GetName();
 	if(this->GetGUI()->GetDefaultFont()){
-		glColor3f(1 ,1 ,1);
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
 		this->GetGUI()->GetDefaultFont()->Render(this->x+5, this->y+(height/2)-5, ss.str().c_str(), graphics);
 	}
 
@@ -210,34 +187,26 @@ void ppSegment::Render(ppGraphics* graphics){
 		int width = sound->GetCurrentPosition()*(this->width-2)/this->GetPositionLength();
 		int max_width = sound->GetPositionLength()*(this->width-2)/this->GetPositionLength();
 		//Total playing time
-		glBegin(GL_QUADS);
-		{
-			glColor4f(0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2)), 1);
-			glVertex3f(this->x+offset_width+width, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+offset_width+max_width, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+offset_width+max_width, this->y+(index*height)+height, 0);
-			glVertex3f(this->x+offset_width+width, this->y+(index*height)+height, 0);
-		}
-		glEnd();
+		graphics->SetColor(new ppColor(0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2)), 0.3f+(0.2f*(index%2))));
+		graphics->FillRect(this->x+offset_width+width, this->y+(index*height)+1, max_width - width, height);
+
 		//Current playing time
-		glBegin(GL_QUADS);
-		{
-			glColor4f(0.5f, 0.5f+(0.3f*(index%2)), 0.5f+(0.3f*((index+1)%2)), 1);
-			glVertex3f(this->x+offset_width, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+offset_width+width, this->y+(index*height)+1, 0);
-			glVertex3f(this->x+offset_width+width, this->y+(index*height)+height, 0);
-			glVertex3f(this->x+offset_width, this->y+(index*height)+height, 0);
-		}
-		glEnd();
+		graphics->SetColor(new ppColor(0.5f, 0.5f+(0.3f*(index%2)), 0.5f+(0.3f*((index+1)%2))));
+		graphics->FillRect(this->x+offset_width, this->y+(index*height)+1, width, height);
 
 		std::stringstream ss;
 		ss << sound->GetName();
 		if(this->GetGUI()->GetDefaultFont()){
-			glColor3f(1 ,1 ,1);
+			graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
 			this->GetGUI()->GetDefaultFont()->Render(this->x+5, this->y+(index*height)+(height/2)-5, ss.str().c_str(), graphics);
 		}
 		index++;
 	}
+
+	//Playing Cursor
+	graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+	int offset = this->GetCurrentTime()*(this->width-2)/this->GetTotalTime();
+	graphics->DrawLine(this->x+offset, this->y+1, this->x+offset, this->y+this->height);
 }
 
 void ppSegment::Update(ppInput* input){

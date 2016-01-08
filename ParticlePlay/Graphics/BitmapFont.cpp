@@ -107,8 +107,32 @@ Uint32 ppBitmapFont::GetPixel(int x, int y, SDL_Surface* surface){
 	return pixels[ ( y * surface->w ) + x ];
 }
 
-void ppBitmapFont::Render(ppPoint origin, const char* text, ppGraphics* graphics){
-	this->Render(origin.x, origin.y, text, graphics);
+ppSize ppBitmapFont::GetRenderSize(const char* text){
+	ppSize size;
+	if(!this->bitmap){
+		return size;
+	}
+	size.height = this->line;
+
+	int x = 0;
+	for(int show=0;text[show]!='\0';show++){
+		if(text[show]==' '){
+			x+=this->space;
+		}else if(text[show]=='\n'){
+			size.height+=this->line+this->linespacing;
+			if(size.width < x){
+				size.width = x;
+			}
+			x=0;
+		}else{
+			int ascii = (unsigned char)text[show];
+			x += chars[ascii].w + this->spacing;
+		}
+	}
+	if(size.width < x){
+		size.width = x;
+	}
+	return size;
 }
 
 void ppBitmapFont::Render(int x, int y, const char* text, ppGraphics* graphics){

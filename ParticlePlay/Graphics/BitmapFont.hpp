@@ -21,7 +21,7 @@ class ppBitmapFont{
 		void SetSpacing(int spacing);
 		void SetLineSpacing(int spacing);
 		void Render(int x, int y, const char* text, ppGraphics* graphics);
-		void Render(ppPoint origin, const char* text, ppGraphics* graphics);
+		ppSize GetRenderSize(const char* text);
 };
 
 #endif
