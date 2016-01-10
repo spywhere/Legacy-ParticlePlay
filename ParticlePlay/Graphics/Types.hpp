@@ -1,6 +1,7 @@
 #ifndef TYPES_HEADER
 #define TYPES_HEADER
 
+#include <deque>
 #include <ParticlePlay/Includes.hpp>
 #include <ParticlePlay/Core/Color.hpp>
 
@@ -40,6 +41,7 @@ struct ppGraphicsContext {
 	int translationX;
 	int translationY;
 	float rotation;
+	std::deque<ppPoint> verts;
 };
 
 #endif

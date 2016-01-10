@@ -1,5 +1,9 @@
 #ifndef INCLUDES_HEADER
-	#define INCLUDES_HEADER
+#define INCLUDES_HEADER
+
+#define SDL_VERSION_NUMBER(version) ((version)->major<<16 | (version)->minor<<8 | (version)->patch)
+#define SDL_VERSION_CONCAT(version) (int)((version)->major) << "." << (int)((version)->minor) << "." << (int)((version)->patch)
+
 	#ifdef __APPLE__
 		//Compile on Macintosh (both GCC and XCode)
 
@@ -7,10 +11,6 @@
 		#include <SDL2/SDL.h>
 		#include <SDL2_image/SDL_image.h>
 		#include <SDL2_net/SDL_net.h>
-
-		// OpenGL
-		#include <OpenGL/gl.h>
-		#include <OpenGL/glu.h>
 
 		// OpenAL Soft
 		#include <AL/al.h>
@@ -28,11 +28,6 @@
 		#include <SDL_image.h>
 		#include <SDL_net.h>
 
-		// OpenGL
-		#include <GL/gl.h>
-		#include <GL/glu.h>
-		#include <glut.h>
-
 		// OpenAL Soft
 		#include <AL/al.h>
 		#include <AL/alc.h>
@@ -47,10 +42,6 @@
 		#include "SDL2/SDL.h"
 		#include "SDL2/SDL_image.h"
 		#include "SDL2/SDL_net.h"
-
-		// OpenGL
-		#include "GL/gl.h"
-		#include "GL/glu.h"
 
 		// OpenAL Soft
 		#include <AL/al.h>
@@ -67,10 +58,6 @@
 		#include <SDL2/SDL_image.h>
 		#include <SDL2/SDL_net.h>
 
-		// OpenGL
-		#include <OpenGL/gl.h>
-		#include <OpenGL/glu.h>
-
 		// OpenAL Soft
 		#include <AL/al.h>
 		#include <AL/alc.h>
@@ -85,10 +72,6 @@
 		#include <SDL2/SDL.h>
 		#include <SDL2/SDL_image.h>
 		#include <SDL2/SDL_net.h>
-
-		// OpenGL
-		#include <GL/gl.h>
-		#include <GL/glu.h>
 
 		// OpenAL Soft
 		#include <AL/al.h>

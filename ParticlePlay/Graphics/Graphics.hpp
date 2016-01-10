@@ -19,11 +19,15 @@ protected:
 	float rotation;
 
 	SDL_Renderer* renderer;
-	void Arc(int x, int y, int w, int h, int start, int end, bool filled);
+	void Arc(int x, int y, int w, int h, int start, int end, uint8 mode);
 	void Oval(int x, int y, int w, int h, bool filled);
+	ppPoint TransformPoint(ppPoint point);
+	void DrawPoint(int x, int y, bool transform);
+	void DrawLine(int x1, int y1, int x2, int y2, bool transform);
 public:
 	ppGraphics(SDL_Renderer* renderer);
 	void DrawArc(int x, int y, int w, int h, int start, int end);
+	void DrawLoopArc(int x, int y, int w, int h, int start, int end);
 	void DrawTexture(SDL_Texture* texture, SDL_Rect sourceOffset, SDL_Rect targetOffset, double angle, SDL_Point* center, SDL_RendererFlip flip);
 	SDL_Texture* CreateTextureFromSurface(SDL_Surface* surface);
 	void DrawLine(int x1, int y1, int x2, int y2);
@@ -39,13 +43,19 @@ public:
 	void SetVertex(int x, int y);
 	void DrawPolygon();
 	void FillPolygon();
+	void DrawPoints();
+	void DrawLines();
+	void DrawStrip();
 
 	void PushContext();
 	void PopContext();
+	void IdentityContext();
 
 	void Translate(int x, int y);
-	// void Rotate(int degree);
-	// void Rotate(float radian);
+	void SetTranslate(int x, int y);
+	void Rotate(float radian);
+	void SetRotate(float radian);
+
 	void SetBlendMode(SDL_BlendMode blendMode);
 	void SetColor(ppColor* color);
 

@@ -231,120 +231,86 @@ void ppSwitch::Render(ppGraphics* graphics){
 		}
 
 		//Border
-		glBegin(GL_LINE_LOOP);
-		{
-			glColor3f(1, 1, 1);
-			glVertex3f(this->x, this->y, 0);
-			glVertex3f(this->x+this->width, this->y, 0);
-			glVertex3f(this->x+this->width, this->y+this->height, 0);
-			glVertex3f(this->x, this->y+this->height, 0);
-		}
-		glEnd();
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		graphics->DrawRect(this->x, this->y, this->width, this->height);
 
 		//Source
-		glBegin(GL_QUADS);
-		{
-			int sourceOffset = this->currentTransition->GetSourceOffset() * this->width / maxWidth;
-			if(minimumStartTime < 0){
-				sourceOffset = (this->currentTransition->GetSourceOffset() - minimumStartTime) * this->width / maxWidth;
-			}
-			int sourceLength = this->currentTransition->GetSourceDuration() * this->width / maxWidth;
-			if(source){
-				glColor3f(1, 0.7f, 0.7f);
-			}else{
-				glColor3f(0.4f, 0.3f, 0.3f);
-			}
-			glVertex3f(this->x+sourceOffset, this->y, 0);
-			glVertex3f(this->x+sourceOffset+sourceLength, this->y, 0);
-			glVertex3f(this->x+sourceOffset+sourceLength, this->y+this->height/2, 0);
-			glVertex3f(this->x+sourceOffset, this->y+this->height/2, 0);
+		int sourceOffset = this->currentTransition->GetSourceOffset() * this->width / maxWidth;
+		if(minimumStartTime < 0){
+			sourceOffset = (this->currentTransition->GetSourceOffset() - minimumStartTime) * this->width / maxWidth;
 		}
-		glEnd();
+		int sourceLength = this->currentTransition->GetSourceDuration() * this->width / maxWidth;
+		if(source){
+			graphics->SetColor(new ppColor(1, 0.7f, 0.7f));
+		}else{
+			graphics->SetColor(new ppColor(0.4f, 0.3f, 0.3f));
+		}
+		graphics->FillRect(this->x+sourceOffset, this->y, sourceLength, this->height/2);
 
 		//Source Transition
-		glBegin(GL_LINE_STRIP);
-		{
-			int sourceOffset = this->currentTransition->GetSourceOffset() * this->width / maxWidth;
-			if(minimumStartTime < 0){
-				sourceOffset = (this->currentTransition->GetSourceOffset() - minimumStartTime) * this->width / maxWidth;
-			}
-			glColor3f(0.7f, 0, 0);
-			glVertex3f(this->x, this->y+1, 0);
-			glVertex3f(this->x+sourceOffset, this->y+1, 0);
-			if(this->currentTransition->GetSourceCurve()){
-				int transitionEnd = this->currentTransition->GetSourceDuration() * this->width / maxWidth;
-				for(int x=sourceOffset;x<sourceOffset+transitionEnd;x++){
-					glVertex3f(this->x+x, this->y+1+this->currentTransition->GetSourceCurve()->GetValue(x-sourceOffset, transitionEnd, 0, this->height/2), 0);
-				}
-			}else{
-				glVertex3f(this->x+x, this->y+1, 0);
-			}
+		sourceOffset = this->currentTransition->GetSourceOffset() * this->width / maxWidth;
+		if(minimumStartTime < 0){
+			sourceOffset = (this->currentTransition->GetSourceOffset() - minimumStartTime) * this->width / maxWidth;
 		}
-		glEnd();
+		graphics->SetColor(new ppColor(0.7f, 0.0f, 0.0f));
+
+		graphics->SetVertex(this->x, this->y+1);
+		graphics->SetVertex(this->x+sourceOffset, this->y+1);
+		if(this->currentTransition->GetSourceCurve()){
+			int transitionEnd = this->currentTransition->GetSourceDuration() * this->width / maxWidth;
+			for(int x=sourceOffset;x<sourceOffset+transitionEnd;x++){
+				graphics->SetVertex(this->x+x, this->y+1+this->currentTransition->GetSourceCurve()->GetValue(x-sourceOffset, transitionEnd, 0, this->height/2));
+			}
+		}else{
+			graphics->SetVertex(this->x+x, this->y+1);
+		}
+		graphics->DrawStrip();
 
 		//Destination
-		glBegin(GL_QUADS);
-		{
-			int destOffset = this->currentTransition->GetDestinationOffset() * this->width / maxWidth;
-			if(minimumStartTime < 0){
-				destOffset = (this->currentTransition->GetDestinationOffset() - minimumStartTime) * this->width / maxWidth;
-			}
-			int destLength = this->currentTransition->GetDestinationDuration() * this->width / maxWidth;
-			if(dest){
-				glColor3f(0.7f, 1, 0.7f);
-			}else{
-				glColor3f(0.3f, 0.4f, 0.3f);
-			}
-			glVertex3f(this->x+destOffset, this->y+this->height/2, 0);
-			glVertex3f(this->x+destOffset+destLength, this->y+this->height/2, 0);
-			glVertex3f(this->x+destOffset+destLength, this->y+this->height, 0);
-			glVertex3f(this->x+destOffset, this->y+this->height, 0);
+		int destOffset = this->currentTransition->GetDestinationOffset() * this->width / maxWidth;
+		if(minimumStartTime < 0){
+			destOffset = (this->currentTransition->GetDestinationOffset() - minimumStartTime) * this->width / maxWidth;
 		}
-		glEnd();
+		int destLength = this->currentTransition->GetDestinationDuration() * this->width / maxWidth;
+		if(dest){
+			graphics->SetColor(new ppColor(0.7f, 1, 0.7f));
+		}else{
+			graphics->SetColor(new ppColor(0.3f, 0.4f, 0.3f));
+		}
+		graphics->FillRect(this->x+destOffset, this->y+this->height/2, destLength, this->height/2);
 
 		//Destination Transition
-		glBegin(GL_LINE_STRIP);
-		{
-			int destOffset = this->currentTransition->GetDestinationOffset() * this->width / maxWidth;
-			if(minimumStartTime < 0){
-				destOffset = (this->currentTransition->GetDestinationOffset() - minimumStartTime) * this->width / maxWidth;
-			}
-			glColor3f(0, 0.7f, 0);
-			glVertex3f(this->x, this->y+this->height/2+1, 0);
-			glVertex3f(this->x+destOffset, this->y+this->height/2+1, 0);
-			int transitionEnd = this->currentTransition->GetDestinationDuration() * this->width / maxWidth;
-			if(this->currentTransition->GetDestinationCurve()){
-				for(int x=destOffset;x<destOffset+transitionEnd;x++){
-					glVertex3f(this->x+x, this->y+this->height+1-this->currentTransition->GetDestinationCurve()->GetValue(x-destOffset, transitionEnd, 0, this->height/2), 0);
-				}
-			}else{
-				glVertex3f(this->x+x, this->y+this->height/2+1, 0);
-			}
+		destOffset = this->currentTransition->GetDestinationOffset() * this->width / maxWidth;
+		if(minimumStartTime < 0){
+			destOffset = (this->currentTransition->GetDestinationOffset() - minimumStartTime) * this->width / maxWidth;
 		}
-		glEnd();
+		graphics->SetColor(new ppColor(0.0f, 0.7f, 0.0f));
+
+		graphics->SetVertex(this->x, this->y+this->height/2+1);
+		graphics->SetVertex(this->x+destOffset, this->y+this->height/2+1);
+		int transitionEnd = this->currentTransition->GetDestinationDuration() * this->width / maxWidth;
+		if(this->currentTransition->GetDestinationCurve()){
+			for(int x=destOffset;x<destOffset+transitionEnd;x++){
+				graphics->SetVertex(this->x+x, this->y+this->height+1-this->currentTransition->GetDestinationCurve()->GetValue(x-destOffset, transitionEnd, 0, this->height/2));
+			}
+		}else{
+			graphics->SetVertex(this->x+x, this->y+this->height/2+1);
+		}
+
+		graphics->DrawStrip();
 
 		//SyncPoint
-		glBegin(GL_LINES);
-		{
-			glColor3f(1, 1, 1);
-			int offset = this->currentTransition->GetSyncPoint() * (this->width - 2) / maxWidth;
-			glVertex3f(this->x+offset, this->y+1, 0);
-			glVertex3f(this->x+offset, this->y+this->height, 0);
-		}
-		glEnd();
+		int offset = this->currentTransition->GetSyncPoint() * (this->width - 2) / maxWidth;
+		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
+		graphics->DrawLine(this->x+offset, this->y+1, this->x+offset, this->y+this->height);
 
 		//Playing Cursor
-		glBegin(GL_LINES);
-		{
-			glColor3f(0.5f, 0.5f, 1);
-			int offset = this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxWidth;
-			if(this->currentTransition->GetTransitionPosition() < 0){
-				offset = -this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxWidth;
-			}
-			glVertex3f(this->x+offset, this->y+1, 0);
-			glVertex3f(this->x+offset, this->y+this->height, 0);
+		offset = this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxWidth;
+		if(this->currentTransition->GetTransitionPosition() < 0){
+			offset = -this->currentTransition->GetTransitionPosition() * (this->width - 2) / maxWidth;
 		}
-		glEnd();
+		graphics->SetColor(new ppColor(0.5f, 0.5f, 1.0f));
+		graphics->DrawLine(this->x+offset, this->y+1, this->x+offset, this->y+this->height);
 	}
 }
 

@@ -16,11 +16,11 @@ protected:
 	ppBitmapFont* font;
 	ppGUI* gui;
 	int help, cd, px, py, fx, fy, tx, ty;
-	virtual void RenderCircle(b2Vec2 center, float radius, ppColor* color);
-	virtual void RenderEdge(b2Vec2 v1, b2Vec2 v2, ppColor* color);
-	virtual void RenderPolygon(std::vector<b2Vec2> vertices, ppColor* color);
-	virtual void RenderChain(std::vector<b2Vec2> vertices, ppColor* color);
-	virtual void RenderBody(b2Body* body);
+	virtual void RenderCircle(ppGraphics* graphics, b2Vec2 center, float radius, ppColor* color);
+	virtual void RenderEdge(ppGraphics* graphics, b2Vec2 v1, b2Vec2 v2, ppColor* color);
+	virtual void RenderPolygon(ppGraphics* graphics, std::vector<b2Vec2> vertices, ppColor* color);
+	virtual void RenderChain(ppGraphics* graphics, std::vector<b2Vec2> vertices, ppColor* color);
+	virtual void RenderBody(ppGraphics* graphics, b2Body* body);
 public:
 	virtual void OnInit();
 	virtual void OnRender(ppGraphics* graphics, int delta);

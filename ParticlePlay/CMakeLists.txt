@@ -13,9 +13,6 @@ file(GLOB_RECURSE PARTICLEPLAY_SOURCES
 ################
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ParticlePlay_SOURCE_DIR}/cmake")
 
-# OpenGL
-find_package(OpenGL REQUIRED)
-
 # OpenAL-Soft
 if(APPLE)
 	set(CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
@@ -37,7 +34,6 @@ find_package(SDL2_net REQUIRED)
 find_package(Box2D REQUIRED)
 
 include_directories(
-	${OPENGL_INCLUDE_DIRS}
 	${OPENAL_SOFT_INCLUDE_DIRS}
 	${SDL2_INCLUDE_DIRS}
 	${SDL2_IMAGE_INCLUDE_DIRS}
@@ -60,7 +56,6 @@ if(PP_BUILD_SHARED)
 
 	target_link_libraries(
 		ParticlePlay_shared
-		${OPENGL_LIBRARIES}
 		${OPENAL_SOFT_LIBRARIES}
 		${SDL2_LIBRARIES}
 		${SDL2_IMAGE_LIBRARIES}
@@ -79,7 +74,6 @@ if(PP_BUILD_STATIC)
 
 	target_link_libraries(
 		ParticlePlay
-		${OPENGL_LIBRARIES}
 		${OPENAL_SOFT_LIBRARIES}
 		${SDL2_LIBRARIES}
 		${SDL2_IMAGE_LIBRARIES}

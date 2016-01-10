@@ -110,7 +110,7 @@ void Level::Render(ppGraphics* graphics){
     }
 
     if(this->debugView){
-        this->RenderBody(this->body);
+        this->RenderBody(graphics, this->body);
     }
 }
 

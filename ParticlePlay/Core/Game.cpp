@@ -168,24 +168,63 @@ void ppGame::OnEvent(SDL_Event* event) {
 
 int ppGame::StartGame(){
 	#ifdef PPDEBUG
-		std::cout << "Initializing SDL..." << std::endl;
+		std::cout << "Initializing SDL... ";
 	#endif
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+		#ifndef PPDEBUG
+			std::cout << "Error: ";
+		#endif
+		std::cout << SDL_GetError() << std::endl;
+		return 1;
+	}
+	SDL_version sdlCompiledVersion;
+	SDL_version sdlLinkedVersion;
+	SDL_VERSION(&sdlCompiledVersion);
+	SDL_GetVersion(&sdlLinkedVersion);
+	if(SDL_VERSION_NUMBER(&sdlLinkedVersion) < SDL_VERSION_NUMBER(&sdlCompiledVersion)){
+		std::cout << "The installed SDL is not compatible. [" << SDL_VERSION_CONCAT(&sdlLinkedVersion) << "<" << SDL_VERSION_CONCAT(&sdlCompiledVersion) << "]" << std::endl;
 		return 1;
 	}
 	#ifdef PPDEBUG
-		std::cout << "Initializing SDL_image..." << std::endl;
+		std::cout << "v" << SDL_VERSION_CONCAT(&sdlLinkedVersion) << std::endl;
+		std::cout << "Initializing SDL_image... ";
 	#endif
-	int img_flags = IMG_INIT_JPG|IMG_INIT_PNG|IMG_INIT_TIF;
-	if((IMG_Init(img_flags) & img_flags) != img_flags) {
+	int imgFlags = IMG_INIT_JPG|IMG_INIT_PNG|IMG_INIT_TIF;
+	if((IMG_Init(imgFlags) & imgFlags) != imgFlags) {
+		#ifndef PPDEBUG
+			std::cout << "Error: ";
+		#endif
+		std::cout << IMG_GetError() << std::endl;
+		return 1;
+	}
+	SDL_version imgCompiledVersion;
+	SDL_IMAGE_VERSION(&imgCompiledVersion);
+	const SDL_version *imgLinkedVersion = IMG_Linked_Version();
+	if(SDL_VERSION_NUMBER(imgLinkedVersion) < SDL_VERSION_NUMBER(&imgCompiledVersion)){
+		std::cout << "The installed SDL_image is not compatible. [" << SDL_VERSION_CONCAT(imgLinkedVersion) << "<" << SDL_VERSION_CONCAT(&imgCompiledVersion) << "]" << std::endl;
 		return 1;
 	}
 	#ifdef PPDEBUG
-		std::cout << "Initializing SDL_net..." << std::endl;
+		std::cout << "v" << SDL_VERSION_CONCAT(imgLinkedVersion) << std::endl;
+		std::cout << "Initializing SDL_net... ";
 	#endif
 	if(SDLNet_Init() < 0) {
+		#ifndef PPDEBUG
+			std::cout << "Error: ";
+		#endif
+		std::cout << SDLNet_GetError() << std::endl;
 		return 1;
 	}
+	SDL_version netCompiledVersion;
+	SDL_NET_VERSION(&netCompiledVersion);
+	const SDL_version *netLinkedVersion = SDLNet_Linked_Version();
+	if(SDL_VERSION_NUMBER(netLinkedVersion) < SDL_VERSION_NUMBER(&netCompiledVersion)){
+		std::cout << "The installed SDL_net is not compatible. [" << SDL_VERSION_CONCAT(netLinkedVersion) << "<" << SDL_VERSION_CONCAT(&netCompiledVersion) << "]" << std::endl;
+		return 1;
+	}
+	#ifdef PPDEBUG
+		std::cout << "v" << SDL_VERSION_CONCAT(netLinkedVersion) << std::endl;
+	#endif
 	do{
 		Uint32 speedTimer = SDL_GetTicks();
 		#ifdef PPDEBUG
@@ -216,10 +255,14 @@ int ppGame::StartGame(){
 		if(this->renderer){
 			#ifdef PPDEBUG
 				std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
+
+				SDL_RendererInfo rendererInfo;
+				SDL_GetRendererInfo(this->renderer, &rendererInfo);
+				std::cout << "Using \"" << rendererInfo.name << "\" as rendering engine..." << std::endl;
+
 				speedTimer = SDL_GetTicks();
-				std::cout << "Initializing OpenGL...";
+				std::cout << "Configuring renderer... ";
 			#endif
-			this->glContext = SDL_GL_CreateContext(this->mainWindow);
 
 			SDL_Rect* rect = new SDL_Rect;
 			rect->x = 0;
@@ -227,7 +270,6 @@ int ppGame::StartGame(){
 			rect->w = this->screenWidth;
 			rect->h = this->screenHeight;
 			SDL_RenderSetViewport(this->renderer, rect);
-
 			SDL_RenderSetLogicalSize(this->renderer, this->width, this->height);
 		}
 
@@ -235,21 +277,21 @@ int ppGame::StartGame(){
 			#ifdef PPDEBUG
 				std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 				speedTimer = SDL_GetTicks();
-				std::cout << "Initializing OpenAL...";
+				std::cout << "Initializing Adaptive Music System... ";
 			#endif
 			this->ims = new ppIMS(this, this->randomizer);
 			if(this->ims->Init()){
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize OpenAL.", 0);
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Unexpected error has occurred", "Cannot initialize Adaptive Music System.", 0);
 				return 1;
 			}
 		}
 
 		#ifdef PPDEBUG
+			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 			if(!this->currentState) {
 				std::cout << "No state found..." << std::endl;
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning!", "State not found.", 0);
 			}
-			std::cout << "in " << (SDL_GetTicks()-speedTimer) << "ms" << std::endl;
 			speedTimer = SDL_GetTicks();
 			std::cout << "Preparing... ";
 		#endif
@@ -310,6 +352,7 @@ int ppGame::StartGame(){
 				SDL_RenderClear(this->renderer);
 
 				if(this->currentState && this->currentState->GetGame()){
+					SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
 					SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 					this->currentState->OnRender(this->graphics, renderDeltaTime);
 				}
@@ -382,7 +425,6 @@ int ppGame::StartGame(){
 		if(!this->restarting){
 			this->ims->Quit();
 		}
-		SDL_GL_DeleteContext(this->glContext);
 		SDL_DestroyRenderer(this->renderer);
 		SDL_DestroyWindow(this->mainWindow);
 		#ifdef PPDEBUG

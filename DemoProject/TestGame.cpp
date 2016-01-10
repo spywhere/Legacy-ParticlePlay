@@ -27,10 +27,10 @@ int main(int argc, char* argv[]) {
 	game->AddState("kameleon", new KameleonState());
 	game->AddState("main", new TestScene());
 	game->AddState("ims", new TestIMS());
-	game->AddState("testbed", new TestTestbed());
+	// game->AddState("testbed", new TestTestbed());
 	// game->EnterState("main");
 	game->EnterState("ims");
 	// game->EnterState("kameleon");
-	// game->EnterState("testbed");
+	game->EnterState("testbed");
 	return game->StartGame();
 }

@@ -79,8 +79,8 @@ kPlayer::kPlayer(ppPhysics* physics, int x, int y) : PhysicsObject(physics) {
 
 void kPlayer::Render(ppGraphics* graphics){
 	if(this->debugView){
-		this->RenderBody(this->boxBody);
-		this->RenderBody(this->circleBody);
+		this->RenderBody(graphics, this->boxBody);
+		this->RenderBody(graphics, this->circleBody);
 		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
 		graphics->DrawLine(this->physics->WorldToPixel(this->circleBody->GetPosition().x-1), this->physics->WorldToPixel(this->circleBody->GetPosition().y+1), this->physics->WorldToPixel(this->circleBody->GetPosition().x+1), this->physics->WorldToPixel(this->circleBody->GetPosition().y+1));
 

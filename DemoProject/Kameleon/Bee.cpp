@@ -39,7 +39,7 @@ void Bee::Render(ppGraphics* graphics){
 		return;
 	}
 	if(this->debugView){
-		this->RenderBody(this->body);
+		this->RenderBody(graphics, this->body);
 		graphics->SetColor(new ppColor(1.0f, 1.0f, 1.0f));
 		graphics->DrawLine(this->physics->WorldToPixel(this->body->GetPosition().x), this->physics->WorldToPixel(this->body->GetPosition().y), this->physics->WorldToPixel(this->trackingPoint.x), this->physics->WorldToPixel(this->trackingPoint.y));
 	}
